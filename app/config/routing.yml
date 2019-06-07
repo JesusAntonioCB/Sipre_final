@@ -1,0 +1,68 @@
+ut_exam_pro_eval:
+    resource: "@UtExamProEvalBundle/Controller/"
+    type: annotation
+    prefix: /
+
+admin_area:
+    resource: '@SonataAdminBundle/Resources/config/routing/sonata_admin.xml'
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+sonata_user_admin_security:
+    resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
+    prefix: /admin
+
+sonata_user_admin_resetting:
+    resource: '@SonataUserBundle/Resources/config/routing/admin_resetting.xml'
+    prefix: /admin/resetting
+
+ut_exam_pro_eval_homepage:
+    path:     /
+    defaults: { _controller: UtExamProEvalBundle:Default:index }
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+
+register_alumnos:
+    path:     /register
+    defaults: { _controller: UtExamProEvalBundle:Default:register }
+
+examen_propedeutico:
+    path:     /propedeutico
+    defaults: { _controller: UtExamProEvalBundle:Default:propedeutico }
+
+examen_fijo:
+    path:     /examenFijo
+    defaults: { _controller: UtExamProEvalBundle:Default:examenFijo }
+
+filtered_questions:
+    path:     /filtered_questions
+    defaults: { _controller: UtExamProEvalBundle:Default:filteredQuestions }
+
+list_materias:
+    path:     /get-materias-from-dificultad
+    defaults: { _controller: UtExamProEvalBundle:Default:getMaterias }
+
+get_Result:
+    path:     /get-Results
+    defaults: { _controller: UtExamProEvalBundle:Default:getResults }
+
+get_ExamList:
+    path:     /admin/getListExam
+    defaults: { _controller: UtExamProEvalBundle:Admin/createExamen:getListExam }
+    methods:  GET
+
+get_ModalCodeExam:
+    path:     /ModalCodeExam
+    defaults: { _controller: UtExamProEvalBundle:Default:openModalCodeExam }
+
+get_pdfExam:
+    path:     /admin/openPdf/{id}
+    defaults: { _controller: UtExamProEvalBundle:Admin/createExamen:getPdfOfExam }
+    methods:  GET

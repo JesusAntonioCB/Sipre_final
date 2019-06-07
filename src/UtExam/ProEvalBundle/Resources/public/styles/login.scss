@@ -1,0 +1,48 @@
+.loginContainer{
+  .row{
+    position: relative;
+    .panel{
+      text-align: center;
+      .panel-body{
+        .center-block{
+          width: 100%;
+        }
+        .boxUser{
+          margin: auto;
+        }
+      }
+    }
+  }
+  .loginInterface{
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+  }
+  .panel-heading {
+      padding: 5px 15px;
+  }
+
+  .panel-footer {
+  	padding: 1px 15px;
+  	color: #A0A0A0;
+  }
+
+  .profile-img {
+  	width: 96px;
+  	height: 96px;
+  	margin: 0 auto 10px;
+  	display: block;
+  	-moz-border-radius: 50%;
+  	-webkit-border-radius: 50%;
+  	border-radius: 50%;
+  }
+  .panel-body{
+    .boxUser{
+      .input-group-addon{
+        font-size: 30px;
+        margin-right: 10px;
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{% block home %}
+	<div class="homeConter">
+		<div class="title">
+		<h3>Bienvenidos al Sistema para presentar exámenes de la Universidad Tecnológica</h3>
+		<p>por favor elige el examen que deseas realizar</p>
+		</div>
+		<div class="contentBtn">
+		<a href="{{ path('homepage') }}propedeutico">
+			<button class="button btnPropedeutico">
+				Examen Propedéutico
+				<div class="button__horizontal"></div>
+				<div class="button__vertical"></div>
+			</button>
+		</a>
+			<button class="button btnParticular">
+				Examen Regular
+				<div class="button__horizontal"></div>
+				<div class="button__vertical"></div>
+			</button>
+		</div>
+	</div>
+{% endblock %}

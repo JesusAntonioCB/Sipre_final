@@ -1,0 +1,20 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+{% block javascripts %}
+{{ parent() }}
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('#sonata-ba-field-container-s84bf8a1444_url').css('display', 'none');
+    $('<div id="showUrl" style="">Usar una direccion URL</div>').insertBefore('#sonata-ba-field-container-s84bf8a1444_url');
+    $('body').on('click tap','#showUrl', function()
+    {
+      if ($('#sonata-ba-field-container-s84bf8a1444_url').is(':visible')) {
+        $('#sonata-ba-field-container-s84bf8a1444_url').css('display', 'none');
+      }
+      else {
+        $('#sonata-ba-field-container-s84bf8a1444_url').css('display', 'block');
+      }
+    });
+  });
+
+  </script>
+{% endblock %}

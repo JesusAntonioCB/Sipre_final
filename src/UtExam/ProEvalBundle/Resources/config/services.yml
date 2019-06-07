@@ -1,0 +1,129 @@
+services:
+#    ut_exam_pro_eval.example:
+#        class: UtExam\ProEvalBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    admin.imagen:
+            class: UtExam\ProEvalBundle\Admin\ImagenAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Imagen, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Imagen, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.audio:
+            class: UtExam\ProEvalBundle\Admin\AudioAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Audio, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Audio, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.imagenPregunta:
+            class: UtExam\ProEvalBundle\Admin\ImagenPreguntaAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\ImagenPregunta, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: ImagenPregunta, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.audioPregunta:
+            class: UtExam\ProEvalBundle\Admin\AudioPreguntaAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\AudioPregunta, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: AudioPregunta, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.materias:
+            class: UtExam\ProEvalBundle\Admin\MateriasAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Materias, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Materias, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.Pregunta:
+            class: UtExam\ProEvalBundle\Admin\PreguntaAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Pregunta, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Pregunta, group: "Preguntas" }
+            public: true
+
+    admin.PreguntasAuto:
+            class: UtExam\ProEvalBundle\Admin\PreguntasAutoAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\PreguntasAuto, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: PreguntasAuto, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.texto:
+            class: UtExam\ProEvalBundle\Admin\TextoAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Texto, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Texto, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.tipoPregunta:
+            class: UtExam\ProEvalBundle\Admin\TipoPreguntaAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\TipoPregunta, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: TipoPregunta, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.video:
+            class: UtExam\ProEvalBundle\Admin\VideoAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Video, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Video, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.videoPregunta:
+            class: UtExam\ProEvalBundle\Admin\VideoPreguntaAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\VideoPregunta, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: VideoPregunta, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.respuestas:
+            class: UtExam\ProEvalBundle\Admin\RespuestasAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Respuestas, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Respuestas, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.alumnos:
+            class: UtExam\ProEvalBundle\Admin\AlumnosAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Alumnos, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Alumnos, group: "Alumnos" }
+            public: true
+
+    admin.examen:
+            class: UtExam\ProEvalBundle\Admin\ExamenAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Examen, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Examen Fijo, group: "Examenes " }
+
+    admin.alumnosEnExamen:
+            class: UtExam\ProEvalBundle\Admin\AlumnosEnExamenAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\AlumnosEnExamen, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Alumnos en Examen Fijo, group: "Examenes " }
+
+    admin.examenAuto:
+            class: UtExam\ProEvalBundle\Admin\ExamenAutoAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\ExamenAuto, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Examen Auto, group: "Examenes " }
+
+    admin.preguntasinExamen:
+            class: UtExam\ProEvalBundle\Admin\preguntasinExamenAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\preguntasinExamen, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: preguntasinExamen, group: "Preguntas", show_in_dashboard: false }
+            public: true
+
+    admin.createExamWord:
+        class: UtExam\ProEvalBundle\Admin\AdminCreateExamArchive
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Crear Archivo word }
+        arguments:
+            - null
+            - null
+            - UtExam\ProEvalBundle\Controller\Admin\createExamenController
+        public: true

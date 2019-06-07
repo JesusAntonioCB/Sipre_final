@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+  <div class="container loginContainer" style="margin-top:40px">
+  		<div class="row">
+  			<div class="col-sm-6 col-md-5 col-md-offset-4 loginInterface">
+  				<div class="panel panel-default">
+  					<div class="panel-heading">
+  						<strong>Escribe los datos que te pide</strong>
+  					</div>
+  					<div class="panel-body">
+  						<form role="form" action="/register" method="POST">
+  							<fieldset>
+  								<div class="row">
+  									<div class="center-block">
+                    <a href="/">
+  										<img class="profile-img"
+  											src="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" alt="">
+                    </a>
+  									</div>
+  								</div>
+  								<div class="row">
+  									<div class="col-sm-12 col-md-10  col-md-offset-1 boxUser">
+  										<div class="form-group">
+  											<div class="input-group">
+  												<span class="input-group-addon">
+  													<i class="glyphicon glyphicon-user"></i>
+  												</span>
+  												<input class="form-control" id="userName" placeholder="Nombre" name="loginname" type="text" autofocus>
+  											</div>
+  										</div>
+  										<div class="form-group">
+  											<div class="input-group">
+  												<span class="input-group-addon">
+  													<i class="glyphicon glyphicon-book"></i>
+  												</span>
+                          <select class="form-control" id="userCarrera" name="carreraname">
+                            <option value="-1">Carrera</option>
+  													<option value="Vespertino">Mecatrónica área Automatización</option>
+  													<option value="Nocturno">Mantenimiento área Industrial</option>
+                            <option value="Nocturno">Tecnologías de la Información área Entornos Virtuales y Negocios Digitales</option>
+                            <option value="Nocturno">Química área Industrial</option>
+                            <option value="Nocturno">Desarrollo de Negocios área Mercadotecnia</option>
+                            <option value="Nocturno">Lengua Inglesa</option>
+  												</select>
+  											</div>
+  										</div>
+  										<div class="form-group">
+  											<div class="input-group">
+  												<span class="input-group-addon">
+  													<i class="glyphicon glyphicon-pencil"></i>
+  												</span>
+  												<select class="form-control" id="exampleFormControlSelect1" name="turno">
+                            <option value="-1">turno</option>
+                            <option value="Vespertino">Vespertino</option>
+  													<option value="Nocturno">Nocturno</option>
+  												</select>
+  											</div>
+  										</div>
+  										<div class="form-group">
+                       <center><div class="btn btn-lg btn-primary btn-block registerAlumno">Registrar</div></center>
+  										</div>
+  									</div>
+  								</div>
+  							</fieldset>
+  						</form>
+  					</div>
+          </div>
+  		  </div>
+  	  </div>
+  </div>
+{% endblock %}

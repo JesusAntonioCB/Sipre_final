@@ -1,0 +1,184 @@
+body{
+  .alert{
+    position: fixed !important;
+    width: 80% !important;
+  }
+}
+canvas {
+  top: 0px;
+  position: fixed;
+}
+.examenInterfaz{
+  .checkbox{
+    display: none;
+  }
+  header{
+    nav{
+      background-image: url("/bundles/utexamproeval/images/school.png");
+      // background: #eadec7;
+      width: 100%;
+      float: left;
+      font-size: 20px;
+      padding-left: 0;
+      padding-right: 0;
+      .barrsup{
+        background: #ed7d31;
+        float: left;
+        width: 100%;
+        height: 10px;
+      }
+      .barrinf{
+        background: #70ad46;
+        float: left;
+        width: 100%;
+        height: 10px;
+      }
+      .contentCenter{
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        .logo{
+          float: left;
+          display: inline-flex;
+        }
+        .userName{
+          position: absolute;
+          width: 98%;
+          text-align: center;
+        }
+        .examTimer{
+          float: right;
+          .glyphicon{
+            font-size: 1.4rem;
+            top: 3px;
+          }
+        }
+      }
+    }
+  }
+  .examenContent{
+    margin-top: 90px;
+    text-align: left;
+    margin-left: 20px;
+    hr{
+      margin-right: 20px;
+      margin-top: 4px;
+    }
+    .row{
+      width: 100%;
+    }
+    .examenHeader{
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .instrucciones{
+      margin-top: 20px;
+      width: 100%;
+    }
+    .grups{
+      .preguntas{
+        .pregunta{
+          .textorow{
+            .texto{
+              color: #939393;
+              margin-bottom: 15px;
+            }
+            .pImgContainer{
+              .imgContainer{
+                img{
+                  max-width: 320px;
+                  max-height: 240px;
+                }
+              }
+            }
+          }
+          .number{
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: gray;
+            color: white;
+            float: left;
+            margin-right: 20px;
+            text-align: center;
+          }
+          .respuestas{
+            .respuesta{
+              margin-bottom: 15px;
+              .click{
+                i{
+                  background: rgb(107, 222, 230) !important;
+                }
+              }
+              .btnExamImg{
+                display: inline-grid !important;
+                border-radius: 22px !important;
+                text-align: center;
+                img{
+                  max-width: 320px;
+                  max-height: 240px;
+                  margin-right: 10px;
+                }
+              }
+              .btnExam{
+                backface-visibility: hidden;
+                position: relative;
+                cursor: pointer;
+                display: inline-block;
+                white-space: nowrap;
+                background: #e1e1e1;
+                border-radius: 500px;
+                border: 0px solid #444;
+                border-width: 0px 0px 0px 0px;
+                padding: 8px 20px 8px 50px;
+                color: #000000;
+                font-size: 15px;
+                font-family: Helvetica Neue;
+                font-weight: 900;
+                font-style: normal;
+                div{
+                  color: #999;
+                  font-size: 10px;
+                  font-family: Helvetica Neue;
+                  font-weight: initial;
+                  font-style: normal;
+                  text-align: center;
+                  margin: 0px 0px 0px 0px;
+                }
+                i{
+                  color: black;
+                  font-size: 1em;
+                  background: #fff;
+                  border-radius: 100px;
+                  border: 4px solid #e74;
+                  border-width: 4px 4px 4px 4px;
+                  padding: 5px 12px 11px 11px;
+                  margin: 9px 6px 6px 6px;
+                  position: absolute;
+                  top: -10px;
+                  left: -10px;
+                  width: 40px;
+                  height: 40px;
+
+                }
+                .ld {
+                  font-size: initial;
+                }
+              }
+            }
+          }
+
+        }
+      }
+    }
+    .btnContent{
+      .btnFinish{
+        width: 30%;
+        height: 50px;
+        margin-bottom: 15px;
+      }
+    }
+  }
+}

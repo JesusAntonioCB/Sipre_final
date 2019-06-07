@@ -1,0 +1,15 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  <script type="text/javascript" src="{{ asset('/bundles/utexamproeval/build/outputAdminJs.js')}}"></script>
+{% endblock %}
+{% block sonata_admin_content %}
+
+{% block Menu %}
+  {% include 'UtExamProEvalBundle:Admin:docWord.html.twig' %}
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+
+{% block javascripts %}
+{{ parent() }}
+  <script type="text/javascript">
+  console.log("hola");
+  var x=1;
+    $(document).ready(function() {
+      var intervalModal;
+      function reFresh() {
+    	  console.log("Todavia no agregar esto");
+        if ($('.Materias').length) {
+          $('.Materias'+ ',' +'.tipoPregunta'+ ',' +'.boxDificultad').on('click', function(){
+              var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+              var banderaCompleta = true,
+                  banderaMateria_TypePregunta = true,
+                  banderaMateria_Dificultad = true,
+                  banderaTypePregunta_Dificultad= true,
+                  banderaMateria = true,
+                  banderaTypePregunta = true,
+                  banderaDificultad = true;
+              var materiaSelector = $('.Materias').find('a').find('span').text().replace(rtrim,"");
+              if (materiaSelector === "Selecciona una Materia...") {
+                banderaMateria= false;
+                banderaMateria_TypePregunta= false;
+                banderaMateria_Dificultad = false;
+                banderaCompleta= false;
+              }
+              var tipoPreguntaSelector = $('.tipoPregunta').find('a').find('span').text().replace(rtrim,"");
+              if (tipoPreguntaSelector === "Selecciona un Tipo de Pregunta...") {
+                banderaTypePregunta= false;
+                banderaMateria_TypePregunta= false;
+                banderaTypePregunta_Dificultad= false;
+                banderaCompleta= false;
+              }
+              var dificultadSelector = $('.boxDificultad').find('a').find('span').text().replace(rtrim,"");
+              if (dificultadSelector === "") {
+                banderaDificultad= false;
+                banderaMateria_Dificultad = false;
+                banderaTypePregunta_Dificultad= false;
+                banderaCompleta= false;
+              }
+              console.log("textos="+"Tipo de pregunta="+tipoPreguntaSelector+", Materia="+materiaSelector+", Dificultad="+dificultadSelector+".");
+              console.log("Banderas=Todos los parametros="+banderaCompleta+", Tipo de pregunta="+banderaTypePregunta+", Materia="+banderaMateria+", Dificultad="+banderaDificultad);
+              if (banderaCompleta) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Materia: materiaSelector,
+                        TypoPregunta: tipoPreguntaSelector,
+                        Dificultad: dificultadSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaMateria_TypePregunta) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Materia: materiaSelector,
+                        TypoPregunta: tipoPreguntaSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaMateria_Dificultad) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Materia: materiaSelector,
+                        Dificultad: dificultadSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaTypePregunta_Dificultad) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        TypoPregunta: tipoPreguntaSelector,
+                        Dificultad: dificultadSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaMateria) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Materia: materiaSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaTypePregunta) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        TypoPregunta: tipoPreguntaSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else if (banderaDificultad) {
+                $.ajax({
+                    url: "{{ path('filtered_questions') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Dificultad: dificultadSelector
+                    },
+                    success: function (preguntasRestantes) {
+                      console.log(preguntasRestantes);
+                        var cantidadSelector = $(".cantidadPreguntas");
+                        if (!$('.txtPreguntasRes').length) {
+                          $( cantidadSelector ).before( '<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas con los Parametros seleccionados</b>' );
+                        }else {
+                          $(".txtPreguntasRes").html('<b class="txtPreguntasRes">Existen ' + preguntasRestantes + ' preguntas restantes con los Parametros seleccionados</b>');
+                        }
+
+                    },
+                    error: function (err) {
+                      console.log("Ocurrio un error al cargar los datos...");
+                        // alert("Ocurrio un error al cargar los datos...");
+                    }
+                });
+              }else {
+                console.log("Ocurrio un error al cargar los datos...");
+              }
+          });
+          console.log("ya se detendra");
+          clearInterval(intervalModal);
+        }
+    	};intervalModal= setInterval(reFresh,1000);
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% block examenInterfaz %}
+{% set Abecedario = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'] %}
+{% set g = 1 %}
+<div class="examenInterfaz">
+  <header>
+    <nav class="navbar fixed-top">
+      <div class="barrsup"></div>
+      <div class="contentCenter">
+        <div class="logo">
+          <a class="navbar-brand" href="#">
+            <img src="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+            SIPRE
+          </a>
+        </div>
+        <div class="userName">
+          <span class="navbar-text">Hola:{{ userName }}</span>
+        </div>
+        <div class="examTimer navbar-text">
+        <span class="glyphicon glyphicon-time"></span>
+          <span>Tiempo:&nbsp </span>
+          <span id="ExamTimerMinutos">00</span><span>:</span><span id="ExamTimerSegundos">00</span>
+        </div>
+      </div>
+      <div class="barrinf"></div>
+    </nav>
+  </header>
+  <div class="examenContent panel-body">
+    <div class="row examenHeader">
+     <div class="col-sm-3"><b>Elaborado por:</b>&nbsp{{ Author }}</div>
+     <div class="col-sm-9"><b>Fecha de Elaboración:</b> &nbsp{{ ExamDate }}</div>
+    </div>
+    <div class="instruccionesContent row">
+      <div class="col-sm-12 instrucciones"><b>Instrucciones:</b>&nbsp{{ ExamTitle }}</div>
+      <span class="totalQuestion" data-quetion="{{preguntasGrup|length}}"></span>
+    </div>
+    <hr>
+    <div class="Grups-preguntas">
+      <div class="grups">
+      {% set p = 1 %}
+      {% for pregunta in preguntasGrup %}
+        <div id="grup{{g}}">
+        {# <div class="row">
+          <div class="col-sm-3">
+            <span><b>Tema:</b> {{pregunta.pregunta.materias.nombre}}</span>
+          </div>
+          <div class="col-sm-9">
+            <span><b>Dificultad:</b> {{pregunta.pregunta.nivel}}</span>
+          </div>
+        </div>
+          <br> #}
+          <div class="preguntas">
+            <div id="pregunta{{p}}"class="pregunta">
+              {% set ABC = 0 %}
+              <div class="row textorow">
+                <div class="col-sm-11 texto"><span>Pregunta {{p}} de {{preguntasGrup|length}}</span></div>
+                <div class="col-sm-11">
+                  <div class="number">
+                    <span>{{p}}</span>
+                  </div>
+                  <span>{{pregunta.pregunta.escrito}}</span>
+                {% if pregunta.pregunta.imagen is defined %}
+                  {% if pregunta.pregunta.imagen is not empty %}
+                    {% dump(pregunta.pregunta.imagen) %}
+                    <div class="pImgContainer">
+                      {% for imagen in pregunta.pregunta.imagen %}
+                        <div class="imgContainer">
+                          <img src="" alt="">
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endif %}
+                </div>
+              </div>
+              <br>
+              <div class="respuestas row">
+              {% if pregunta.pregunta.respuestas.texto|length  %}
+                {% for respuestatext in pregunta.pregunta.respuestas.texto %}
+                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                  <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestatext.id}}">
+                    <div class="btnExam" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                      {{respuestatext.escrito}}
+                      <div></div>
+                      <i class="">{{Abecedario[ABC]}}</i>
+                    </div>
+                  </div>
+                  {% set ABC = ABC + 1 %}
+                {% endfor %} <br>
+              {% endif %}
+              {% if pregunta.pregunta.respuestas.audio|length  %}
+                {% for respuestaAud in pregunta.pregunta.respuestas.audio %}
+                {% dump(respuestaAud) %}
+                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaAud.id}}">
+                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                      {% if (respuestaAud.url is defined ) and (respuestaAud.url != "NO APLICA")%}
+                      <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestaAud.url}}"></iframe>
+                        <span>pregunta{{ABC}}</span>
+                      {% else %}
+                        {% if '.mp3' in respuestaAud.archive %}
+                          <audio controls>
+                            <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                          </audio>
+                          {% elseif '.ogg' in respuestaAud.archive %}
+                            <audio controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/ogg">
+                              Your browser does not support the audio element.
+                            </audio>
+                          {% elseif '.wav' in respuestaAud.archive %}
+                            <audio controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/wav">
+                              Your browser does not support the audio element.
+                            </audio>
+                        {% endif %}
+                        <span>{{ respuestaAud.nombre }}</span>
+                      {% endif %}
+                      <div></div>
+                      <i class="">{{Abecedario[ABC]}}</i>
+                    </div>
+                  </div>
+                  {% set ABC = ABC + 1 %}
+                {% endfor %} <br>
+              {% endif %}
+              {% if pregunta.pregunta.respuestas.video|length %}
+                {% for respuestavid in pregunta.pregunta.respuestas.video %}
+                {% dump(respuestavid) %}
+                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestavid.id}}">
+                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                      {% if (respuestavid.url is defined ) and (respuestavid.url != "NO APLICA")%}
+                      <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestavid.url}}"></iframe>
+                        <span>pregunta{{ABC}}</span>
+                      {% else %}
+                        {% if '.mp4' in respuestavid.archive %}
+                          <video width="320" height="240" controls>
+                            <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/mp4">
+                            Your browser does not support the video element.
+                          </video>
+                          {% elseif '.webm' in respuestavid.archive %}
+                            <video width="320" height="240" controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/webm">
+                              Your browser does not support the video element.
+                            </video>
+                          {% elseif '.ogg' in respuestavid.archive %}
+                            <video width="320" height="240" controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/ogg">
+                              Your browser does not support the video element.
+                            </video>
+                        {% endif %}
+                        <span>{{ respuestavid.nombre }}</span>
+                      {% endif %}
+                      <div></div>
+                      <i class="">{{Abecedario[ABC]}}</i>
+                    </div>
+                  </div>
+                {% set ABC = ABC + 1 %}
+                {% endfor %} <br>
+              {% endif %}
+              {% if pregunta.pregunta.respuestas.imagen|length  %}
+                {% for respuestaimg in pregunta.respuestas.imagen %}
+                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                  <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaimg.id}}">
+                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                      {% if (respuestaimg.url is defined ) and (respuestaimg.url != "NO APLICA")%}
+                        <img src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                        <span>{{respuestaimg.nombre}}</span>
+                      {% else %}
+                        <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                        <span>{{respuestaimg.nombre}}</span>
+                      {% endif %}
+                      <div></div>
+                      <i class="">{{Abecedario[ABC]}}</i>
+                    </div>
+                  </div>
+                  {% set ABC = ABC + 1 %}
+                {% endfor %} <br>
+              {% endif %}
+              </div>
+            </div>
+            <hr>
+            {% set p = p + 1 %}
+          </div>
+        </div>
+      {% endfor %}
+      {% set g = g + 1 %}
+      </div>
+    </div>
+
+    <div class="btnContent">
+    <button type="button" class="btn btn-success btnFinish">Calificar</button>
+    </div>
+  </div>
+  <footer>
+
+  </footer>
+</div>
+<div class="">
+<canvas id="canvas">
+    Tu navegador no soporta el elemento <code>canvas</code> de HTML5.
+</canvas>
+</div>
+
+{% endblock %}

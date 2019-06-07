@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+          <link rel='stylesheet' href='{{ asset('bundles/utexamproeval/styles/glyphicons-only-bootstrap/css/bootstrap.min.css')}}' />
+          <link rel="stylesheet" href="{{ asset('bundles/utexamproeval/build/outputCss.css')}}">
+        {% endblock %}
+        <link rel="shortcut icon" href="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" sizes="16x16" />
+        <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" sizes="16x16">
+        <link rel="icon" type="image/x-icon" href="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" sizes="16x16">
+        <link rel="icon" href="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" sizes="16x16" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}">
+    </head>
+    <body background="/bundles/utexamproeval/images/school.png">
+        {% block body %}
+          {% block main %}
+
+          {% endblock %}
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+        <script type="text/javascript" src="{{asset('bundles/utexamproeval/build/outputJs.js')}}"></script>
+
+    </body>
+</html>

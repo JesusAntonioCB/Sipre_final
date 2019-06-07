@@ -1,0 +1,62 @@
+{% block base %}
+<span>hola ya puedo hacer algo</span>
+<button id="holasss">Generate document</button>
+  {% block searchexam %}
+
+  <div class="searchExam">
+    <div class="searchExamHead">
+      <p class="title">Buscar Examen:</p>
+    </div>
+    <div class="searchExamForm">
+      <table border="1">
+        <tr>
+          <td>
+            <select class="selectUser" name="selectUser">
+              <option value="0">Selecciona el usuario</option>
+              {% for user in users %}
+                <option value="{{user.id}}">{{user.username}}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <select class="selectTipoExam" name="selectTipoExam">
+              <option value="0">Selecciona Tipo de Examen</option>
+              <option value="1">Examen Regular</option>
+              <option value="2">Examen Auto</option>
+            </select>
+          </td>
+          <td>
+            <button id="searchExambtn" type="button" name="button">Buscar</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <br>
+  <div class="tableContainer">
+    <div class="box box-primary" style="margin-bottom: 100px;">
+      <table class="table table-bordered table-striped table-hover sonata-ba-list">
+        <thead>
+          <tr class="sonata-ba-list-field-header">
+            <th class="sonata-ba-list-field-header-text  sonata-ba-list-field-header-order-asc ">
+              Titulo
+            </th>
+          </tr>
+        </thead>
+        <tbody class="examenList">
+          <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="1">
+              <a class="sonata-link-identifier"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="viwePDF">
+
+  </div>
+
+  {% endblock %}
+{% endblock %}

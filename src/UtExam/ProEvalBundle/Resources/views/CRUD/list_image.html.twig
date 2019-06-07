@@ -1,0 +1,9 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field%}
+    <div>
+    {% object.webPath %}
+        {# <img src="{{ object.webPath | imagine_filter('gallery_element_admin') }}" /> #}
+        {# or whatever to create src of image #}
+    </div>
+{% endblock %}
