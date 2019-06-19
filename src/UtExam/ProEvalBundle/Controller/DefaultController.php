@@ -26,8 +26,6 @@ class DefaultController extends Controller
              WHERE a.codigoUsuario = :codeUser');
            $query->setParameter('codeUser', $UID);
            $ImageRes=$query->getArrayResult();
-           dump($ImageRes);
-           die;
            return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
              array(
                'userName'=> 'Antonio',
@@ -35,7 +33,6 @@ class DefaultController extends Controller
            );//Final de return
         }
         else {
-          dump("que?");
           $direccion= "propedeutico";
           return $this->render('UtExamProEvalBundle:Default:index.html.twig',
             array(
@@ -70,7 +67,6 @@ class DefaultController extends Controller
           for ($i=0; $i < 1; $i++) {
             //agregar a el objeto las preguntas con los filtros correspondientes
             $examenRandom=$NumberRes[$rand[$i]]['id'];
-            // dump($examenRandom);
             $query2 = $em->createQuery('
               SELECT e,partial u.{id, username}, pA, ma, p, res, text, aud, vid, img, paud, pvid, pimg
               FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
@@ -146,8 +142,6 @@ class DefaultController extends Controller
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
           // $random= DefaultController::getAllQuestionFijo($examenRes);
-          // dump($examenRes);
-          // die;
           if (empty($examenRes)) {
             return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
           }
@@ -274,8 +268,6 @@ class DefaultController extends Controller
           WHERE tip.nombre = :idTypePregunta');
         $query->setParameter('idTypePregunta', $idOfTypePregunta);
         $numberRes=$query->getArrayResult();
-        // dump($numberRes);
-        // die;
         return new JsonResponse(count($numberRes));
       }elseif ($banderaDificultad) {
         $query = $em->createQuery('
@@ -284,8 +276,6 @@ class DefaultController extends Controller
           WHERE p.nivel = :idTypeNivel');
         $query->setParameter('idTypeNivel', $idOfDificultad);
         $numberRes=$query->getArrayResult();
-        // dump($numberRes);
-        // die;
         return new JsonResponse(count($numberRes));
       }
     }
@@ -317,7 +307,6 @@ class DefaultController extends Controller
       $alumno->setCarrera($valueCarrera);
       $em ->persist($alumno);
       $em->flush();
-      die;
       return new Response('success');
       // return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
       //   array(
@@ -336,8 +325,6 @@ class DefaultController extends Controller
         WHERE m.grado = :id');
       $query->setParameter('id', $dificultad);
       $examenRes=$query->getArrayResult();
-      // dump($examenRes);
-      // die;
       return new JsonResponse($examenRes);
 
     }

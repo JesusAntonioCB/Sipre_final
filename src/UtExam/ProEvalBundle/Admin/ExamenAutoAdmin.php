@@ -60,7 +60,6 @@ class ExamenAutoAdmin extends AbstractAdmin
     $result= 0;
     $noFullP= count($object->getPreguntasAuto());
     $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
-    // dump($user);
     date_default_timezone_set('America/Monterrey');
     $object->setFecha(date('Y-m-d H:i:s'));
     $object->setTipo(0);
@@ -76,10 +75,6 @@ class ExamenAutoAdmin extends AbstractAdmin
       $idOfMateria= $preguntaAuto->getMaterias()->getId();
       $idOfTypePregunta= $preguntaAuto->getTipoPregunta()->getId();
       $Dificultad=$preguntaAuto->getNivel();
-      dump("cantidad de preguntas= ".$numberOfPreguntas);
-      dump("Id de Materia= ".$idOfMateria);
-      dump("Id de Tipo de pregunta= ".$idOfTypePregunta);
-      dump("dificultad= ".$Dificultad);
 
       //otencion de cantidad de de preguntas que existen
       $query = $em->createQuery('
@@ -97,7 +92,7 @@ class ExamenAutoAdmin extends AbstractAdmin
       shuffle($rand);
       //Preguntar si existen la cantidad de preguntas que piden
       if ($numberOfPreguntas > count($NumberRes)) {
-        dump("no hay tantas preguntas");
+        dump("no hay tantas preguntas con los parametros seleccionados");
         die();
       }
       for ($i=0; $i < $numberOfPreguntas; $i++) {
@@ -112,20 +107,10 @@ class ExamenAutoAdmin extends AbstractAdmin
       }
     }
     $object->setNivel($result/=$noFullP);
-    // dump($object);
-    // die;
-    // $size = getpreguntasize($object->getMedia()->getPathname());
-    // $object->setWidth($size[0]);
-    // $object->setHeight($size[1]);
-    // $object->setFormat($object->getMedia()->guessClientExtension());
-    // $object->setMediaName($object->getMedia()->getClientOriginalName());
-    // $object->setUpdatedAt(new \DateTime());
     return $object;
   }
   public function preUpdate($object)
   {
-    // dump($object);
-    // die;
     // foreach ($object->getPreguntasAuto() as $pregunta) {
     //   $pregunta->addExamenAuto($object);
     //   if($pregunta->getPreguntasAuto() == null){

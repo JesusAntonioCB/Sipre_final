@@ -48,22 +48,12 @@ class VideoPreguntaAdmin extends AbstractAdmin
   }
 
   // public function preUpdate($object){
-  //   dump(get_class_methods($object->getMedia()->getbinaryContent()));
-  //   dump($object->getMedia()->getbinaryContent()->getFileInfo());
-  //   dump($object->getMedia()->getbinaryContent());
-  //   dump($object->getMedia()->getbinaryContent()->getRealPath());
-  //   dump($object->getMedia()->getbinaryContent());
-  //   dump($object);
   //   die();
   //   $object->setWidth($width);
   //   $object->setHeight($height);
   //   $object->setFormat($object->getMedia()->guessClientExtension());
   //   $object->setMediaName($object->getMedia()->getClientOriginalName());
   //   $object->setUpdatedAt(new \DateTime());
-  //   // dump(get_class_methods($object));
-  //   // dump(get_class_methods($object->getMedia()));
-  //   // dump($object->getMedia()->getBasename());
-  //   // die();
   //   return $object;
   // }
   public function prePersist($object){
@@ -96,9 +86,6 @@ class VideoPreguntaAdmin extends AbstractAdmin
       $vidName=$vidRes[0]['archive'];
       $object->setArchive($vidName);
     }
-    // dump($object);
-    // // move_uploaded_file($object->getImagen()[0]->getarchive()->getrealPath(),__DIR__."/../Resources/public/archivosDeUsuario".$object->getImagen()[0]->getarchive()->getClientOriginalName());
-    // die;
     return $object;
   }
 

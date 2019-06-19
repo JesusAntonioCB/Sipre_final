@@ -33,10 +33,4 @@ class preguntasinExamenAdmin extends AbstractAdmin
     $listMapper
     ->addIdentifier('pregunta');
   }
-
-  // public function preUpdate($object)
-  // {
-  //   dump($object);
-  //   die();
-  // }
 }

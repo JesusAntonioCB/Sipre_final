@@ -52,21 +52,12 @@ class VideoAdmin extends AbstractAdmin
   }
 
   public function preUpdate($object){
-    // dump(get_class_methods($object->getMedia()->getbinaryContent()));
-    // dump($object->getMedia()->getbinaryContent()->getFileInfo());
-    // dump($object->getMedia()->getbinaryContent());
-    // dump($object->getMedia()->getbinaryContent()->getRealPath());
-    // dump($object->getMedia()->getbinaryContent());
-    // dump($object);
     // die();
     // $object->setWidth($width);
     // $object->setHeight($height);
     // $object->setFormat($object->getMedia()->guessClientExtension());
     // $object->setMediaName($object->getMedia()->getClientOriginalName());
     // $object->setUpdatedAt(new \DateTime());
-    // dump(get_class_methods($object));
-    // dump(get_class_methods($object->getMedia()));
-    // dump($object->getMedia()->getBasename());
     // die();
     return $object;
   }

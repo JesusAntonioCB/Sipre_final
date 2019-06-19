@@ -129,9 +129,6 @@ canvas {
   top: 0px;
   position: fixed; }
 
-.examenInterfaz .checkbox {
-  display: none; }
-
 .examenInterfaz header nav {
   background-image: url("/bundles/utexamproeval/images/school.png");
   width: 100%;

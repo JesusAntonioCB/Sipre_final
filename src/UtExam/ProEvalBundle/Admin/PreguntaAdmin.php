@@ -102,8 +102,6 @@ class PreguntaAdmin extends AbstractAdmin
   // public function prePersist($object){
   //   //Variables
   //
-  //   // dump($object);
-  //   // die;
   //   // $size = getpreguntasize($object->getMedia()->getPathname());
   //   // $object->setWidth($size[0]);
   //   // $object->setHeight($size[1]);
@@ -113,8 +111,6 @@ class PreguntaAdmin extends AbstractAdmin
   //   return $object;
   // }
   public function prePersist($object){
-    dump($object);
-    die;
     if (!is_null($object->getImagen())) {
       if (!empty($object->getImagen()->getValues())) {
         $imagenes= $object->getImagen()->getValues();
@@ -133,8 +129,6 @@ class PreguntaAdmin extends AbstractAdmin
   }
   public function preUpdate($object)
   {
-    // dump($object);
-    // die;
     // move_uploaded_file($object->getImagen()[0]->getarchive()->getrealPath(),__DIR__."/../Resources/public/archivosDeUsuario".$object->getImagen()[0]->getarchive()->getClientOriginalName());
 
     $container = $this->getConfigurationPool()->getContainer();

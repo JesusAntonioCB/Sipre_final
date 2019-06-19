@@ -52,7 +52,6 @@ class ExamenAdmin extends AbstractAdmin
   public function prePersist($object){
     //Variables
     $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
-    // dump($user);
     date_default_timezone_set('America/Monterrey');
     $object->setFecha(date('Y-m-d H:i:s'));
     $object->setTipo(0);
@@ -62,8 +61,6 @@ class ExamenAdmin extends AbstractAdmin
     foreach ($object->getPregunta() as $pregunta) {
       $pregunta->setExamen($object);
     }
-    // dump($object);
-    // die;
     // $size = getpreguntasize($object->getMedia()->getPathname());
     // $object->setWidth($size[0]);
     // $object->setHeight($size[1]);

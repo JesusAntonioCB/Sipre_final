@@ -1,7 +1,6 @@
 $(document).ready(function() {
   var totalTime= "";
   if ($('.examenInterfaz').length) {
-    console.log("ya estoy listo");
     var minutesLabel = document.getElementById("ExamTimerMinutos");
     var secondsLabel = document.getElementById("ExamTimerSegundos");
     var totalSeconds = 0;
@@ -70,17 +69,17 @@ $(document).ready(function() {
       $("input:checkbox[class=checkbox]:checked").each(function(){
           respuestas.push($(this).val().split('=;'));
       });
-      var datos={
-        respuestas:respuestas,
-        time:totalTime,
-        dquestion:question
-      }
-      $.ajax({//inicio de funciones de AJAX
+      if (Number(question)===respuestas.length) {
+        var datos={
+          respuestas:respuestas,
+          time:totalTime,
+          dquestion:question
+        }
+        $.ajax({//inicio de funciones de AJAX
           type: 'POST',
           data: datos,
           url: 'get-Results',
           beforeSend: function() {//funciones antes de cargar
-            console.log("envie datos");
           },//final de beforeSend()
           success: function send(data) {//Funciones si hay éxito en el envio
             if (data > 95) {
@@ -161,13 +160,30 @@ $(document).ready(function() {
               $('.alert').alert();
             }
             $('body').on("click", ".close", function(){
-              location.reload();
-            })
-            console.log("recibi los datos");
+              // location.reload();
+            });
           },//final de success()
           complete: function() {//funciones una vez completada la petición
           },//final de complete
         });//final de AJAX
+      }else {
+        var resta=Number(question)-respuestas.length;
+        var texto="preguntas"
+        if (resta===1) {
+          var texto="pregunta"
+        }
+        if (!$('.questions').length) {
+          $('body').append('\
+          <div class="alert alert-success alert-danger fade show questionsComplete" role="alert">\
+            <strong>No seas impaciente! </strong>aun te quedan '+resta+' '+texto+' por contestar\
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+              <span aria-hidden="true">&times;</span>\
+            </button>\
+          </div>\
+          ');
+        }
+        $('.alert').alert();
+      }
     });
   }
 });

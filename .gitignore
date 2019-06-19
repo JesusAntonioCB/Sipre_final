@@ -2,6 +2,7 @@
 /app/config/parameters.yml
 /build/
 /phpunit.xml
+/.DS_Store
 /var/*
 !/var/cache
 /var/cache/*
@@ -14,5 +15,8 @@
 !var/sessions/.gitkeep
 !var/SymfonyRequirements.php
 /vendor/
-/node_modules/
+/node_modules
+/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/audios/*
+/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes/*
+/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/videos/*
 /web/bundles/

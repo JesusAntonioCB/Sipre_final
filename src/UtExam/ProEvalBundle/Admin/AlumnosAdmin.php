@@ -60,9 +60,6 @@ class AlumnosAdmin extends AbstractAdmin
 
   public function prePersist($object){
     //Variables
-    // dump($object->getExamen());
-    // dump(get_class_methods($object->getExamen()));
-    // die;
     $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
@@ -74,9 +71,6 @@ class AlumnosAdmin extends AbstractAdmin
     $object->setTiempo(0);
     $object->setCalificacion(0);
     $object->setCodigoUsuario($usercode);
-    // dump($usercode);
-    // dump($object);
-    // die;
     return $object;
   }
 }

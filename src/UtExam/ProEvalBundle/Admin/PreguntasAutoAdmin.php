@@ -65,10 +65,7 @@ class PreguntasAutoAdmin extends AbstractAdmin
   }
 
   public function configure() {
-    // dump(get_class_methods($this));
-    // dump($this->id());
     $this->setTemplate('edit', '@UtExamProEval/CRUD/edit_js_from_preguntas.html.twig');
-    // dump($this->getTemplates());
   }
 
   public function prePersist($object){
@@ -79,10 +76,6 @@ class PreguntasAutoAdmin extends AbstractAdmin
     $idOfMateria= $object->getMaterias()->getId();
     $idOfTypePregunta= $object->getTipoPregunta()->getId();
     $Dificultad=$object->getNivel();
-    dump("cantidad de preguntas= ".$numberOfPreguntas);
-    dump("Id de Materia= ".$idOfMateria);
-    dump("Id de Tipo de pregunta= ".$idOfTypePregunta);
-    dump("dificultad= ".$Dificultad);
 
     //otencion de cantidad de de preguntas que existen
     $query = $em->createQuery('
@@ -100,12 +93,11 @@ class PreguntasAutoAdmin extends AbstractAdmin
     shuffle($rand);
     //Preguntar si existen la cantidad de preguntas que piden
     if ($numberOfPreguntas > count($NumberRes)) {
-      dump("no hay tantas preguntas");
+      dump("no hay tantas preguntas con los parametros seleccionados");
       die();
     }
     for ($i=0; $i < $numberOfPreguntas; $i++) {
       //agregar a el objeto las preguntas con los filtros correspondientes
-      dump($NumberRes[$rand[$i]]['id']);
       $query2 = $em->createQuery('
         SELECT p
         FROM UtExam\ProEvalBundle\Entity\Pregunta p
@@ -113,11 +105,7 @@ class PreguntasAutoAdmin extends AbstractAdmin
       $query2->setParameter('id', $NumberRes[$rand[$i]]['id']);
       $preguntasRes=$query2->getResult();
       $object->addPreguntum($preguntasRes[0]);
-      dump($preguntasRes);
     }
-
-    // dump($object);
-    // die;
     // $size = getpreguntasize($object->getMedia()->getPathname());
     // $object->setWidth($size[0]);
     // $object->setHeight($size[1]);

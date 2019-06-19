@@ -74,9 +74,6 @@ class AudioPreguntaAdmin extends AbstractAdmin
       $vidName=$vidRes[0]['archive'];
       $object->setArchive($vidName);
     }
-    // dump($object);
-    // // move_uploaded_file($object->getImagen()[0]->getarchive()->getrealPath(),__DIR__."/../Resources/public/archivosDeUsuario".$object->getImagen()[0]->getarchive()->getClientOriginalName());
-    // die;
     return $object;
   }
 }
