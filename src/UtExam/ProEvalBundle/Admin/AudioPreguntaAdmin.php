@@ -45,7 +45,7 @@ class AudioPreguntaAdmin extends AbstractAdmin
     $this->setTemplate('edit', '@UtExamProEval/Adminjs/edit_AdminAudio.html.twig');
   }
   public function prePersist($object){
-    $destino= __DIR__."/../Resources/public/images/archivosSubidos/videos/";
+    $destino= __DIR__."/../Resources/public/images/archivosSubidos/audios/";
     if (!is_null($object->getarchive())) {
       $vidOrigen= $object->getarchive()->getrealPath();
       $vidName= $object->getarchive()->getClientOriginalName();
@@ -57,7 +57,7 @@ class AudioPreguntaAdmin extends AbstractAdmin
   public function preUpdate($object) {
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
-    $destino= __DIR__."/../Resources/public/images/archivosSubidos/videos/";
+    $destino= __DIR__."/../Resources/public/images/archivosSubidos/audios/";
     if (!is_null($object->getarchive())) {
       $vidOrigen= $object->getarchive()->getrealPath();
       $vidName= $object->getarchive()->getClientOriginalName();

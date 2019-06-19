@@ -20,6 +20,7 @@ class RespuestasAdmin extends AbstractAdmin
           'by_reference' => false,
           'label' => 'Respuesta en Texto',
           'required'      => false,
+          'type_options'  => ['delete' => false],
         ), array(
             'edit' => 'inline',
             'inline' => 'table',

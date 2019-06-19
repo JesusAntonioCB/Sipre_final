@@ -17,7 +17,7 @@ class PreguntaAdmin extends AbstractAdmin
     $formMapper
     ->add('nivel', TextType::class, array(
           "label" => "dificultad",
-        'attr' => ["class" => "Dificultad_Materias"]))
+          'attr' => ["class" => "Dificultad_Materias"]))
     ->add('materias', 'sonata_type_model', array(
           "label" => "Materia a la que pertenese",
           'placeholder'   => 'Selecciona una Materia...',
@@ -28,6 +28,7 @@ class PreguntaAdmin extends AbstractAdmin
           "label" => "Pregunta"))
     ->add('respuestas', 'sonata_type_model_list', array(
           "label" => "Respuesta",
+          'btn_list'  => false,
         ), array(
         'placeholder' => 'Agrega una Respuesta'))
     ->add('imagen','sonata_type_collection', array(
@@ -35,7 +36,6 @@ class PreguntaAdmin extends AbstractAdmin
           'label' => 'Agregar Imagen (opcional)',
           'required'      => false,
           'type_options' => array(
-
               'delete' => false,
               'delete_options' => array(
                   // You may otherwise choose to put the field but hide it
@@ -129,8 +129,6 @@ class PreguntaAdmin extends AbstractAdmin
   }
   public function preUpdate($object)
   {
-    // move_uploaded_file($object->getImagen()[0]->getarchive()->getrealPath(),__DIR__."/../Resources/public/archivosDeUsuario".$object->getImagen()[0]->getarchive()->getClientOriginalName());
-
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
     if (!is_null($object->getImagen())) {

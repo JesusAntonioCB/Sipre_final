@@ -123,6 +123,7 @@ class DefaultController extends Controller
             WHERE a.codigoUsuario = :codeUser');
           $query->setParameter('codeUser', $UID);
           $userRes=$query->getArrayResult()[0]['nombre'];
+          $userId=$query->getArrayResult()[0]['id'];
           $query = $em->createQuery('
             SELECT e,partial u.{id, username}, p, pr, ma, res, text, aud, vid, img, paud, pvid, pimg
             FROM UtExam\ProEvalBundle\Entity\Examen e
@@ -141,6 +142,15 @@ class DefaultController extends Controller
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
+          dump($examenRes[0]['id']);
+          dump($userId);
+          $updateExam = $em->createQuery('
+            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+            SET A.examen= :examen
+            WHERE A.id = :idUser');
+          $updateExam->setParameter('examen', $examenRes[0]['id']);
+          $updateExam->setParameter('idUser', $userId);
+          $updateExam->execute();
           // $random= DefaultController::getAllQuestionFijo($examenRes);
           if (empty($examenRes)) {
             return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');

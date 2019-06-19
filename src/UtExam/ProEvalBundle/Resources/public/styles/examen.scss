@@ -93,6 +93,22 @@ canvas {
                 }
               }
             }
+            .pVidContainer{
+              .vidContainer{
+                display: grid;
+                video{
+                  max-width: 360px;
+                }
+              }
+            }
+            .pAudContainer{
+              .audContainer{
+                display: grid;
+                audio{
+                  max-width: 360px;
+                }
+              }
+            }
           }
           .number{
             width: 25px;

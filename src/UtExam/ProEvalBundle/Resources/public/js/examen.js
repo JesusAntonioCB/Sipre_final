@@ -160,7 +160,7 @@ $(document).ready(function() {
               $('.alert').alert();
             }
             $('body').on("click", ".close", function(){
-              // location.reload();
+              location.reload();
             });
           },//final de success()
           complete: function() {//funciones una vez completada la petición

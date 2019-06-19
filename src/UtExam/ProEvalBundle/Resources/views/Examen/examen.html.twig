@@ -58,123 +58,190 @@
                     <span>{{p}}</span>
                   </div>
                   <span>{{pregunta.pregunta.escrito}}</span>
-                {% if pregunta.pregunta.imagen is defined %}
-                  {% if pregunta.pregunta.imagen is not empty %}
-                    {% dump(pregunta.pregunta.imagen) %}
-                    <div class="pImgContainer">
-                      {% for imagen in pregunta.pregunta.imagen %}
-                        <div class="imgContainer">
-                          <img src="" alt="">
-                        </div>
-                      {% endfor %}
-                    </div>
+                  {% if pregunta.pregunta.imagen is defined %}
+                    {% if pregunta.pregunta.imagen is not empty %}
+                      <div class="pImgContainer">
+                        {% for imagen in pregunta.pregunta.imagen %}
+                          <div class="imgContainer">
+                            {% if (imagen.url is defined ) and (imagen.url != "NO APLICA")%}
+                              <img src="{{imagen.url}}" alt="{{imagen.nombre}}">
+                            {% else %}
+                              <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
                   {% endif %}
-                {% endif %}
+                  {% if pregunta.pregunta.video is defined %}
+                    {% if pregunta.pregunta.video is not empty %}
+                      <div class="pVidContainer">
+                        <div class="vidContainer">
+                          {% if (pregunta.pregunta.video.url is defined ) and (pregunta.pregunta.video.url != "NO APLICA")%}
+                            <iframe width="320" height="240" src="https://www.youtube.com/embed/{{pregunta.pregunta.video.url}}"></iframe>
+                          {% else %}
+                            {% if '.mp4' in pregunta.pregunta.video.archive %}
+                              <video width="320" height="240" controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.pregunta.video.archive}}" type="video/mp4">
+                                Your browser does not support the video element.
+                              </video>
+                              {% elseif '.webm' in pregunta.pregunta.video.archive %}
+                                <video width="320" height="240" controls>
+                                  <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.pregunta.video.archive}}" type="video/webm">
+                                  Your browser does not support the video element.
+                                </video>
+                              {% elseif '.ogg' in pregunta.pregunta.video.archive %}
+                                <video width="320" height="240" controls>
+                                  <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.pregunta.video.archive}}" type="video/ogg">
+                                  Your browser does not support the video element.
+                                </video>
+                            {% endif %}
+                          {% endif %}
+                          <div></div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                  {% if pregunta.pregunta.audio is defined %}
+                    {% if pregunta.pregunta.audio is not empty %}
+                      <div class="pAudContainer">
+                        <div class="audContainer">
+                          {% if (pregunta.pregunta.audio.url is defined ) and (pregunta.pregunta.audio.url != "NO APLICA")%}
+                            <iframe width="320" height="240" src="https://www.youtube.com/embed/{{pregunta.pregunta.audio.url}}"></iframe>
+                          {% else %}
+                            {% if '.mp3' in pregunta.pregunta.audio.archive %}
+                              <audio controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.pregunta.audio.archive}}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                              </audio>
+                              {% elseif '.ogg' in pregunta.pregunta.audio.archive %}
+                                <audio controls>
+                                  <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.pregunta.audio.archive}}" type="audio/ogg">
+                                  Your browser does not support the audio element.
+                                </audio>
+                              {% elseif '.wav' in pregunta.pregunta.audio.archive %}
+                                <audio controls>
+                                  <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.pregunta.audio.archive}}" type="audio/wav">
+                                  Your browser does not support the audio element.
+                                </audio>
+                            {% endif %}
+                          {% endif %}
+                          <div></div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endif %}
                 </div>
               </div>
               <br>
               <div class="respuestas row">
-              {% if pregunta.pregunta.respuestas.texto|length  %}
-                {% for respuestatext in pregunta.pregunta.respuestas.texto %}
-                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
-                  <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestatext.id}}">
-                    <div class="btnExam" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
-                      {{respuestatext.escrito}}
-                      <div></div>
-                      <i class="">{{Abecedario[ABC]}}</i>
+              {% if pregunta.pregunta.respuestas.texto is defined %}
+                {% if pregunta.pregunta.respuestas.texto|length  %}
+                  {% for respuestatext in pregunta.pregunta.respuestas.texto %}
+                    <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestatext.id}}">
+                      <div class="btnExam" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                        {{respuestatext.escrito}}
+                        <div></div>
+                        <i class="">{{Abecedario[ABC]}}</i>
+                      </div>
                     </div>
-                  </div>
-                  {% set ABC = ABC + 1 %}
-                {% endfor %} <br>
+                    {% set ABC = ABC + 1 %}
+                  {% endfor %} <br>
+                {% endif %}
               {% endif %}
-              {% if pregunta.pregunta.respuestas.audio|length  %}
-                {% for respuestaAud in pregunta.pregunta.respuestas.audio %}
-                {% dump(respuestaAud) %}
-                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
-                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaAud.id}}">
-                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
-                      {% if (respuestaAud.url is defined ) and (respuestaAud.url != "NO APLICA")%}
-                      <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestaAud.url}}"></iframe>
-                        <span>pregunta{{ABC}}</span>
-                      {% else %}
-                        {% if '.mp3' in respuestaAud.archive %}
-                          <audio controls>
-                            <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                          </audio>
-                          {% elseif '.ogg' in respuestaAud.archive %}
+              {% if pregunta.pregunta.respuestas.audio is defined %}
+                {% if pregunta.pregunta.respuestas.audio|length  %}
+                  {% for respuestaAud in pregunta.pregunta.respuestas.audio %}
+                    <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                      <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaAud.id}}">
+                      <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                        {% if (respuestaAud.url is defined ) and (respuestaAud.url != "NO APLICA")%}
+                        <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestaAud.url}}"></iframe>
+                          <span>pregunta{{ABC}}</span>
+                        {% else %}
+                          {% if '.mp3' in respuestaAud.archive %}
                             <audio controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/ogg">
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/mpeg">
                               Your browser does not support the audio element.
                             </audio>
-                          {% elseif '.wav' in respuestaAud.archive %}
-                            <audio controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/wav">
-                              Your browser does not support the audio element.
-                            </audio>
+                            {% elseif '.ogg' in respuestaAud.archive %}
+                              <audio controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/ogg">
+                                Your browser does not support the audio element.
+                              </audio>
+                            {% elseif '.wav' in respuestaAud.archive %}
+                              <audio controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/wav">
+                                Your browser does not support the audio element.
+                              </audio>
+                          {% endif %}
+                          <span>{{ respuestaAud.nombre }}</span>
                         {% endif %}
-                        <span>{{ respuestaAud.nombre }}</span>
-                      {% endif %}
-                      <div></div>
-                      <i class="">{{Abecedario[ABC]}}</i>
+                        <div></div>
+                        <i class="">{{Abecedario[ABC]}}</i>
+                      </div>
                     </div>
-                  </div>
-                  {% set ABC = ABC + 1 %}
-                {% endfor %} <br>
+                    {% set ABC = ABC + 1 %}
+                  {% endfor %} <br>
+                {% endif %}
               {% endif %}
-              {% if pregunta.pregunta.respuestas.video|length %}
-                {% for respuestavid in pregunta.pregunta.respuestas.video %}
-                {% dump(respuestavid) %}
-                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
-                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestavid.id}}">
-                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
-                      {% if (respuestavid.url is defined ) and (respuestavid.url != "NO APLICA")%}
-                      <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestavid.url}}"></iframe>
-                        <span>pregunta{{ABC}}</span>
-                      {% else %}
-                        {% if '.mp4' in respuestavid.archive %}
-                          <video width="320" height="240" controls>
-                            <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/mp4">
-                            Your browser does not support the video element.
-                          </video>
-                          {% elseif '.webm' in respuestavid.archive %}
+              {% if pregunta.pregunta.respuestas.video is defined %}
+                {% if pregunta.pregunta.respuestas.video|length %}
+                  {% for respuestavid in pregunta.pregunta.respuestas.video %}
+                    <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                      <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestavid.id}}">
+                      <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                        {% if (respuestavid.url is defined ) and (respuestavid.url != "NO APLICA")%}
+                        <iframe width="320" height="240" src="https://www.youtube.com/embed/{{respuestavid.url}}"></iframe>
+                          <span>pregunta{{ABC}}</span>
+                        {% else %}
+                          {% if '.mp4' in respuestavid.archive %}
                             <video width="320" height="240" controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/webm">
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/mp4">
                               Your browser does not support the video element.
                             </video>
-                          {% elseif '.ogg' in respuestavid.archive %}
-                            <video width="320" height="240" controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/ogg">
-                              Your browser does not support the video element.
-                            </video>
+                            {% elseif '.webm' in respuestavid.archive %}
+                              <video width="320" height="240" controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/webm">
+                                Your browser does not support the video element.
+                              </video>
+                            {% elseif '.ogg' in respuestavid.archive %}
+                              <video width="320" height="240" controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/ogg">
+                                Your browser does not support the video element.
+                              </video>
+                          {% endif %}
+                          <span>{{ respuestavid.nombre }}</span>
                         {% endif %}
-                        <span>{{ respuestavid.nombre }}</span>
-                      {% endif %}
-                      <div></div>
-                      <i class="">{{Abecedario[ABC]}}</i>
+                        <div></div>
+                        <i class="">{{Abecedario[ABC]}}</i>
+                      </div>
                     </div>
-                  </div>
-                {% set ABC = ABC + 1 %}
-                {% endfor %} <br>
-              {% endif %}
-              {% if pregunta.pregunta.respuestas.imagen|length  %}
-                {% for respuestaimg in pregunta.respuestas.imagen %}
-                  <div id="respuesta{{ABC}}" class="respuesta col-md-6">
-                  <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaimg.id}}">
-                    <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
-                      {% if (respuestaimg.url is defined ) and (respuestaimg.url != "NO APLICA")%}
-                        <img src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
-                        <span>{{respuestaimg.nombre}}</span>
-                      {% else %}
-                        <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
-                        <span>{{respuestaimg.nombre}}</span>
-                      {% endif %}
-                      <div></div>
-                      <i class="">{{Abecedario[ABC]}}</i>
-                    </div>
-                  </div>
                   {% set ABC = ABC + 1 %}
-                {% endfor %} <br>
+                  {% endfor %} <br>
+                {% endif %}
+              {% endif %}
+              {% if pregunta.pregunta.respuestas.imagen is defined %}
+                {% if pregunta.pregunta.respuestas.imagen|length  %}
+                  {% for respuestaimg in pregunta.pregunta.respuestas.imagen %}
+                    <div id="respuesta{{ABC}}" class="respuesta col-md-6">
+                    <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestaimg.id}}">
+                      <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
+                        {% if (respuestaimg.url is defined ) and (respuestaimg.url != "NO APLICA")%}
+                          <img src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                          <span>{{respuestaimg.nombre}}</span>
+                        {% else %}
+                          <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                          <span>{{respuestaimg.nombre}}</span>
+                        {% endif %}
+                        <div></div>
+                        <i class="">{{Abecedario[ABC]}}</i>
+                      </div>
+                    </div>
+                    {% set ABC = ABC + 1 %}
+                  {% endfor %} <br>
+                {% endif %}
               {% endif %}
               </div>
             </div>

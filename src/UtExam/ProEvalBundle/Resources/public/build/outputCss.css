@@ -186,6 +186,14 @@ canvas {
   .examenInterfaz .examenContent .grups .preguntas .pregunta .textorow .pImgContainer .imgContainer img {
     max-width: 320px;
     max-height: 240px; }
+  .examenInterfaz .examenContent .grups .preguntas .pregunta .textorow .pVidContainer .vidContainer {
+    display: grid; }
+    .examenInterfaz .examenContent .grups .preguntas .pregunta .textorow .pVidContainer .vidContainer video {
+      max-width: 360px; }
+  .examenInterfaz .examenContent .grups .preguntas .pregunta .textorow .pAudContainer .audContainer {
+    display: grid; }
+    .examenInterfaz .examenContent .grups .preguntas .pregunta .textorow .pAudContainer .audContainer audio {
+      max-width: 360px; }
   .examenInterfaz .examenContent .grups .preguntas .pregunta .number {
     width: 25px;
     height: 25px;

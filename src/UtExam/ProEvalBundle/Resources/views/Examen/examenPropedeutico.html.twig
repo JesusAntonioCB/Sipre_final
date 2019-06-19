@@ -68,13 +68,74 @@
                   <span>{{pregunta.escrito}}</span>
                 {% if pregunta.imagen is defined %}
                   {% if pregunta.imagen is not empty %}
-                  {% dump(pregunta.imagen) %}
                     <div class="pImgContainer">
                       {% for imagen in pregunta.imagen %}
                         <div class="imgContainer">
-                          <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
+                          {% if (imagen.url is defined ) and (imagen.url != "NO APLICA")%}
+                            <img src="{{imagen.url}}" alt="{{imagen.nombre}}">
+                          {% else %}
+                            <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
+                          {% endif %}
                         </div>
                       {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endif %}
+                {% if pregunta.video is defined %}
+                  {% if pregunta.video is not empty %}
+                    <div class="pVidContainer">
+                      <div class="vidContainer">
+                        {% if (pregunta.video.url is defined ) and (pregunta.video.url != "NO APLICA")%}
+                          <iframe width="320" height="240" src="https://www.youtube.com/embed/{{pregunta.video.url}}"></iframe>
+                        {% else %}
+                          {% if '.mp4' in pregunta.video.archive %}
+                            <video width="320" height="240" controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/mp4">
+                              Your browser does not support the video element.
+                            </video>
+                            {% elseif '.webm' in pregunta.video.archive %}
+                              <video width="320" height="240" controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/webm">
+                                Your browser does not support the video element.
+                              </video>
+                            {% elseif '.ogg' in pregunta.video.archive %}
+                              <video width="320" height="240" controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/ogg">
+                                Your browser does not support the video element.
+                              </video>
+                          {% endif %}
+                        {% endif %}
+                        <div></div>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endif %}
+                {% if pregunta.audio is defined %}
+                  {% if pregunta.audio is not empty %}
+                    <div class="pAudContainer">
+                      <div class="audContainer">
+                        {% if (pregunta.audio.url is defined ) and (pregunta.audio.url != "NO APLICA")%}
+                          <iframe width="320" height="240" src="https://www.youtube.com/embed/{{pregunta.audio.url}}"></iframe>
+                        {% else %}
+                          {% if '.mp3' in pregunta.audio.archive %}
+                            <audio controls>
+                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/mpeg">
+                              Your browser does not support the audio element.
+                            </audio>
+                            {% elseif '.ogg' in pregunta.audio.archive %}
+                              <audio controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/ogg">
+                                Your browser does not support the audio element.
+                              </audio>
+                            {% elseif '.wav' in pregunta.audio.archive %}
+                              <audio controls>
+                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/wav">
+                                Your browser does not support the audio element.
+                              </audio>
+                          {% endif %}
+                        {% endif %}
+                        <div></div>
+                      </div>
                     </div>
                   {% endif %}
                 {% endif %}
