@@ -38,6 +38,11 @@ class Materias
      */
     private $preguntasAuto;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Maestros", mappedBy="materias")
+     */
+    private $maestros;
+
     public function __construct()
     {
         $this->pregunta = new ArrayCollection();
@@ -153,5 +158,42 @@ class Materias
     public function getPreguntasAuto()
     {
         return $this->preguntasAuto;
+    }
+
+
+    /**
+     * Add maestro.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Maestros $maestro
+     *
+     * @return Materias
+     */
+    public function addMaestro(\UtExam\ProEvalBundle\Entity\Maestros $maestro)
+    {
+        $this->maestros[] = $maestro;
+
+        return $this;
+    }
+
+    /**
+     * Remove maestro.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Maestros $maestro
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeMaestro(\UtExam\ProEvalBundle\Entity\Maestros $maestro)
+    {
+        return $this->maestros->removeElement($maestro);
+    }
+
+    /**
+     * Get maestros.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMaestros()
+    {
+        return $this->maestros;
     }
 }

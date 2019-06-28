@@ -9,6 +9,12 @@
         }
         .boxUser{
           margin: auto;
+          .form-group{
+            display: inline-block;
+            .registerAlumno{
+              cursor: pointer;
+            }
+          }
         }
       }
     }

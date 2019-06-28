@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Alumnos
  *
- * @ORM\Table(name="alumnos")
+ * @ORM\Table(name="alumnos",uniqueConstraints={@ORM\UniqueConstraint(name="username_uniq", columns={"username"})})
  * @ORM\Entity(repositoryClass="UtExam\ProEvalBundle\Repository\AlumnosRepository")
  */
 class Alumnos
@@ -27,6 +27,27 @@ class Alumnos
      * @ORM\Column(name="nombre", type="string", length=255)
      */
     private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=255 )
+     */
+    private $username;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="grupo", type="string", length=255)
+     */
+    private $grupo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="evaluacion", type="string", length=255)
+     */
+    private $evaluacion;
 
     /**
      * @var string
@@ -64,11 +85,25 @@ class Alumnos
     private $calificacion;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="calificacionSalida", type="float")
+     */
+    private $calificacionSalida;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="codigoUsuario", type="string", length=255)
      */
     private $codigoUsuario;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="contraseña", type="string", length=255)
+     */
+    private $contraseña;
 
     /**
      *
@@ -83,6 +118,19 @@ class Alumnos
      * @ORM\JoinColumn(name="examenAuto_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $examenAuto;
+
+     /**
+      * @ORM\ManyToMany(targetEntity="Maestros", inversedBy="alumnos",cascade={"persist"})
+      * @ORM\JoinTable(name="alumnos_maestros",
+      *     joinColumns={
+      *     @ORM\JoinColumn(name="alumnos_id", referencedColumnName="id")
+      *   },
+      *   inverseJoinColumns={
+      *     @ORM\JoinColumn(name="maestros_id", referencedColumnName="id")
+      *   }
+      * )
+      */
+    private $maestros;
 
     /**
      * Get id.
@@ -312,5 +360,171 @@ class Alumnos
     public function getExamenAuto()
     {
         return $this->examenAuto;
+    }
+
+    /**
+     * Set grupo.
+     *
+     * @param string $grupo
+     *
+     * @return Alumnos
+     */
+    public function setGrupo($grupo)
+    {
+        $this->grupo = $grupo;
+
+        return $this;
+    }
+
+    /**
+     * Get grupo.
+     *
+     * @return string
+     */
+    public function getGrupo()
+    {
+        return $this->grupo;
+    }
+
+    /**
+     * Set evaluacion.
+     *
+     * @param string $evaluacion
+     *
+     * @return Alumnos
+     */
+    public function setEvaluacion($evaluacion)
+    {
+        $this->evaluacion = $evaluacion;
+
+        return $this;
+    }
+
+    /**
+     * Get evaluacion.
+     *
+     * @return string
+     */
+    public function getEvaluacion()
+    {
+        return $this->evaluacion;
+    }
+
+
+
+
+    /**
+     * Set calificacionSalida.
+     *
+     * @param float $calificacionSalida
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionSalida($calificacionSalida)
+    {
+        $this->calificacionSalida = $calificacionSalida;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionSalida.
+     *
+     * @return float
+     */
+    public function getCalificacionSalida()
+    {
+        return $this->calificacionSalida;
+    }
+
+    /**
+     * Set contraseña.
+     *
+     * @param string $contraseña
+     *
+     * @return Alumnos
+     */
+    public function setContraseña($contraseña)
+    {
+        $this->contraseña = $contraseña;
+
+        return $this;
+    }
+
+    /**
+     * Get contraseña.
+     *
+     * @return string
+     */
+    public function getContraseña()
+    {
+        return $this->contraseña;
+    }
+
+    /**
+     * Set username.
+     *
+     * @param string $username
+     *
+     * @return Alumnos
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->maestros = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add maestro.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Maestros $maestro
+     *
+     * @return Alumnos
+     */
+    public function addMaestro(\UtExam\ProEvalBundle\Entity\Maestros $maestro)
+    {
+        $this->maestros[] = $maestro;
+
+        return $this;
+    }
+
+    /**
+     * Remove maestro.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Maestros $maestro
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeMaestro(\UtExam\ProEvalBundle\Entity\Maestros $maestro)
+    {
+        return $this->maestros->removeElement($maestro);
+    }
+
+    /**
+     * Get maestros.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMaestros()
+    {
+        return $this->maestros;
     }
 }

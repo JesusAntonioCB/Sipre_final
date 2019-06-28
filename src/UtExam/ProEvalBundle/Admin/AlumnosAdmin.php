@@ -5,6 +5,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
@@ -20,6 +21,9 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('nombre', TextType::class, [
       'label' => 'Nombre'])
     ->add('carrera', null, ['label' => 'Carrera'])
+    ->add('maestros', null, ['label' => 'Maestro'])
+    ->add('grupo', null, ['label' => 'Grupo'])
+    ->add('evaluacion', null, ['label' => 'Evaluacion'])
     ->add('examen', null, ['label' => 'Examen Fijo Contestado'])
     ->add('examenAuto', null, ['label' => 'Examene Propedeutico'])
     ->add('fecha', null, ['label' => 'Fecha'])
@@ -38,6 +42,9 @@ class AlumnosAdmin extends AbstractAdmin
   {
     $datagridMapper
     ->add('examen',null,["label"=>"Examen Fijo"])
+    ->add('grupo')
+    ->add('maestros')
+    ->add('evaluacion')
     ->add('examenAuto')
     ->add('nombre')
     ->add('turno')
@@ -50,16 +57,53 @@ class AlumnosAdmin extends AbstractAdmin
     $listMapper
     ->addIdentifier('nombre')
     ->add('turno')
+    ->add('maestros')
     ->add('examen',null,["label"=>"Examen Fijo"])
+    ->add('grupo')
+    ->add('evaluacion')
     ->add('examenAuto')
     ->add('fecha')
     ->add('tiempo')
     ->add('calificacion')
-    ->add('codigoUsuario');
+    ->add('codigoUsuario')
+    // add custom action links
+      ->add('_action', 'actions', [
+          'actions' => [
+              'view' => [],
+              'edit' => [],
+              'delete' => [],
+          ]
+      ]);
   }
+  protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->tab('General') // the tab call is optional
+                ->with('Alumno', [
+                    'class'       => 'col-md-8',
+                    'box_class'   => 'box box-solid box-primary',
+                    'description' => 'Descripción del alumno',
+                ])
+                  ->add('nombre')
+                  ->add('turno')
+                  ->add('grupo')
+                  ->add('maestros')
+                  ->add('evaluacion')
+                  ->add('examen')
+                  ->add('examenAuto')
+                  ->add('fecha')
+                  ->add('tiempo')
+                  ->add('calificacion')
+                  ->add('codigoUsuario')
+                ->end()
+            ->end()
+        ;
+    }
 
   public function prePersist($object){
     //Variables
+    dump($object);
+    die;
     $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
@@ -73,5 +117,11 @@ class AlumnosAdmin extends AbstractAdmin
     $object->setCodigoUsuario($usercode);
     return $object;
   }
+
+//   public function getExportFields() {
+//     return array('id','customer.First_name','customer.Last_name',
+//         'customer.contact','totalAmountFormated'
+//         );
+// }
 }
 ?>

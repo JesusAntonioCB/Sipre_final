@@ -1,0 +1,153 @@
+[
+  {
+    "turno": "Vespertino",
+    "materias":[
+      {
+        "id": "1",
+        "materia": "Comprensión lectora",
+        "list":[
+          {
+            "name": "Lizeth Vázquez Loredo"
+          },
+          {
+            "name": "Francisco Javier Arce"
+          },
+          {
+            "name": "Celeste de la Cerda"
+          },
+          {
+            "name": "Elsa M. Guevara"
+          },
+          {
+            "name": "Neri Hernández García"
+          },
+          {
+            "name": "Jorge Antonio Cach"
+          },
+          {
+            "name": "Ernesto Salazar Machorro"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "materia": "Pensamiento matemático",
+        "list":[
+          {
+            "name": "Aracely Eunice Cotero"
+          },
+          {
+            "name": "Adriana de Lourdes Sosa"
+          },
+          {
+            "name": "Marcela Yunuent Guzmán"
+          },
+          {
+            "name": "Elvia Eliasa Balderas"
+          },
+          {
+            "name": "Juan Zuñiga Moreno"
+          },
+          {
+            "name": "Anibal Olguín León"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "materia": "Inglés",
+        "list":[
+          {
+            "name": "Gonzalo Cabrera"
+          },
+          {
+            "name": "Arianna Iveth Castillo"
+          },
+          {
+            "name": "Ana Daniela Treviño"
+          },
+          {
+            "name": "Aracely Anaís Martínez"
+          },
+          {
+            "name": "Arturo Nava Ramírez"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "turno": "Nocturno",
+    "materias":[
+      {
+        "id": "1",
+        "materia": "Comprensión lectora",
+        "list":[
+          {
+            "name": "Erick Arturo González"
+          },
+          {
+            "name": "Adalberta Jiménez"
+          },
+          {
+            "name": "Jorge Guadalupe González"
+          },
+          {
+            "name": "Jesús Leal Campos"
+          },
+          {
+            "name": "Francisco Javier Arce"
+          },
+          {
+            "name": "Felipe Turrubiates"
+          },
+          {
+            "name": "Adalberta Jiménez"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "materia": "Pensamiento matemático",
+        "list":[
+          {
+            "name": "Anibal Olguín León"
+          },
+          {
+            "name": "Karina Elizabeth Montoya "
+          },
+          {
+            "name": "Juan Zuñiga Moreno"
+          },
+          {
+            "name": "Paul Azuara"
+          },
+          {
+            "name": "Elvia Eliasa Balderas"
+          },
+          {
+            "name": "Aracely Eunice Cotero"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "materia": "Inglés",
+        "list":[
+          {
+            "name": "Arturo Nava Ramírez"
+          },
+          {
+            "name": "Aracely Anaís Martínez"
+          },
+          {
+            "name": "Gloria Aguilar Pachecano"
+          },
+          {
+            "name": "Gonzalo Cabrera"
+          }
+        ]
+      }
+    ]
+  }
+]

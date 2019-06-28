@@ -13,13 +13,14 @@ Encore
      *
      * Add 1 entry for each "page" of your app
      * (including one that's included on every page - e.g. "app")
-     * 
+     *
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     .addEntry('outputJs', './src/UtExam/ProEvalBundle/Resources/public/js/main.js')
     .addEntry('outputAdminJs', './src/UtExam/ProEvalBundle/Resources/public/js/admin/adminMain.js')
     .addStyleEntry('outputCss', './src/UtExam/ProEvalBundle/Resources/public/styles/index.scss')
+    .addStyleEntry('outputAdminCss', './src/UtExam/ProEvalBundle/Resources/public/styles/indexAdmin.scss')
     // .addStyleEntry('prueba', './src/ciberConnect/shopBundle/Resources/public/styles/prueba.scss')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')

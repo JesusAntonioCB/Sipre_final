@@ -37,6 +37,13 @@ services:
                 - { name: sonata.admin, manager_type: orm, label: Materias, group: "Preguntas", show_in_dashboard: false }
             public: true
 
+    admin.maestros:
+            class: UtExam\ProEvalBundle\Admin\MaestrosAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Maestros, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Maestros, group: "Maestros", show_in_dashboard: true }
+            public: true
+
     admin.Pregunta:
             class: UtExam\ProEvalBundle\Admin\PreguntaAdmin
             arguments: [~,UtExam\ProEvalBundle\Entity\Pregunta, ~]
@@ -126,4 +133,14 @@ services:
             - null
             - null
             - UtExam\ProEvalBundle\Controller\Admin\createExamenController
+        public: true
+
+    admin.createReporte:
+        class: UtExam\ProEvalBundle\Admin\AdminCreateReporte
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Generar Reporte de Grupos }
+        arguments:
+            - null
+            - null
+            - UtExam\ProEvalBundle\Controller\Admin\createReporteController
         public: true

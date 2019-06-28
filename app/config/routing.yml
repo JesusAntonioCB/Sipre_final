@@ -58,6 +58,11 @@ get_ExamList:
     defaults: { _controller: UtExamProEvalBundle:Admin/createExamen:getListExam }
     methods:  GET
 
+get_Reporte:
+    path:     /admin/getReport
+    defaults: { _controller: UtExamProEvalBundle:Admin/createReporte:getReport }
+    methods:  GET
+
 get_ModalCodeExam:
     path:     /ModalCodeExam
     defaults: { _controller: UtExamProEvalBundle:Default:openModalCodeExam }

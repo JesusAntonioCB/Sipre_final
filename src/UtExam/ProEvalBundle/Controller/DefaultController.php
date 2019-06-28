@@ -34,9 +34,11 @@ class DefaultController extends Controller
         }
         else {
           $direccion= "propedeutico";
+          $jsondata = file_get_contents(__DIR__.'../../json/listMaestros.json');
+          $data = json_decode($jsondata, true);
           return $this->render('UtExamProEvalBundle:Default:index.html.twig',
             array(
-              'direccion' => $direccion,
+              'direccion' => $direccion
             )
           );
         }
@@ -106,7 +108,14 @@ class DefaultController extends Controller
           }
         }
         else {
-          return $this->render('UtExamProEvalBundle:Examen:login.html.twig');
+          $em = $this->getDoctrine()->getManager();
+          $query = $em->createQuery('
+            SELECT m
+            FROM UtExam\ProEvalBundle\Entity\Maestros m');
+          $lisMaestrosRes=$query->getArrayResult();
+          return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
+            'maestros' => $lisMaestrosRes
+          ));
         }
     }
 
@@ -307,14 +316,33 @@ class DefaultController extends Controller
       $valueName = $_POST['alumno'];
       $valueCarrera = $_POST['carrera'];
       $valueTurno = $_POST['turno'];
+      $valueGrupo = $_POST['grupo'];
+      $valuePass= $_POST['pass'];
+      $valueUserName= $_POST['userName'];
+      $valueMaestro1= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro1']);
+      $valueMaestro2= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro2']);
+      $valueMaestro3= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro3']);
+      $valueEval = $_POST['evaluacion'];
       $alumno = new Alumnos();
       $alumno->setNombre($valueName);
+      $alumno->setUsername($valueUserName);
       $alumno->setTurno($valueTurno);
+      $alumno->setContraseña($valuePass);
       $alumno->setFecha(date('Y-m-d H:i:s'));
       $alumno->setTiempo(0);
       $alumno->setCalificacion(0);
+      $alumno->setCalificacionSalida(0);
       $alumno->setCodigoUsuario($usercode);
       $alumno->setCarrera($valueCarrera);
+      $alumno->setGrupo($valueGrupo);
+      $alumno->addMaestro($valueMaestro1,$valueMaestro2,$valueMaestro3);
+      $alumno->setEvaluacion($valueEval);
       $em ->persist($alumno);
       $em->flush();
       return new Response('success');

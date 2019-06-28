@@ -1,0 +1,76 @@
+{% extends 'UtExamProEvalBundle:Admin:main.html.twig' %}
+{% block Menu %}
+  {% block search %}
+  <section class="search-sec">
+    <div class="container">
+        <form action="#" method="post" novalidate="novalidate">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                            <select class="form-control search-slt" id="selectTypeReporte">
+                              <option value="0">Reporte</option>
+                              <option value="1">Por generación</option>
+                              <option value="2">Por grupo</option>
+                            </select>
+                        </div>
+                         <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                            <select class="form-control search-slt" id="selectGen">
+                              <option value="0">Generación</option>
+                              {% for generation in generations %}
+                                <option value="{{generation[1]}}">{{generation[1]}}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                          <select class="form-control search-slt" id="selectgrup">
+                            <option value="0">Grupo</option>
+                            {% for grupo in grupos %}
+                              <option value="{{grupo.grupo}}">{{grupo.grupo}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                          <select class="form-control search-slt" id="selectTurno">
+                            <option value="0">Turno</option>
+                            <option value="Vespertino">Vespertino</option>
+  													<option value="Nocturno">Nocturno</option>
+                          </select>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                            <button id="searchReport" type="button" class="btn btn-primary wrn-btn">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+  {% endblock %}
+{% block table %}
+<div class="contentTable">
+</div>
+{% endblock %}
+  <script type="text/javascript">
+    $('#selectTypeReporte').on('change',function(){
+      var typeReporte = document.getElementById('selectTypeReporte').value;
+      var tipoExam = $('select[name=selectTipoExam]').val();
+      console.log(typeReporte);
+      if (parseInt(typeReporte)===0) {
+        $("#selectGen").parent().addClass("hide");
+        $("#selectgrup").parent().addClass("hide");
+        $("#selectTurno").parent().addClass("hide");
+      }
+      if (parseInt(typeReporte)===1) {
+        $("#selectGen").parent().removeClass("hide");
+        $("#selectgrup").parent().addClass("hide");
+        $("#selectTurno").parent().addClass("hide");
+      }
+      if (parseInt(typeReporte)===2) {
+        $("#selectgrup").parent().removeClass("hide");
+        $("#selectTurno").parent().removeClass("hide");
+        $("#selectGen").parent().removeClass("hide");
+      }
+    });
+  </script>
+{% endblock %}

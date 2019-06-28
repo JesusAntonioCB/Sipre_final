@@ -1,12 +1,20 @@
 $(document).ready(function() {
   $('body').on('click','.registerAlumno', function() {
-    var bandera= true;
-    var expOnlyLetters= /^[a-zA-Z\s]+$/;
-    var none="'none'";
-    var boxName= document.getElementById('userName').value;
-    var boxCarrera= document.getElementById('userCarrera').value;
-    var boxTurno= document.getElementById('exampleFormControlSelect1').value;
-    if (boxName===""||boxCarrera===""||boxTurno==="") {
+    var bandera= true,
+        expOnlyLetters= /^[a-zA-Z\s]+$/,
+        none="'none'",
+        boxName= document.getElementById('userName').value,
+        boxpass= document.getElementById('password').value,
+        boxUserName= document.getElementById('userNameUni').value,
+        boxGrupo= document.getElementById('txtGrupo').value,
+        boxMaestro1= document.getElementById('selectMaestro1').value,
+        boxMaestro2= document.getElementById('selectMaestro2').value,
+        boxMaestro3= document.getElementById('selectMaestro3').value,
+        boxCarrera= document.getElementById('userCarrera').value,
+        boxEval= "Entrada",
+        boxTurno= document.getElementById('exampleFormControlSelect1').value;
+    if (boxName===""||boxCarrera===""||boxTurno===""||boxGrupo===""||boxEval===""||
+        boxMaestro3===""||boxMaestro2===""||boxMaestro1===""||boxUserName===""||boxpass=="") {
     var bandera= false;
     $(".loginContainer").append('\
     <div class="alert alert-danger alert-dismissible fade show" role="alert">\
@@ -20,8 +28,15 @@ $(document).ready(function() {
     if (bandera) {
     var data = {
       "alumno" : boxName,
+      "userName" : boxUserName,
+      "pass" : boxpass,
       "carrera" : boxCarrera,
       "turno" : boxTurno,
+      "grupo" : boxGrupo,
+      "maestro1" : boxMaestro1,
+      "maestro2" : boxMaestro2,
+      "maestro3" : boxMaestro3,
+      "evaluacion" : boxEval
     }
     $.ajax({
       url: 'register',
@@ -43,7 +58,7 @@ $(document).ready(function() {
         </div>\
         ')
       },
-      success: function send(data) {
+      success: function (data) {
         alert(data);
         location.reload();
       },

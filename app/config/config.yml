@@ -123,6 +123,12 @@ sonata_admin:
               icon: '<i class="fa fa-file-word-o "></i>'
               items:
                   - admin.createExamWord
+            createReporte:
+              label: 'Reportes'
+              label_catalogue: ~
+              icon: '<i class="fa fa-table"></i>'
+              items:
+                  - admin.createReporte
             alumnos:
               label: 'Alumnos'
               label_catalogue: ~
@@ -130,6 +136,12 @@ sonata_admin:
               items:
                   - admin.alumnos
                   - admin.alumnosEnExamen
+            maestros:
+              label: 'Maestros'
+              label_catalogue: ~
+              icon: '<i class="fa fa-address-book "></i>'
+              items:
+                  - admin.maestros
 
 sonata_user:
     security_acl: true

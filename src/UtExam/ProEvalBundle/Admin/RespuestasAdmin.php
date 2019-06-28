@@ -20,7 +20,6 @@ class RespuestasAdmin extends AbstractAdmin
           'by_reference' => false,
           'label' => 'Respuesta en Texto',
           'required'      => false,
-          'type_options'  => ['delete' => false],
         ), array(
             'edit' => 'inline',
             'inline' => 'table',
@@ -31,8 +30,6 @@ class RespuestasAdmin extends AbstractAdmin
            'label' => 'Respuesta en Imagen',
            'required'      => false,
            'type_options' => array(
-
-               'delete' => false,
                'delete_options' => array(
                    // You may otherwise choose to put the field but hide it
                    'type'         => 'hidden',
@@ -53,8 +50,6 @@ class RespuestasAdmin extends AbstractAdmin
             'label' => 'Respuesta en Audio',
             'required'      => false,
             'type_options' => array(
-
-                'delete' => false,
                 'delete_options' => array(
                     // You may otherwise choose to put the field but hide it
                     'type'         => 'hidden',
@@ -75,8 +70,6 @@ class RespuestasAdmin extends AbstractAdmin
              'label' => 'Respuesta en Video',
              'required'      => false,
              'type_options' => array(
-
-                 'delete' => false,
                  'delete_options' => array(
                      // You may otherwise choose to put the field but hide it
                      'type'         => 'hidden',

@@ -171,4 +171,8 @@ class ImagenPregunta
     {
         return $this->pregunta;
     }
+    public function __toString()
+    {
+      return $this->nombre == null ? '' : $this->nombre;
+    }
 }

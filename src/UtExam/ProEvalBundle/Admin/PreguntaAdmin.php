@@ -36,7 +36,6 @@ class PreguntaAdmin extends AbstractAdmin
           'label' => 'Agregar Imagen (opcional)',
           'required'      => false,
           'type_options' => array(
-              'delete' => false,
               'delete_options' => array(
                   // You may otherwise choose to put the field but hide it
                   'type'         => 'hidden',

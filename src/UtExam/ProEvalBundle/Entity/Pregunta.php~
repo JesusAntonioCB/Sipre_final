@@ -298,11 +298,11 @@ class Pregunta
     /**
      * Set audio.
      *
-     * @param \UtExam\ProEvalBundle\Entity\ImagenPregunta|null $audio
+     * @param \UtExam\ProEvalBundle\Entity\AudioPregunta|null $audio
      *
      * @return Pregunta
      */
-    public function setAudio(\UtExam\ProEvalBundle\Entity\ImagenPregunta $audio = null)
+    public function setAudio(\UtExam\ProEvalBundle\Entity\AudioPregunta $audio = null)
     {
         $this->audio = $audio;
 
@@ -312,7 +312,7 @@ class Pregunta
     /**
      * Get audio.
      *
-     * @return \UtExam\ProEvalBundle\Entity\ImagenPregunta|null
+     * @return \UtExam\ProEvalBundle\Entity\AudioPregunta|null
      */
     public function getAudio()
     {

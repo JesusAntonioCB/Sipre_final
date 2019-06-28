@@ -30,6 +30,10 @@ body .alert {
       width: 100%; }
     .loginContainer .row .panel .panel-body .boxUser {
       margin: auto; }
+      .loginContainer .row .panel .panel-body .boxUser .form-group {
+        display: inline-block; }
+        .loginContainer .row .panel .panel-body .boxUser .form-group .registerAlumno {
+          cursor: pointer; }
 
 .loginContainer .loginInterface {
   position: absolute;

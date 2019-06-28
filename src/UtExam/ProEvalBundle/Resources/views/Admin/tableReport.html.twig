@@ -1,0 +1,231 @@
+{% block table %}
+{% set CalificacionGE = 0 %}
+{% set CalificacionGS = 0 %}
+{% set AlumnosPG = 0 %}
+{% set Porcentaje = 0 %}
+{% set CalificacionGET = 0 %}
+{% set CalificacionGST = 0 %}
+{% set AlumnosPGT = 0 %}
+{% set Maestro = "" %}
+<div class="span7">
+  <div class="widget stacked widget-table action-table">
+    {% if generacion is defined %}
+      <div class="widget-header">
+      	<i class="fa fa-list"></i>
+      	<h3>Reporte Generacional</h3>
+      </div>
+    	<div class="widget-content">
+        <h3>Vespertino</h3>
+    		<table class="table table-striped table-bordered">
+    			<thead>
+    				<tr>
+    					<th>Grupo</th>
+              <th>Alumnos</th>
+    					<th>Calificacion de Entrada</th>
+              <th>Calificacion de Salida</th>
+    					<th>Maestro a cargo</th>
+              <th>Promedio</th>
+              <th>Porcentaje de mejora</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+          {% for grupo in grupos %}
+            {% for alumno in reporte %}
+              {% if alumno.turno == "Vespertino" %}
+                {% if alumno.grupo == grupo.grupo %}
+                  {% set Maestro = alumno.maestros.nombre %}
+                  {% set AlumnosPG = AlumnosPG + 1 %}
+                  {% set CalificacionGE = CalificacionGE + alumno.calificacion %}
+                  {% set CalificacionGS = CalificacionGS + alumno.calificacionSalida %}
+                  {% set AlumnosPGT = AlumnosPGT + 1 %}
+                  {% set CalificacionGET = CalificacionGET + alumno.calificacion %}
+                  {% set CalificacionGST = CalificacionGST + alumno.calificacionSalida %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if AlumnosPG != 0 %}
+              <tr>
+                <td>{{grupo.grupo}}</td>
+                <td>{{AlumnosPG}}</td>
+                <td>{{(CalificacionGE / AlumnosPG)|slice(0, 5)}}</td>
+                <td>{{(CalificacionGS / AlumnosPG)|slice(0, 5)}}</td>
+                <td>{{Maestro}}</td>
+                <td>{{(((CalificacionGS / AlumnosPG) + (CalificacionGE / AlumnosPG)) / 2)|slice(0, 5)}}</td>
+                {% set Porcentaje = (CalificacionGS / AlumnosPG) - (CalificacionGE / AlumnosPG) %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if (CalificacionGE / AlumnosPG) == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / (CalificacionGE / AlumnosPG)) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = (CalificacionGE / AlumnosPG) - (CalificacionGS / AlumnosPG) %}
+                  {% if (CalificacionGE / AlumnosPG) == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / (CalificacionGE / AlumnosPG)) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {% set CalificacionGE = 0 %}
+                {% set CalificacionGS = 0 %}
+                {% set AlumnosPG = 0 %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+    				<tr>
+    					<td>Total</td>
+    					<td>{{AlumnosPGT}}</td>
+              <td>{{(CalificacionGET / AlumnosPGT)|slice(0, 5)}}</td>
+              <td>{{(CalificacionGST / AlumnosPGT)|slice(0, 5)}}</td>
+              <td>{{Maestro}}</td>
+              <td>{{(((CalificacionGST / AlumnosPGT) + (CalificacionGET / AlumnosPGT)) / 2)|slice(0, 5)}}</td>
+              {% set Porcentaje = (CalificacionGST / AlumnosPGT) - (CalificacionGET / AlumnosPGT) %}
+              {% if Porcentaje >= 0 %}
+                {% if Porcentaje == 0 %}
+                  <td>
+                    {{Porcentaje}}%
+                  </td>
+                {% else %}
+                  <td class="text-success">
+                {% if (CalificacionGET / AlumnosPGT) == 0 %}
+                  {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                {% else %}
+                  {{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
+                {% endif %}
+                  </td>
+                {% endif %}
+              {% else %}
+                <td class="text-danger" >
+                {% set Porcentaje = (CalificacionGET / AlumnosPGT) - (CalificacionGST / AlumnosPGT) %}
+                {% if (CalificacionGET / AlumnosPGT) == 0 %}
+                  -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                {% else %}
+                  -{{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
+                {% endif %}
+                </td>
+              {% endif %}
+    				</tr>
+    				</tbody>
+    			</table>
+          {% set CalificacionGET = 0 %}
+          {% set CalificacionGST = 0 %}
+          {% set AlumnosPGT = 0 %}
+        <h3>Nocturno</h3>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Grupo</th>
+              <th>Alumnos</th>
+              <th>Calificacion de Entrada</th>
+              <th>Calificacion de Salida</th>
+              <th>Maestro a cargo</th>
+              <th>Promedio</th>
+              <th>Porcentaje de mejora</th>
+            </tr>
+          </thead>
+    			<tbody>
+            {% for grupo in grupos %}
+              {% for alumno in reporte %}
+                {% if alumno.turno == "Nocturno" %}
+                  {% if alumno.grupo == grupo.grupo %}
+                    {% set Maestro = alumno.maestros.nombre %}
+                    {% set AlumnosPG = AlumnosPG + 1 %}
+                    {% set CalificacionGE = CalificacionGE + alumno.calificacion %}
+                    {% set CalificacionGS = CalificacionGS + alumno.calificacionSalida %}
+                    {% set AlumnosPGT = AlumnosPGT + 1 %}
+                    {% set CalificacionGET = CalificacionGET + alumno.calificacion %}
+                    {% set CalificacionGST = CalificacionGST + alumno.calificacionSalida %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if AlumnosPG != 0 %}
+                <tr>
+                  <td>{{grupo.grupo}}</td>
+                  <td>{{AlumnosPG}}</td>
+                  <td>{{(CalificacionGE / AlumnosPG)|slice(0, 5)}}</td>
+                  <td>{{(CalificacionGS / AlumnosPG)|slice(0, 5)}}</td>
+                  <td>{{Maestro}}</td>
+                  <td>{{(((CalificacionGS / AlumnosPG) + (CalificacionGE / AlumnosPG)) / 2)|slice(0, 5)}}</td>
+                  {% set Porcentaje = (CalificacionGS / AlumnosPG) - (CalificacionGE / AlumnosPG) %}
+                  {% if Porcentaje >= 0 %}
+                    {% if Porcentaje == 0 %}
+                      <td>
+                        {{Porcentaje}}%
+                      </td>
+                    {% else %}
+                      <td class="text-success">
+                    {% if (CalificacionGE / AlumnosPG) == 0 %}
+                      {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                    {% else %}
+                      {{ ((Porcentaje / (CalificacionGE / AlumnosPG)) * 100)|slice(0, 5) }}%
+                    {% endif %}
+                      </td>
+                    {% endif %}
+                  {% else %}
+                    <td class="text-danger" >
+                    {% set Porcentaje = (CalificacionGE / AlumnosPG) - (CalificacionGS / AlumnosPG) %}
+                    {% if (CalificacionGE / AlumnosPG) == 0 %}
+                      -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                    {% else %}
+                      -{{ ((Porcentaje / (CalificacionGE / AlumnosPG)) * 100)|slice(0, 5) }}%
+                    {% endif %}
+                    </td>
+                  {% endif %}
+                  {% set CalificacionGE = 0 %}
+                  {% set CalificacionGS = 0 %}
+                  {% set AlumnosPG = 0 %}
+                </tr>
+              {% endif %}
+            {% endfor %}
+              <tr>
+      					<td>Total</td>
+      					<td>{{AlumnosPGT}}</td>
+                <td>{{(CalificacionGET / AlumnosPGT)|slice(0, 5)}}</td>
+                <td>{{(CalificacionGST / AlumnosPGT)|slice(0, 5)}}</td>
+                <td>{{Maestro}}</td>
+                <td>{{(((CalificacionGST / AlumnosPGT) + (CalificacionGET / AlumnosPGT)) / 2)|slice(0, 5)}}</td>
+                {% set Porcentaje = (CalificacionGST / AlumnosPGT) - (CalificacionGET / AlumnosPGT) %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if (CalificacionGET / AlumnosPGT) == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = (CalificacionGET / AlumnosPGT) - (CalificacionGST / AlumnosPGT) %}
+                  {% if (CalificacionGET / AlumnosPGT) == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+      				</tr>
+    				</tbody>
+    			</table>
+    	</div>
+    {% else %}
+      <h3>Error al cargar las tablas</h3>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
