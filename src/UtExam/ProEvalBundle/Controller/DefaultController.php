@@ -34,8 +34,6 @@ class DefaultController extends Controller
         }
         else {
           $direccion= "propedeutico";
-          $jsondata = file_get_contents(__DIR__.'../../json/listMaestros.json');
-          $data = json_decode($jsondata, true);
           return $this->render('UtExamProEvalBundle:Default:index.html.twig',
             array(
               'direccion' => $direccion
@@ -110,13 +108,43 @@ class DefaultController extends Controller
         else {
           $em = $this->getDoctrine()->getManager();
           $query = $em->createQuery('
-            SELECT m
-            FROM UtExam\ProEvalBundle\Entity\Maestros m');
+            SELECT m, mat
+            FROM UtExam\ProEvalBundle\Entity\Maestros m
+            LEFT JOIN m.materias mat');
           $lisMaestrosRes=$query->getArrayResult();
+          // dump($lisMaestrosRes);
           return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
             'maestros' => $lisMaestrosRes
           ));
         }
+    }
+
+    public function loginAction(){
+      if (session_status() == PHP_SESSION_ACTIVE) {
+        session_destroy();
+      }
+      session_start();
+      $em = $this->getDoctrine()->getManager();
+      $valuePass= $_POST['pass'];
+      $valueUserName= $_POST['userName'];
+      // dump("antes");
+      $query = $em->createQuery('
+        SELECT a
+        FROM UtExam\ProEvalBundle\Entity\Alumnos a
+        WHERE a.username = :user
+        AND a.contrasena = :pass');
+      $query->setParameter('user', $valueUserName);
+      $query->setParameter('pass', $valuePass);
+      $userRes=$query->getArrayResult();
+      if (empty($userRes)){
+        return new Response('Nombre de usuario o contraseña Erroneo');
+      }
+      //crear sesion
+      // dump($userRes);
+      $usercode = $userRes[0]["codigoUsuario"];
+      $_SESSION["UID"] = $usercode;
+      setcookie("examen", "Salida", 0);
+      return new Response('success');
     }
 
     public function examenFijoAction(Request $request){
@@ -151,8 +179,6 @@ class DefaultController extends Controller
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
-          dump($examenRes[0]['id']);
-          dump($userId);
           $updateExam = $em->createQuery('
             UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
             SET A.examen= :examen
@@ -311,6 +337,7 @@ class DefaultController extends Controller
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z")));
       $_SESSION["UID"] = $usercode;
+      setcookie("examen", "Entrada", 0);
       date_default_timezone_set('America/Monterrey');
       $em = $this->getDoctrine()->getManager();
       $valueName = $_POST['alumno'];
@@ -378,6 +405,8 @@ class DefaultController extends Controller
       $em = $this->getDoctrine()->getManager();
       $respuestas= $_POST['respuestas'];
       $preguntas= (int)$_POST['dquestion'];
+      $examen= $_COOKIE["examen"];
+      setcookie("examen", "", -1);
       if ($preguntas < sizeof($respuestas, 0)) {
         $preguntas= 50;
       }
@@ -435,15 +464,27 @@ class DefaultController extends Controller
       $calificacion= round($calificacion,2);
       if ($_SESSION["UID"]) {
         $UID = $_SESSION["UID"];
-        $updateCali = $em->createQuery('
-          UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-          SET A.calificacion = :calificacion ,
-          A.tiempo = :time
-          WHERE A.codigoUsuario = :idUser');
-        $updateCali->setParameter('calificacion', $calificacion);
-        $updateCali->setParameter('time', $time);
-        $updateCali->setParameter('idUser', $UID);
-        $updateCali->execute();
+        if ($examen === "Entrada") {
+          $updateCali = $em->createQuery('
+            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+            SET A.calificacion = :calificacion ,
+            A.tiempo = :time
+            WHERE A.codigoUsuario = :idUser');
+          $updateCali->setParameter('calificacion', $calificacion);
+          $updateCali->setParameter('time', $time);
+          $updateCali->setParameter('idUser', $UID);
+          $updateCali->execute();
+        }else {
+          $updateCali = $em->createQuery('
+            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+            SET A.calificacionSalida = :calificacion ,
+            A.tiempo = :time
+            WHERE A.codigoUsuario = :idUser');
+          $updateCali->setParameter('calificacion', $calificacion);
+          $updateCali->setParameter('time', $time);
+          $updateCali->setParameter('idUser', $UID);
+          $updateCali->execute();
+        }
 
       }else {
         return new Response("Error: La sesion a caducado");

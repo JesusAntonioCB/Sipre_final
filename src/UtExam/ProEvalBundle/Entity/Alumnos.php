@@ -101,9 +101,9 @@ class Alumnos
     /**
      * @var string
      *
-     * @ORM\Column(name="contraseña", type="string", length=255)
+     * @ORM\Column(name="contrasena", type="string", length=255)
      */
-    private $contraseña;
+    private $contrasena;
 
     /**
      *
@@ -438,27 +438,27 @@ class Alumnos
     }
 
     /**
-     * Set contraseña.
+     * Set contrasena.
      *
-     * @param string $contraseña
+     * @param string $contrasena
      *
      * @return Alumnos
      */
-    public function setContraseña($contraseña)
+    public function setContraseña($contrasena)
     {
-        $this->contraseña = $contraseña;
+        $this->contrasena = $contrasena;
 
         return $this;
     }
 
     /**
-     * Get contraseña.
+     * Get contrasena.
      *
      * @return string
      */
     public function getContraseña()
     {
-        return $this->contraseña;
+        return $this->contrasena;
     }
 
     /**

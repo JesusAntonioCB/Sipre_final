@@ -1,22 +1,36 @@
 {% block home %}
 	<div class="homeConter">
-		<div class="title">
-		<h3>Bienvenidos al Sistema para presentar exámenes de la Universidad Tecnológica</h3>
-		<p>por favor elige el examen que deseas realizar</p>
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<img class="img-fluid rounded float-left" src="{{ path('homepage') }}bundles/utexamproeval/images/utLogo3d.png" alt="">
+				</div>
+				<div class="title col-5">
+					<h3>¡Bienvenidos al Curso Propedéutico!</h3>
+					<h4>Evaluación Diagnóstica</h4>
+				</div>
+				<div class="col">
+					<img class="img-fluid rounded float-right" src="{{ path('homepage') }}bundles/utexamproeval/images/ticLogo3dHd.png" alt="">
+				</div>
+			</div>
 		</div>
-		<div class="contentBtn">
-		<a href="{{ path('homepage') }}propedeutico">
-			<button class="button btnPropedeutico">
-				Examen Propedéutico
-				<div class="button__horizontal"></div>
-				<div class="button__vertical"></div>
-			</button>
-		</a>
-			<button class="button btnParticular">
-				Examen Regular
-				<div class="button__horizontal"></div>
-				<div class="button__vertical"></div>
-			</button>
+		<div class="container">
+			<div class="row">
+				<div class="contentBtn col-9">
+					<a href="{{ path('homepage') }}propedeutico">
+						<button class="button btnPropedeutico">
+							Evaluación Propedéutica
+							<div class="button__horizontal"></div>
+							<div class="button__vertical"></div>
+						</button>
+					</a>
+					<button class="button btnParticular">
+						Evaluación Regular
+						<div class="button__horizontal"></div>
+						<div class="button__vertical"></div>
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
 {% endblock %}

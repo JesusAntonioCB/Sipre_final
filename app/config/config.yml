@@ -89,7 +89,7 @@ sonata_block:
 
 sonata_admin:
     title: Sipre Admin
-    title_logo: "bundles/utexamproeval/images/Logo-UT-01.png"
+    title_logo: "bundles/utexamproeval/images/utLogo.png"
     dashboard:
         groups:
             preguntas:

@@ -4,6 +4,7 @@ $(document).ready(function() {
     var minutesLabel = document.getElementById("ExamTimerMinutos");
     var secondsLabel = document.getElementById("ExamTimerSegundos");
     var totalSeconds = 0;
+    var modal = document.getElementById("imgModal");
 
     setInterval(setTime, 1000);
 
@@ -74,6 +75,10 @@ $(document).ready(function() {
           respuestas:respuestas,
           time:totalTime,
           dquestion:question
+        }
+        var herf= window.location.pathname;
+        if (herf==="/") {
+          herf="";
         }
         $.ajax({//inicio de funciones de AJAX
           type: 'POST',
@@ -184,6 +189,19 @@ $(document).ready(function() {
         }
         $('.alert').alert();
       }
+    });
+    // Get the modal
+
+    $('body').on('click','.examImg', function(){
+      var modalImg = document.getElementById("img01");
+      var captionText = document.getElementById("caption");
+      var span = document.getElementsByClassName("close")[0];
+      modal.style.display = "block";
+      modalImg.src = this.src;
+      captionText.innerHTML = this.alt;
+    });
+    $('body').on('click','.closeModal', function(){
+      modal.style.display = "none";
     });
   }
 });

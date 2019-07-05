@@ -8,7 +8,7 @@
       <div class="contentCenter">
         <div class="logo">
           <a class="navbar-brand" href="#">
-            <img src="{{ asset('bundles/utexamproeval/images/Logo-UT-01.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+            <img src="{{ asset('bundles/utexamproeval/images/OnlyUTLogo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
             SIPRE
           </a>
         </div>
@@ -65,16 +65,16 @@
                   <div class="number">
                     <span>{{p}}</span>
                   </div>
-                  <span>{{pregunta.escrito}}</span>
+                  <span>{{pregunta.escrito|raw}}</span>
                 {% if pregunta.imagen is defined %}
                   {% if pregunta.imagen is not empty %}
                     <div class="pImgContainer">
                       {% for imagen in pregunta.imagen %}
                         <div class="imgContainer">
                           {% if (imagen.url is defined ) and (imagen.url != "NO APLICA")%}
-                            <img src="{{imagen.url}}" alt="{{imagen.nombre}}">
+                            <img class="examImg" src="{{imagen.url}}" alt="{{imagen.nombre}}">
                           {% else %}
-                            <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
+                            <img class="examImg" src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
                           {% endif %}
                         </div>
                       {% endfor %}
@@ -148,7 +148,7 @@
                   <div id="respuesta{{ABC}}" class="respuesta col-md-6">
                   <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestatext.id}}">
                     <div class="btnExam" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
-                      {{respuestatext.escrito}}
+                      {{respuestatext.escrito|raw}}
                       <div></div>
                       <i class="">{{Abecedario[ABC]}}</i>
                     </div>
@@ -230,10 +230,10 @@
                   <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="imagen=;{{respuestaimg.id}}">
                     <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
                       {% if (respuestaimg.url is defined ) and (respuestaimg.url != "NO APLICA")%}
-                        <img src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                        <img class="examImg" src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
                         <span>{{respuestaimg.nombre}}</span>
                       {% else %}
-                        <img src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                        <img class="examImg" src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
                         <span>{{respuestaimg.nombre}}</span>
                       {% endif %}
                       <div></div>
@@ -268,5 +268,15 @@
     Tu navegador no soporta el elemento <code>canvas</code> de HTML5.
 </canvas>
 </div>
+<div id="imgModal" class="modal modalImg">
 
+  <!-- The Close Button -->
+  <span class="closeModal">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content modal-contentImg" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
 {% endblock %}

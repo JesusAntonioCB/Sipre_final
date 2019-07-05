@@ -1,3 +1,6 @@
+.hide{
+  display: none !important;
+}
 .loginContainer{
   .row{
     position: relative;
@@ -24,6 +27,7 @@
     margin: auto;
     left: 0;
     right: 0;
+    top: 50px;
   }
   .panel-heading {
       padding: 5px 15px;

@@ -27,6 +27,7 @@ class TipoPreguntaAdmin extends AbstractAdmin
   protected function configureListFields(ListMapper $listMapper)
   {
     $listMapper
+    ->add('id')
     ->addIdentifier('nombre');
   }
 }

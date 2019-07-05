@@ -33,6 +33,10 @@ register_alumnos:
     path:     /register
     defaults: { _controller: UtExamProEvalBundle:Default:register }
 
+login_alumnos:
+    path:     /login
+    defaults: { _controller: UtExamProEvalBundle:Default:login }
+
 examen_propedeutico:
     path:     /propedeutico
     defaults: { _controller: UtExamProEvalBundle:Default:propedeutico }

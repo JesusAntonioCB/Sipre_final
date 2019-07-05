@@ -1,4 +1,14 @@
 @charset "UTF-8";
+html {
+  margin: 0;
+  width: 100%;
+  height: 100%; }
+  html body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 166, 83, 0.5); }
+
 body .alert {
   position: absolute;
   left: 0;
@@ -22,6 +32,9 @@ body .alert {
     body .alert .closebtn:hover {
       color: black; }
 
+.hide {
+  display: none !important; }
+
 .loginContainer .row {
   position: relative; }
   .loginContainer .row .panel {
@@ -39,7 +52,8 @@ body .alert {
   position: absolute;
   margin: auto;
   left: 0;
-  right: 0; }
+  right: 0;
+  top: 50px; }
 
 .loginContainer .panel-heading {
   padding: 5px 15px; }
@@ -133,8 +147,11 @@ canvas {
   top: 0px;
   position: fixed; }
 
+.examenInterfaz .checkbox {
+  display: none; }
+
 .examenInterfaz header nav {
-  background-image: url("/bundles/utexamproeval/images/school.png");
+  background: #ffd2a8;
   width: 100%;
   float: left;
   font-size: 20px;
@@ -224,7 +241,6 @@ canvas {
       position: relative;
       cursor: pointer;
       display: inline-block;
-      white-space: nowrap;
       background: #e1e1e1;
       border-radius: 500px;
       border: 0px solid #444;
@@ -264,6 +280,85 @@ canvas {
     height: 50px;
     margin-bottom: 15px; }
 
+/* Style the Image Used to Trigger the Modal */
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s; }
+  #myImg:hover {
+    opacity: 0.7; }
+
+/* The Modal (background) */
+.modalImg {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.9);
+  /* Black w/ opacity */ }
+
+/* Modal Content (Image) */
+.modal-contentImg {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  background: transparent !important; }
+  .modal-contentImg #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s; }
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px; }
+
+@keyframes zoom {
+  from {
+    transform: scale(0); }
+  to {
+    transform: scale(1); } }
+
+/* The Close Button */
+.closeModal {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  opacity: 1; }
+  .closeModal:hover, .closeModal:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer; }
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px) {
+  .modal-contentImg {
+    width: 100%; } }
+
 .homeConter {
   text-align: center;
   justify-content: center;
@@ -273,9 +368,24 @@ canvas {
   bottom: 50%;
   left: 0;
   right: 0;
-  width: 50%;
+  width: 60%;
   margin: auto;
   height: 300px; }
+  .homeConter .title {
+    margin-bottom: 100px; }
+    .homeConter .title h3 {
+      font-weight: bold; }
+    .homeConter .title h4 {
+      font-weight: bold;
+      color: #008000; }
+  .homeConter .container .col img {
+    max-width: 180px; }
+  .homeConter .contentBtn {
+    max-width: 800px;
+    margin: auto; }
+  @media only screen and (max-width: 1250px) {
+    .homeConter {
+      width: 100%; } }
 
 .button {
   --offset: 10px;

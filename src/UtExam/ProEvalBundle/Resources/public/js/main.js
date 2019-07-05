@@ -8,8 +8,12 @@ import './examen.js';
 
 $(document).ready(function() {
     $('body').on('click','.btnParticular',function() {
+      var herf= window.location.pathname;
+      if (herf==="/") {
+        herf="";
+      }
       $.ajax({//inicio de funciones de AJAX
-          url: '/ModalCodeExam',
+          url: herf+'ModalCodeExam',
           type: 'POST',
           beforeSend: function() {//funciones antes de cargar
             // $('.loading').removeClass('hide');
