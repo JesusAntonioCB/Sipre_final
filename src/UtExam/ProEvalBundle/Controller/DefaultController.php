@@ -329,15 +329,12 @@ class DefaultController extends Controller
       if (session_status() == PHP_SESSION_ACTIVE) {
         session_destroy();
       }
-      session_start();
       $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  rand(1, 9).rand(1, 9).chr(rand(ord("a"), ord("z"))).rand(1, 9).rand(1, 9).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z")));
-      $_SESSION["UID"] = $usercode;
-      setcookie("examen", "Entrada", 0);
       date_default_timezone_set('America/Monterrey');
       $em = $this->getDoctrine()->getManager();
       $valueName = $_POST['alumno'];
@@ -356,23 +353,41 @@ class DefaultController extends Controller
                      ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
                      ->find((int)$_POST['maestro3']);
       $valueEval = $_POST['evaluacion'];
-      $alumno = new Alumnos();
-      $alumno->setNombre($valueName);
-      $alumno->setUsername($valueUserName);
-      $alumno->setTurno($valueTurno);
-      $alumno->setContraseña($valuePass);
-      $alumno->setFecha(date('Y-m-d H:i:s'));
-      $alumno->setTiempo(0);
-      $alumno->setCalificacion(0);
-      $alumno->setCalificacionSalida(0);
-      $alumno->setCodigoUsuario($usercode);
-      $alumno->setCarrera($valueCarrera);
-      $alumno->setGrupo($valueGrupo);
-      $alumno->addMaestro($valueMaestro1,$valueMaestro2,$valueMaestro3);
-      $alumno->setEvaluacion($valueEval);
-      $em ->persist($alumno);
-      $em->flush();
-      return new Response('success');
+      try {
+        $alumno = new Alumnos();
+        $alumno->setNombre($valueName);
+        $alumno->setUsername($valueUserName);
+        $alumno->setTurno($valueTurno);
+        $alumno->setContrasena($valuePass);
+        $alumno->setFecha(date('Y-m-d H:i:s'));
+        $alumno->setTiempo(0);
+        $alumno->setCalificacionE1(0);
+        $alumno->setCalificacionE2(0);
+        $alumno->setCalificacionE3(0);
+        $alumno->setCalificacionS1(0);
+        $alumno->setCalificacionS2(0);
+        $alumno->setCalificacionS3(0);
+        $alumno->setCodigoUsuario($usercode);
+        $alumno->setCarrera($valueCarrera);
+        $alumno->setGrupo($valueGrupo);
+        $alumno->addMaestro($valueMaestro1);
+        $alumno->addMaestro($valueMaestro2);
+        $alumno->addMaestro($valueMaestro3);
+        $alumno->setEvaluacion($valueEval);
+        $em->persist($alumno);
+        $em->flush();
+        session_start();
+        $_SESSION["UID"] = $usercode;
+        setcookie("examen", "Entrada", 0);
+        return new Response('Registro exitoso');
+      } catch (\Exception $e) {
+        dump(get_class_methods($e->getPrevious()));
+        if ($e->getPrevious()->getSQLState()==="23000") {
+          return new Response('Error: El usuario ingresado ya existe');
+        }else {
+          return new Response('Error: '.$e->getPrevious()->getMessage());
+        }
+      }
       // return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
       //   array(
       //     'userName'=> $valueName,
@@ -406,81 +421,234 @@ class DefaultController extends Controller
       $respuestas= $_POST['respuestas'];
       $preguntas= (int)$_POST['dquestion'];
       $examen= $_COOKIE["examen"];
-      setcookie("examen", "", -1);
       if ($preguntas < sizeof($respuestas, 0)) {
         $preguntas= 50;
       }
       $time= $_POST['time'];
-      $RCorect=0;
+      $RCorect1=0;
+      $RCorect2=0;
+      $RCorect3=0;
+      $Mat1="";
+      $Mat2="";
+      $Mat3="";
+      $preg1=0;
+      $preg2=0;
+      $preg3=0;
+      $materiaTempo=[];
       foreach ($respuestas as $value) {
         $type=$value[0];
         $RId=$value[1];
         if ($type=== "texto") {
           $querytext = $em->createQuery('
-            SELECT partial t.{id, correcto}
+            SELECT partial t.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Texto t
+            LEFT JOIN t.respuestas r
+            LEFT JOIN r.preguntas p
+            LEFT JOIN p.materias m
             WHERE t.id = :idtexto');
           $querytext->setParameter('idtexto', $RId);
-          $isCorect=$querytext->getArrayResult()[0]["correcto"];
-          if ($isCorect) {
-            $RCorect += 1;
+          $respuestaRes=$querytext->getArrayResult()[0];
+          $isCorect=$respuestaRes["correcto"];
+          $materia= $respuestaRes["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          if ($Mat1 == "") {
+            $Mat1=$materia;
+          }elseif ($Mat2 == "") {
+            if ($Mat1!=$materia) {
+              $Mat2=$materia;
+            }
+          }  elseif ($Mat3 == "") {
+            if ($Mat2!=$materia) {
+              $Mat3=$materia;
+            }
+          }
+          if ($Mat1==$materia) {
+            $preg1 += 1;
+            if ($isCorect) {
+              $RCorect1 += 1;
+            }
+          }
+          if ($Mat2==$materia) {
+            $preg2 += 1;
+            if ($isCorect) {
+              $RCorect2 += 1;
+            }
+          }
+          if ($Mat3==$materia) {
+            $preg3 += 1;
+            if ($isCorect) {
+              $RCorect3 += 1;
+            }
           }
         }
         if ($type=== "video") {
-          $querytext = $em->createQuery('
-            SELECT partial v.{id, correcto}
+          $queryVid = $em->createQuery('
+            SELECT partial v.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Video v
+            LEFT JOIN v.respuestas r
+            LEFT JOIN r.preguntas p
+            LEFT JOIN p.materias m
             WHERE v.id = :idvideo');
-          $querytext->setParameter('idvideo', $RId);
-          $isCorect=$querytext->getArrayResult()[0]["correcto"];
-          if ($isCorect) {
-            $RCorect += 1;
+          $queryVid->setParameter('idvideo', $RId);
+          $resVidResult=$queryVid->getArrayResult()[0];
+          $isCorect=$resVidResult["correcto"];
+          $materia= $resVidResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          if ($Mat1 == "") {
+            $Mat1=$materia;
+          }elseif ($Mat2 == "") {
+            if ($Mat1!=$materia) {
+              $Mat2=$materia;
+            }
+          }  elseif ($Mat3 == "") {
+            if ($Mat2!=$materia) {
+              $Mat3=$materia;
+            }
+          }
+          if ($Mat1==$materia) {
+            $preg1 += 1;
+            if ($isCorect) {
+              $RCorect1 += 1;
+            }
+          }
+          if ($Mat2==$materia) {
+            $preg2 += 1;
+            if ($isCorect) {
+              $RCorect2 += 1;
+            }
+          }
+          if ($Mat3==$materia) {
+            $preg3 += 1;
+            if ($isCorect) {
+              $RCorect3 += 1;
+            }
           }
         }
         if ($type=== "imagen") {
-          $querytext = $em->createQuery('
-            SELECT partial I.{id, correcto}
+          $queryimg = $em->createQuery('
+            SELECT partial I.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Imagen I
+            LEFT JOIN I.respuestas r
+            LEFT JOIN r.preguntas p
+            LEFT JOIN p.materias m
             WHERE I.id = :idimagen');
-          $querytext->setParameter('idimagen', $RId);
-          $isCorect=$querytext->getArrayResult()[0]["correcto"];
-          if ($isCorect) {
-            $RCorect += 1;
+          $queryimg->setParameter('idimagen', $RId);
+          $resImgResult=$queryimg->getArrayResult()[0];
+          $isCorect=$resImgResult["correcto"];
+          $materia= $resImgResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          if ($Mat1 == "") {
+            $Mat1=$materia;
+          }elseif ($Mat2 == "") {
+            if ($Mat1!=$materia) {
+              $Mat2=$materia;
+            }
+          }  elseif ($Mat3 == "") {
+            if ($Mat2!=$materia) {
+              $Mat3=$materia;
+            }
+          }
+          if ($Mat1==$materia) {
+            $preg1 += 1;
+            if ($isCorect) {
+              $RCorect1 += 1;
+            }
+          }
+          if ($Mat2==$materia) {
+            $preg2 += 1;
+            if ($isCorect) {
+              $RCorect2 += 1;
+            }
+          }
+          if ($Mat3==$materia) {
+            $preg3 += 1;
+            if ($isCorect) {
+              $RCorect3 += 1;
+            }
           }
         }
         if ($type=== "audio") {
-          $querytext = $em->createQuery('
-            SELECT partial a.{id, correcto}
+          $queryAud = $em->createQuery('
+            SELECT partial a.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Audio a
+            LEFT JOIN a.respuestas r
+            LEFT JOIN r.preguntas p
+            LEFT JOIN p.materias m
             WHERE a.id = :idaudio');
-          $querytext->setParameter('idaudio', $RId);
-          $isCorect=$querytext->getArrayResult()[0]["correcto"];
-          if ($isCorect) {
-            $RCorect += 1;
+          $queryAud->setParameter('idaudio', $RId);
+          $resAudResult=$queryAud->getArrayResult()[0];
+          $isCorect=$resAudResult["correcto"];
+          $materia= $resAudResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          if ($Mat1 == "") {
+            $Mat1=$materia;
+          }elseif ($Mat2 == "") {
+            if ($Mat1!=$materia) {
+              $Mat2=$materia;
+            }
+          }  elseif ($Mat3 == "") {
+            if ($Mat2!=$materia) {
+              $Mat3=$materia;
+            }
+          }
+          if ($Mat1==$materia) {
+            $preg1 += 1;
+            if ($isCorect) {
+              $RCorect1 += 1;
+            }
+          }
+          if ($Mat2==$materia) {
+            $preg2 += 1;
+            if ($isCorect) {
+              $RCorect2 += 1;
+            }
+          }
+          if ($Mat3==$materia) {
+            $preg3 += 1;
+            if ($isCorect) {
+              $RCorect3 += 1;
+            }
           }
         }
       }
-      $calificacion=($RCorect/$preguntas)*100;
-      $calificacion= round($calificacion,2);
+      dump($Mat1);
+      dump($preg1);
+      dump($RCorect1);
+      dump($Mat2);
+      dump($preg2);
+      dump($RCorect2);
+      dump($Mat3);
+      dump($preg3);
+      dump($RCorect3);
+      $calificacion1=($preg1/$preguntas)*100;
+      $calificacion1= round($calificacion1,2);
+      $calificacion2=($preg2/$preguntas)*100;
+      $calificacion2= round($calificacion2,2);
+      $calificacion3=($preg3/$preguntas)*100;
+      $calificacion3= round($calificacion3,2);
       if ($_SESSION["UID"]) {
         $UID = $_SESSION["UID"];
         if ($examen === "Entrada") {
           $updateCali = $em->createQuery('
             UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-            SET A.calificacion = :calificacion ,
+            SET A.calificacionE1 = :calificacion1 ,
+            A.calificacionE2 = :calificacion2 ,
+            A.calificacionE3 = :calificacion3 ,
             A.tiempo = :time
             WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion', $calificacion);
+          $updateCali->setParameter('calificacion1', $calificacion1);
+          $updateCali->setParameter('calificacion2', $calificacion2);
+          $updateCali->setParameter('calificacion3', $calificacion3);
           $updateCali->setParameter('time', $time);
           $updateCali->setParameter('idUser', $UID);
           $updateCali->execute();
         }else {
           $updateCali = $em->createQuery('
             UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-            SET A.calificacionSalida = :calificacion ,
+            SET A.calificacionS1 = :calificacion1 ,
+            A.calificacionS2 = :calificacion2 ,
+            A.calificacionS3 = :calificacion3 ,
             A.tiempo = :time
             WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion', $calificacion);
+          $updateCali->setParameter('calificacion1', $calificacion1);
+          $updateCali->setParameter('calificacion2', $calificacion2);
+          $updateCali->setParameter('calificacion3', $calificacion3);
           $updateCali->setParameter('time', $time);
           $updateCali->setParameter('idUser', $UID);
           $updateCali->execute();
@@ -490,7 +658,8 @@ class DefaultController extends Controller
         return new Response("Error: La sesion a caducado");
       }
       session_destroy();
-      return new Response($calificacion);
+      setcookie("examen", "", -1);
+      return new Response("Gracias por contestar");
     }
 
     public function openModalCodeExamAction(){

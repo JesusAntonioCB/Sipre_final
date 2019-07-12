@@ -68,7 +68,7 @@ class Pregunta
     private $imagen;
 
     /**
-     * @ORM\OneToOne(targetEntity="Respuestas")
+     * @ORM\OneToOne(targetEntity="Respuestas", inversedBy="pregunta")
      * @ORM\JoinColumn(name="Respuestas_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $respuestas;
@@ -182,29 +182,6 @@ class Pregunta
         return $this->tipoPregunta;
     }
 
-    /**
-     * Set respuestas.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\Respuestas|null $respuestas
-     *
-     * @return Pregunta
-     */
-    public function setRespuestas(\UtExam\ProEvalBundle\Entity\Respuestas $respuestas = null)
-    {
-        $this->respuestas = $respuestas;
-
-        return $this;
-    }
-
-    /**
-     * Get respuestas.
-     *
-     * @return \UtExam\ProEvalBundle\Entity\Respuestas|null
-     */
-    public function getRespuestas()
-    {
-        return $this->respuestas;
-    }
 
     /**
      * Set nivel.
@@ -389,5 +366,29 @@ class Pregunta
     public function getPreguntasAuto()
     {
         return $this->preguntasAuto;
+    }
+
+    /**
+     * Set respuestas.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Respuestas|null $respuestas
+     *
+     * @return Pregunta
+     */
+    public function setRespuestas(\UtExam\ProEvalBundle\Entity\Respuestas $respuestas = null)
+    {
+        $this->respuestas = $respuestas;
+
+        return $this;
+    }
+
+    /**
+     * Get respuestas.
+     *
+     * @return \UtExam\ProEvalBundle\Entity\Respuestas|null
+     */
+    public function getRespuestas()
+    {
+        return $this->respuestas;
     }
 }

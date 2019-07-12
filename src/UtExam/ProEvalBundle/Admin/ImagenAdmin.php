@@ -54,7 +54,7 @@ class ImagenAdmin extends AbstractAdmin
   // public function configure() {
   //   $this->setTemplate('edit', '@UtExamProEval/Adminjs/edit_AdminImagen.html.twig');
   // }
-  
+
 }
 
 

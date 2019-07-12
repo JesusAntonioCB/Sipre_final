@@ -43,7 +43,7 @@
     <hr>
     <div class="Grups-preguntas">
       <div class="grups">
-      {% for grupo in preguntasGrup %}
+      {% for grupo in preguntasGrup|shuffle %}
       {% set p = 1 %}
         <div id="grup{{g}}">
         <div class="row">
@@ -56,7 +56,7 @@
         </div>
           <br>
           <div class="preguntas">
-          {% for pregunta in grupo.pregunta %}
+          {% for pregunta in grupo.pregunta|shuffle %}
             <div id="pregunta{{p}}"class="pregunta">
               {% set ABC = 0 %}
               <div class="row textorow">
@@ -74,7 +74,7 @@
                           {% if (imagen.url is defined ) and (imagen.url != "NO APLICA")%}
                             <img class="examImg" src="{{imagen.url}}" alt="{{imagen.nombre}}">
                           {% else %}
-                            <img class="examImg" src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
+                            <img class="examImg" src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/imagenes/{{imagen.archive}}" alt="{{imagen.nombre}}">
                           {% endif %}
                         </div>
                       {% endfor %}
@@ -90,17 +90,17 @@
                         {% else %}
                           {% if '.mp4' in pregunta.video.archive %}
                             <video width="320" height="240" controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/mp4">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/mp4">
                               Your browser does not support the video element.
                             </video>
                             {% elseif '.webm' in pregunta.video.archive %}
                               <video width="320" height="240" controls>
-                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/webm">
+                                <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/webm">
                                 Your browser does not support the video element.
                               </video>
                             {% elseif '.ogg' in pregunta.video.archive %}
                               <video width="320" height="240" controls>
-                                <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/ogg">
+                                <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{pregunta.video.archive}}" type="video/ogg">
                                 Your browser does not support the video element.
                               </video>
                           {% endif %}
@@ -119,17 +119,17 @@
                         {% else %}
                           {% if '.mp3' in pregunta.audio.archive %}
                             <audio controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/mpeg">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/mpeg">
                               Your browser does not support the audio element.
                             </audio>
                             {% elseif '.ogg' in pregunta.audio.archive %}
                               <audio controls>
-                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/ogg">
+                                <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/ogg">
                                 Your browser does not support the audio element.
                               </audio>
                             {% elseif '.wav' in pregunta.audio.archive %}
                               <audio controls>
-                                <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/wav">
+                                <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{pregunta.audio.archive}}" type="audio/wav">
                                 Your browser does not support the audio element.
                               </audio>
                           {% endif %}
@@ -144,7 +144,7 @@
               <br>
               <div class="respuestas row">
               {% if pregunta.respuestas.texto|length  %}
-                {% for respuestatext in pregunta.respuestas.texto %}
+                {% for respuestatext in pregunta.respuestas.texto|shuffle %}
                   <div id="respuesta{{ABC}}" class="respuesta col-md-6">
                   <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="texto=;{{respuestatext.id}}">
                     <div class="btnExam" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
@@ -157,7 +157,7 @@
                 {% endfor %} <br>
               {% endif %}
               {% if pregunta.respuestas.audio|length  %}
-                {% for respuestaAud in pregunta.respuestas.audio %}
+                {% for respuestaAud in pregunta.respuestas.audio|shuffle %}
                   <div id="respuesta{{ABC}}" class="respuesta col-md-6">
                     <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="audio=;{{respuestaAud.id}}">
                     <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
@@ -167,17 +167,17 @@
                       {% else %}
                         {% if '.mp3' in respuestaAud.archive %}
                           <audio controls>
-                            <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/mpeg">
+                            <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/mpeg">
                             Your browser does not support the audio element.
                           </audio>
                           {% elseif '.ogg' in respuestaAud.archive %}
                             <audio controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/ogg">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/ogg">
                               Your browser does not support the audio element.
                             </audio>
                           {% elseif '.wav' in respuestaAud.archive %}
                             <audio controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/wav">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/audios/{{respuestaAud.archive}}" type="audio/wav">
                               Your browser does not support the audio element.
                             </audio>
                         {% endif %}
@@ -191,7 +191,7 @@
                 {% endfor %} <br>
               {% endif %}
               {% if pregunta.respuestas.video|length %}
-                {% for respuestavid in pregunta.respuestas.video %}
+                {% for respuestavid in pregunta.respuestas.video|shuffle %}
                   <div id="respuesta{{ABC}}" class="respuesta col-md-6">
                     <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="video=;{{respuestavid.id}}">
                     <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
@@ -201,17 +201,17 @@
                       {% else %}
                         {% if '.mp4' in respuestavid.archive %}
                           <video width="320" height="240" controls>
-                            <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/mp4">
+                            <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/mp4">
                             Your browser does not support the video element.
                           </video>
                           {% elseif '.webm' in respuestavid.archive %}
                             <video width="320" height="240" controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/webm">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/webm">
                               Your browser does not support the video element.
                             </video>
                           {% elseif '.ogg' in respuestavid.archive %}
                             <video width="320" height="240" controls>
-                              <source src="/bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/ogg">
+                              <source src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/videos/{{respuestavid.archive}}" type="video/ogg">
                               Your browser does not support the video element.
                             </video>
                         {% endif %}
@@ -225,7 +225,7 @@
                 {% endfor %} <br>
               {% endif %}
               {% if pregunta.respuestas.imagen|length  %}
-                {% for respuestaimg in pregunta.respuestas.imagen %}
+                {% for respuestaimg in pregunta.respuestas.imagen|shuffle %}
                   <div id="respuesta{{ABC}}" class="respuesta col-md-6">
                   <input id="G{{g}}P{{p}}R{{ABC}}" class="checkbox" name="fooby[G{{g}}P{{p}}][]" type="checkbox" value="imagen=;{{respuestaimg.id}}">
                     <div class="btnExam btnExamImg" data-check="G{{g}}P{{p}}R{{ABC}}" data-question="{{p}}" data-grup="{{g}}">
@@ -233,7 +233,7 @@
                         <img class="examImg" src="{{respuestaimg.url}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
                         <span>{{respuestaimg.nombre}}</span>
                       {% else %}
-                        <img class="examImg" src="/bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
+                        <img class="examImg" src="{{ path('homepage') }}bundles/utexamproeval/images/archivosSubidos/imagenes/{{respuestaimg.archive}}" alt="{{respuestaimg.nombre}}" class="img-thumbnail">
                         <span>{{respuestaimg.nombre}}</span>
                       {% endif %}
                       <div></div>

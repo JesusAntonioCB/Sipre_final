@@ -93,22 +93,39 @@ class createReporteController extends Controller
           SELECT a,m
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
           LEFT JOIN a.maestros m
-          WHERE substring(a.fecha, 1,4) = :idGen');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno');
         $queryRep->setParameter('idGen', $generacion);
-        $generationRes=$queryRep->getArrayResult();
-        dump($generationRes);
-        if (empty($generationRes)) {
+        $queryRep->setParameter('turno', "Vespertino");
+        $generationVRes=$queryRep->getArrayResult();
+        $query2Rep = $em->createQuery('
+          SELECT a,m
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno');
+        $query2Rep->setParameter('idGen', $generacion);
+        $query2Rep->setParameter('turno', "Nocturno");
+        $generationNRes=$query2Rep->getArrayResult();
+        if (empty($generationVRes)) {
           return new Response("Esta generación no se encuentra en la Base de Datos, Por favor vuelve a intentarlo o contacta a el Administrador");
         }else {
           $queryGrup = $em->createQuery('
             SELECT DISTINCT a.grupo
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a');
-          $grupRes=$queryGrup->getArrayResult();
-          dump($grupRes);
+            FROM UtExam\ProEvalBundle\Entity\Alumnos a
+            WHERE a.turno = :turno');
+          $queryGrup->setParameter('turno', "Vespertino");
+          $GrupoVRep=$queryGrup->getArrayResult();
+          $query2Grup = $em->createQuery('
+            SELECT DISTINCT a.grupo
+            FROM UtExam\ProEvalBundle\Entity\Alumnos a
+            WHERE a.turno = :turno');
+          $query2Grup->setParameter('turno', "Nocturno");
+          $GrupoNRep=$query2Grup->getArrayResult();
           return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
               'generacion' => true,
-              'reporte' => $generationRes,
-              'grupos' => $grupRes
+              'GV' => $generationVRes,
+              'GN' => $generationNRes,
+              'gruposV' => $GrupoVRep,
+              'gruposN' => $GrupoNRep
           ]);
         }
 

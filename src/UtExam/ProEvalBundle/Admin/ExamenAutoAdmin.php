@@ -21,9 +21,11 @@ class ExamenAutoAdmin extends AbstractAdmin
   {
     $formMapper
     ->add('titulo', TextType::class, [
-      'label' => 'Titulo del Examen'])
+      'label' => 'Titulo del examen'])
+    ->add('tiempo', null, [
+      'label' => 'Tiempo que durara el examen'])
     ->add('instrucciones', TextType::class, [
-      'label' => 'Instrucciones del Examen'])
+      'label' => 'Instrucciones del examen'])
     ->add('codigoExam', TextType::class, [
       'label' => 'Codigo propio de examen'])
     ->add('preguntasAuto', 'sonata_type_collection', array(
@@ -65,6 +67,7 @@ class ExamenAutoAdmin extends AbstractAdmin
     $object->setTipo(0);
     $object->setNivel(0);
     $object->setUser($user);
+    $object->setTiempo($object->getTiempo()->format('H:i'));
     //agregar preguntas a preguntasAuto
     foreach ($object->getPreguntasAuto() as $preguntaAuto) {
       //obtener promedio
@@ -117,6 +120,9 @@ class ExamenAutoAdmin extends AbstractAdmin
     //     $pregunta->addExamenAuto(null);
     //   }
     // }
+    if ($object->getTiempo()->format('H:i')!="") {
+      $object->setTiempo($object->getTiempo()->format('H:i'));
+    }
     return $object;
   }
 }

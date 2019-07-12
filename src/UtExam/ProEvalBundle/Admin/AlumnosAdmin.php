@@ -20,6 +20,8 @@ class AlumnosAdmin extends AbstractAdmin
     $formMapper
     ->add('nombre', TextType::class, [
       'label' => 'Nombre'])
+    ->add('username')
+    ->add('contrasena')
     ->add('carrera', null, ['label' => 'Carrera'])
     ->add('maestros', null, ['label' => 'Maestro'])
     ->add('grupo', null, ['label' => 'Grupo'])
@@ -47,6 +49,8 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('evaluacion')
     ->add('examenAuto')
     ->add('nombre')
+    ->add('username')
+    ->add('contrasena')
     ->add('turno')
     ->add('fecha')
     ->add('calificacion');
@@ -56,6 +60,8 @@ class AlumnosAdmin extends AbstractAdmin
   {
     $listMapper
     ->addIdentifier('nombre')
+    ->add('username')
+    ->add('contrasena')
     ->add('turno')
     ->add('maestros')
     ->add('examen',null,["label"=>"Examen Fijo"])
@@ -85,6 +91,8 @@ class AlumnosAdmin extends AbstractAdmin
                     'description' => 'Descripción del alumno',
                 ])
                   ->add('nombre')
+                  ->add('username')
+                  ->add('contrasena')
                   ->add('turno')
                   ->add('grupo')
                   ->add('maestros')

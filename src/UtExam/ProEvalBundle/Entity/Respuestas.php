@@ -73,6 +73,11 @@ class Respuestas
      */
     private $texto;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Pregunta", mappedBy="respuestas")
+     */
+    private $preguntas;
+
     public function __construct()
     {
         $this->imagen = new ArrayCollection();
@@ -266,5 +271,29 @@ class Respuestas
         }
       }
       return "No existe una respuesta correcta";
+    }
+
+    /**
+     * Set preguntas.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Pregunta|null $preguntas
+     *
+     * @return Respuestas
+     */
+    public function setPreguntas(\UtExam\ProEvalBundle\Entity\Pregunta $preguntas = null)
+    {
+        $this->preguntas = $preguntas;
+
+        return $this;
+    }
+
+    /**
+     * Get preguntas.
+     *
+     * @return \UtExam\ProEvalBundle\Entity\Pregunta|null
+     */
+    public function getPreguntas()
+    {
+        return $this->preguntas;
     }
 }

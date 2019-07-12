@@ -20,6 +20,8 @@ class ExamenAdmin extends AbstractAdmin
     $formMapper
     ->add('titulo', TextType::class, [
       'label' => 'Titulo'])
+    ->add('tiempo', null, [
+      'label' => 'Tiempo que durara el examen'])
     ->add('instrucciones', TextType::class, [
       'label' => 'Instrucciones del Examen'])
     ->add('codigoExam', TextType::class, [

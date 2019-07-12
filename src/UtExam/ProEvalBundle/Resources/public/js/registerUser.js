@@ -44,16 +44,6 @@ $(document).ready(function() {
           boxMaestro2= document.getElementById('selectMaestro2N').value,
           boxMaestro3= document.getElementById('selectMaestro3N').value;
     }
-    console.log(boxName);
-    console.log(boxpass);
-    console.log(boxUserName);
-    console.log(boxGrupo);
-    console.log(boxCarrera);
-    console.log(boxEval);
-    console.log(boxTurno);
-    console.log(boxMaestro1);
-    console.log(boxMaestro2);
-    console.log(boxMaestro3);
     if (boxName===""||boxCarrera===""||boxTurno===""||boxGrupo===""||boxEval===""||
         boxMaestro3===""||boxMaestro2===""||boxMaestro1===""||boxUserName===""||boxpass=="") {
     var bandera= false;
@@ -101,7 +91,9 @@ $(document).ready(function() {
       },
       success: function (data) {
         alert(data);
-        location.reload();
+        if (data==="Registro exitoso") {
+          location.reload();
+        }
       },
       complete: function() {
         $('.loadingContent').remove();

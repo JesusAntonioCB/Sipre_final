@@ -1,6 +1,5 @@
-
+import 'tableexport';
 $(document).ready(function() {
-  console.log("hola");
     $('#searchExambtn').on('click',function(){
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
@@ -39,7 +38,6 @@ $(document).ready(function() {
           turno = document.getElementById('selectTurno').value,
           bandera= true,
           datos= {};
-          console.log(typeReporte);
       if (parseInt(typeReporte)!=0) {
         if (parseInt(typeReporte)===1) {
           if (generacion != 0) {
@@ -71,13 +69,11 @@ $(document).ready(function() {
         bandera=false;
       }
       if (bandera) {
-        console.log(datos);
         $.ajax({
             url: "/admin/getReport",
             type: "GET",
             data: datos,
             success: function(data) {
-              console.log(data);
               $(".contentTable").html(data);
               // $(".examenList").html('');
               // for (var i = 0; i < examenList.length; i++) {
@@ -92,6 +88,12 @@ $(document).ready(function() {
               //   ')
               // }
 
+            },
+            complete: function(){
+              $("table").tableExport({
+                formats: ['xlsx', 'csv'],
+                bootstrap: true
+              });
             },
             error: function (err) {
                 alert("Ocurrio un error al cargar los datos...");

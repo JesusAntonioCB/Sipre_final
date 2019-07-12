@@ -5,6 +5,9 @@ parameters:
 
 services:
     # default configuration for services in *this* file
+    twig.extension.array:
+                class: Twig_Extensions_Extension_Array
+                tags: [twig.extension]
     _defaults:
         # automatically injects dependencies in your services
         autowire: true

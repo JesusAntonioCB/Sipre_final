@@ -87,86 +87,8 @@ $(document).ready(function() {
           beforeSend: function() {//funciones antes de cargar
           },//final de beforeSend()
           success: function send(data) {//Funciones si hay éxito en el envio
-            if (data > 95) {
-              $('body').append('\
-              <div class="alert alert-success alert-dismissible fade show" role="alert">\
-                <strong>Increible!!! </strong>Eres un Orgullo para los de tu Especie, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data>=90) {
-              $('body').append('\
-              <div class="alert alert-success alert-dismissible fade show" role="alert">\
-                <strong>Asombroso! </strong>Asombroso! Eres uno de los elegidos, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data>=81) {
-              $('body').append('\
-              <div class="alert alert-info alert-dismissible fade show" role="alert">\
-                <strong>Genial! </strong>tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data>=80) {
-              $('body').append('\
-              <div class="alert alert-info alert-dismissible fade show" role="alert">\
-                <strong>Huuui! </strong>Por poco y no la cuentas, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data>=60) {
-              $('body').append('\
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">\
-                <strong>Pues...! </strong>Al Menos puedes decir que aprendiste algo, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data>=40) {
-              $('body').append('\
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">\
-                <strong>Lo siento! </strong>Mejor suerte para la proxima, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            else if (data<40) {
-              $('body').append('\
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">\
-                <strong>Por Bill Gates! </strong>Que Verguenza compañero deverias estudiar mas, tu calificacion es: '+data+'\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                  <span aria-hidden="true">&times;</span>\
-                </button>\
-              </div>\
-              ');
-              $('.alert').alert();
-            }
-            $('body').on("click", ".close", function(){
-              location.reload();
-            });
+            alert(data);
+            location.reload();
           },//final de success()
           complete: function() {//funciones una vez completada la petición
           },//final de complete

@@ -65,6 +65,13 @@ class ExamenAuto
     private $nivel;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="tiempo", type="float")
+     */
+    private $tiempo;
+
+    /**
      * @ORM\ManyToMany(targetEntity="PreguntasAuto", inversedBy="examenAuto",cascade={"persist"})
      * @ORM\JoinTable(name="ExamenAuto_PreguntasAuto",
      *     joinColumns={
@@ -348,5 +355,29 @@ class ExamenAuto
     public function getAlumnos()
     {
         return $this->alumnos;
+    }
+
+    /**
+     * Set tiempo.
+     *
+     * @param float $tiempo
+     *
+     * @return ExamenAuto
+     */
+    public function setTiempo($tiempo)
+    {
+        $this->tiempo = $tiempo;
+
+        return $this;
+    }
+
+    /**
+     * Get tiempo.
+     *
+     * @return float
+     */
+    public function getTiempo()
+    {
+        return $this->tiempo;
     }
 }

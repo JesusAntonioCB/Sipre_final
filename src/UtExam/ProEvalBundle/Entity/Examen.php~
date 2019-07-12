@@ -66,6 +66,13 @@ class Examen
     private $nivel;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="tiempo", type="float")
+     */
+    private $tiempo;
+
+    /**
      * @ORM\OneToMany(targetEntity="preguntasinExamen", mappedBy="examen", cascade={"persist"})
      */
     private $pregunta;
@@ -339,5 +346,29 @@ class Examen
     public function getAlumnos()
     {
         return $this->alumnos;
+    }
+
+    /**
+     * Set tiempo.
+     *
+     * @param float $tiempo
+     *
+     * @return Examen
+     */
+    public function setTiempo($tiempo)
+    {
+        $this->tiempo = $tiempo;
+
+        return $this;
+    }
+
+    /**
+     * Get tiempo.
+     *
+     * @return float
+     */
+    public function getTiempo()
+    {
+        return $this->tiempo;
     }
 }
