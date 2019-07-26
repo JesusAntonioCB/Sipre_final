@@ -528,4 +528,148 @@ class Alumnos
     {
         return $this->maestros;
     }
+
+    /**
+     * Set calificacionE1.
+     *
+     * @param string $calificacionE1
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionE1($calificacionE1)
+    {
+        $this->calificacionE1 = $calificacionE1;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionE1.
+     *
+     * @return string
+     */
+    public function getCalificacionE1()
+    {
+        return $this->calificacionE1;
+    }
+
+    /**
+     * Set calificacionE2.
+     *
+     * @param string $calificacionE2
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionE2($calificacionE2)
+    {
+        $this->calificacionE2 = $calificacionE2;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionE2.
+     *
+     * @return string
+     */
+    public function getCalificacionE2()
+    {
+        return $this->calificacionE2;
+    }
+
+    /**
+     * Set calificacionE3.
+     *
+     * @param string $calificacionE3
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionE3($calificacionE3)
+    {
+        $this->calificacionE3 = $calificacionE3;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionE3.
+     *
+     * @return string
+     */
+    public function getCalificacionE3()
+    {
+        return $this->calificacionE3;
+    }
+
+    /**
+     * Set calificacionS1.
+     *
+     * @param string $calificacionS1
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionS1($calificacionS1)
+    {
+        $this->calificacionS1 = $calificacionS1;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionS1.
+     *
+     * @return string
+     */
+    public function getCalificacionS1()
+    {
+        return $this->calificacionS1;
+    }
+
+    /**
+     * Set calificacionS2.
+     *
+     * @param string $calificacionS2
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionS2($calificacionS2)
+    {
+        $this->calificacionS2 = $calificacionS2;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionS2.
+     *
+     * @return string
+     */
+    public function getCalificacionS2()
+    {
+        return $this->calificacionS2;
+    }
+
+    /**
+     * Set calificacionS3.
+     *
+     * @param string $calificacionS3
+     *
+     * @return Alumnos
+     */
+    public function setCalificacionS3($calificacionS3)
+    {
+        $this->calificacionS3 = $calificacionS3;
+
+        return $this;
+    }
+
+    /**
+     * Get calificacionS3.
+     *
+     * @return string
+     */
+    public function getCalificacionS3()
+    {
+        return $this->calificacionS3;
+    }
 }

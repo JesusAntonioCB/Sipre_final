@@ -62,13 +62,10 @@ body .alert {
   color: #A0A0A0; }
 
 .loginContainer .profile-img {
-  width: 96px;
+  width: 150px;
   height: 96px;
   margin: 0 auto 10px;
-  display: block;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%; }
+  display: block; }
 
 .loginContainer .panel-body .boxUser .input-group-addon {
   font-size: 30px;
@@ -150,7 +147,7 @@ canvas {
   display: none; }
 
 .examenInterfaz header nav {
-  background-image: url("/bundles/utexamproeval/images/school.png");
+  background-image: url("/Sipre/web/bundles/utexamproeval/images/school.png");
   width: 100%;
   float: left;
   font-size: 20px;
