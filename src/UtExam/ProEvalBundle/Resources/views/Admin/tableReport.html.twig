@@ -34,13 +34,13 @@
     	<div class="widget-content">
     		<table class="table table-striped table-bordered">
     			<thead>
-            {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" %}
+            {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" and GV[0].calificacionE1 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
             {% endif %}
-            {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" %}
+            {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" and GV[0].calificacionE2 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
-            {% endif %}
-            {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" %}
+            {% endif %} 
+            {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" and GV[0].calificacionE3 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
             {% endif %}
             {% dump(IntMaterias) %}
@@ -55,41 +55,41 @@
             <tr>
               <th>||</th>
     					<th>||</th>
-              {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" %}
+              {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" and GV[0].calificacionE1 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionE1|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" %}
+              {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" and GV[0].calificacionE2 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionE2|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" %}
+              {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" and GV[0].calificacionE3 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionE3|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
               <th>Promedio</th>
-              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" %}
+              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" and GV[0].calificacionS1 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS1|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" %}
+              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" and GV[0].calificacionS2 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS2|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" %}
+              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" and GV[0].calificacionS3 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS3|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
               <th>Promedio</th>
-              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" %}
+              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" and GV[0].calificacionS1 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS1|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" %}
+              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" and GV[0].calificacionS2 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS2|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
-              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" %}
+              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" and GV[0].calificacionS3 != ":=0" %}
                 {% set NombreMateria = GV[0].calificacionS3|split(':=') %}
                 <th>{{NombreMateria[0]}}</th>
               {% endif %}
@@ -104,7 +104,7 @@
               {% for alumno in GV %}
                 {% if alumno.turno == "Vespertino" %}
                   {% if alumno.grupo == grupo.grupo %}
-                    {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" %}
+                    {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" and alumno.calificacionE1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE1|split(':=') %}
                       {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
                       {% if alumno.maestros[0] is defined and alumno.maestros[0] is not empty %}
@@ -112,7 +112,7 @@
                       {% endif %}
                       {% set AlumnosPGE1 = AlumnosPGE1 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" %}
+                    {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" and alumno.calificacionE2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE2|split(':=') %}
                       {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
                       {% if alumno.maestros[1] is defined and alumno.maestros[1] is not empty%}
@@ -120,7 +120,7 @@
                       {% endif %}
                       {% set AlumnosPGE2 = AlumnosPGE2 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" %}
+                    {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" and alumno.calificacionE3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE3|split(':=') %}
                       {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
                       {% if alumno.maestros[2] is defined and alumno.maestros[2] is not empty %}
@@ -128,17 +128,17 @@
                       {% endif %}
                       {% set AlumnosPGE3 = AlumnosPGE3 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" %}
+                    {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" and alumno.calificacionS1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS1|split(':=') %}
                       {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
                       {% set AlumnosPGS1 = AlumnosPGS1 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" %}
+                    {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" and alumno.calificacionS2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS2|split(':=') %}
                       {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
                       {% set AlumnosPGS2 = AlumnosPGS2 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" %}
+                    {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" and alumno.calificacionS3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS3|split(':=') %}
                       {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
                       {% set AlumnosPGS3 = AlumnosPGS3 + 1 %}
@@ -220,6 +220,12 @@
                 {% set CalifiS3 = 0 %}
               </tr>
             {% endfor %}
+			{% set AlumnosPGE1 = 0 %}
+			{% set AlumnosPGE2 = 0 %}
+			{% set AlumnosPGE3 = 0 %}
+			{% set AlumnosPGS1 = 0 %}
+			{% set AlumnosPGS2 = 0 %}
+			{% set AlumnosPGS3 = 0 %}
             {% set CalifiE1 = 0 %}
             {% set CalifiE2 = 0 %}
             {% set CalifiE3 = 0 %}
@@ -235,7 +241,7 @@
               {% for alumno in GN %}
                 {% if alumno.turno == "Nocturno" %}
                   {% if alumno.grupo == grupo.grupo %}
-                    {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" %}
+                    {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" and alumno.calificacionE1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE1|split(':=') %}
                       {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
                       {% if alumno.maestros[0] is defined and alumno.maestros[0] is not empty %}
@@ -243,7 +249,7 @@
                       {% endif %}
                       {% set AlumnosPGE1 = AlumnosPGE1 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" %}
+                    {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" and alumno.calificacionE2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE2|split(':=') %}
                       {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
                       {% if alumno.maestros[1] is defined and alumno.maestros[1] is not empty%}
@@ -251,7 +257,7 @@
                       {% endif %}
                       {% set AlumnosPGE2 = AlumnosPGE2 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" %}
+                    {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" and alumno.calificacionE3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE3|split(':=') %}
                       {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
                       {% if alumno.maestros[2] is defined and alumno.maestros[2] is not empty %}
@@ -259,17 +265,17 @@
                       {% endif %}
                       {% set AlumnosPGE3 = AlumnosPGE3 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" %}
+                    {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" and alumno.calificacionS1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS1|split(':=') %}
                       {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
                       {% set AlumnosPGS1 = AlumnosPGS1 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" %}
+                    {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" and alumno.calificacionS2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS2|split(':=') %}
                       {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
                       {% set AlumnosPGS2 = AlumnosPGS2 + 1 %}
                     {% endif %}
-                    {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" %}
+                    {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" and alumno.calificacionS3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS3|split(':=') %}
                       {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
                       {% set AlumnosPGS3 = AlumnosPGS3 + 1 %}

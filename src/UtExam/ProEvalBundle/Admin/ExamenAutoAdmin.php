@@ -114,15 +114,16 @@ class ExamenAutoAdmin extends AbstractAdmin
   }
   public function preUpdate($object)
   {
+	  $object->setTiempo(0);
     // foreach ($object->getPreguntasAuto() as $pregunta) {
     //   $pregunta->addExamenAuto($object);
     //   if($pregunta->getPreguntasAuto() == null){
     //     $pregunta->addExamenAuto(null);
     //   }
     // }
-    if ($object->getTiempo()->format('H:i')!="") {
-      $object->setTiempo($object->getTiempo()->format('H:i'));
-    }
+    //if ($object->getTiempo()->format('H:i')!="") {
+    //  $object->setTiempo($object->getTiempo()->format('H:i'));
+   //( }
     return $object;
   }
 }

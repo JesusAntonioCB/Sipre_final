@@ -272,4 +272,28 @@ class Respuestas
       }
       return "No existe una respuesta correcta";
     }
+
+    /**
+     * Set pregunta.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Pregunta|null $pregunta
+     *
+     * @return Respuestas
+     */
+    public function setPregunta(\UtExam\ProEvalBundle\Entity\Pregunta $pregunta = null)
+    {
+        $this->pregunta = $pregunta;
+
+        return $this;
+    }
+
+    /**
+     * Get pregunta.
+     *
+     * @return \UtExam\ProEvalBundle\Entity\Pregunta|null
+     */
+    public function getPregunta()
+    {
+        return $this->pregunta;
+    }
 }

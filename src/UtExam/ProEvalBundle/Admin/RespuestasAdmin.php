@@ -90,13 +90,16 @@ class RespuestasAdmin extends AbstractAdmin
   protected function configureDatagridFilters(DatagridMapper $datagridMapper)
   {
     $datagridMapper
+	->add('id')
     ->add('texto');
   }
 
   protected function configureListFields(ListMapper $listMapper)
   {
     $listMapper
-    ->add('texto');
+	->add('id')
+    ->add('texto')
+	->add('pregunta');
   }
   public function prePersist($object){
     if (!is_null($object->getImagen())) {

@@ -30,7 +30,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('examenAuto', null, ['label' => 'Examene Propedeutico'])
     ->add('fecha', null, ['label' => 'Fecha'])
     ->add('tiempo', null, ['label' => 'Duracion de Examen'])
-    ->add('calificacion', null, ['label' => 'Calificacion'])
+    ->add('calificacionE1', null, ['label' => 'Calificacion'])
+	->add('calificacionE2', null, ['label' => 'Calificacion'])
+	->add('calificacionE3', null, ['label' => 'Calificacion'])
+	->add('calificacionS1', null, ['label' => 'Calificacion'])
+	->add('calificacionS2', null, ['label' => 'Calificacion'])
+	->add('calificacionS3', null, ['label' => 'Calificacion'])
     ->add('codigoUsuario', null, ['label' => 'Codigo unico de Alumno'])
     ->add('turno', ChoiceFieldMaskType::class, [
       'choices' => [
@@ -53,7 +58,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('contrasena')
     ->add('turno')
     ->add('fecha')
-    ->add('calificacion');
+    ->add('calificacionE1')
+	->add('calificacionE2')
+	->add('calificacionE3')
+	->add('calificacionS1')
+	->add('calificacionS2')
+	->add('calificacionS3');
   }
 
   protected function configureListFields(ListMapper $listMapper)
@@ -70,7 +80,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('examenAuto')
     ->add('fecha')
     ->add('tiempo')
-    ->add('calificacion')
+    ->add('calificacionE1')
+	->add('calificacionE2')
+	->add('calificacionE3')
+	->add('calificacionS1')
+	->add('calificacionS2')
+	->add('calificacionS3')
     ->add('codigoUsuario')
     // add custom action links
       ->add('_action', 'actions', [

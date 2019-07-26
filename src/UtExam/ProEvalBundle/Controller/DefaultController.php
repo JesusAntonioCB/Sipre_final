@@ -446,13 +446,13 @@ class DefaultController extends Controller
             SELECT partial t.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Texto t
             LEFT JOIN t.respuestas r
-            LEFT JOIN r.preguntas p
+            LEFT JOIN r.pregunta p
             LEFT JOIN p.materias m
             WHERE t.id = :idtexto');
           $querytext->setParameter('idtexto', $RId);
           $respuestaRes=$querytext->getArrayResult()[0];
           $isCorect=$respuestaRes["correcto"];
-          $materia= $respuestaRes["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          $materia= $respuestaRes["respuestas"][0]["pregunta"]["materias"]["nombre"];
           if ($Mat1 == "") {
             $Mat1=$materia;
           }elseif ($Mat2 == "") {
@@ -488,13 +488,13 @@ class DefaultController extends Controller
             SELECT partial v.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Video v
             LEFT JOIN v.respuestas r
-            LEFT JOIN r.preguntas p
+            LEFT JOIN r.pregunta p
             LEFT JOIN p.materias m
             WHERE v.id = :idvideo');
           $queryVid->setParameter('idvideo', $RId);
           $resVidResult=$queryVid->getArrayResult()[0];
           $isCorect=$resVidResult["correcto"];
-          $materia= $resVidResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          $materia= $resVidResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
           if ($Mat1 == "") {
             $Mat1=$materia;
           }elseif ($Mat2 == "") {
@@ -530,13 +530,13 @@ class DefaultController extends Controller
             SELECT partial I.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Imagen I
             LEFT JOIN I.respuestas r
-            LEFT JOIN r.preguntas p
+            LEFT JOIN r.pregunta p
             LEFT JOIN p.materias m
             WHERE I.id = :idimagen');
           $queryimg->setParameter('idimagen', $RId);
           $resImgResult=$queryimg->getArrayResult()[0];
           $isCorect=$resImgResult["correcto"];
-          $materia= $resImgResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          $materia= $resImgResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
           if ($Mat1 == "") {
             $Mat1=$materia;
           }elseif ($Mat2 == "") {
@@ -572,13 +572,13 @@ class DefaultController extends Controller
             SELECT partial a.{id, correcto}, partial r.{id}, partial p.{id}, m
             FROM UtExam\ProEvalBundle\Entity\Audio a
             LEFT JOIN a.respuestas r
-            LEFT JOIN r.preguntas p
+            LEFT JOIN r.pregunta p
             LEFT JOIN p.materias m
             WHERE a.id = :idaudio');
           $queryAud->setParameter('idaudio', $RId);
           $resAudResult=$queryAud->getArrayResult()[0];
           $isCorect=$resAudResult["correcto"];
-          $materia= $resAudResult["respuestas"][0]["preguntas"]["materias"]["nombre"];
+          $materia= $resAudResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
           if ($Mat1 == "") {
             $Mat1=$materia;
           }elseif ($Mat2 == "") {
