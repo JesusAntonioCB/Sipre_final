@@ -434,6 +434,9 @@ class DefaultController extends Controller
       $preg1=0;
       $preg2=0;
       $preg3=0;
+      $calificacion1=0;
+      $calificacion2=0;
+      $calificacion3=0;
       $materiaTempo=[];
       foreach ($respuestas as $value) {
         $type=$value[0];
@@ -607,21 +610,18 @@ class DefaultController extends Controller
           }
         }
       }
-      dump($Mat1);
-      dump($preg1);
-      dump($RCorect1);
-      dump($Mat2);
-      dump($preg2);
-      dump($RCorect2);
-      dump($Mat3);
-      dump($preg3);
-      dump($RCorect3);
-      $calificacion1=($preg1/$preguntas)*100;
-      $calificacion1= round($calificacion1,2);
-      $calificacion2=($preg2/$preguntas)*100;
-      $calificacion2= round($calificacion2,2);
-      $calificacion3=($preg3/$preguntas)*100;
-      $calificacion3= round($calificacion3,2);
+      if ($preg1 != 0) {
+        $calificacion1=($RCorect1/$preg1)*100;
+        $calificacion1= round($calificacion1,2);
+      }
+      if ($preg2 != 0) {
+        $calificacion2=($RCorect2/$preg2)*100;
+        $calificacion2= round($calificacion2,2);
+      }
+      if ($preg3 != 0) {
+        $calificacion3=($RCorect3/$preg3)*100;
+        $calificacion3= round($calificacion3,2);
+      }
       if ($_SESSION["UID"]) {
         $UID = $_SESSION["UID"];
         if ($examen === "Entrada") {
@@ -632,9 +632,9 @@ class DefaultController extends Controller
             A.calificacionE3 = :calificacion3 ,
             A.tiempo = :time
             WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion1', $calificacion1);
-          $updateCali->setParameter('calificacion2', $calificacion2);
-          $updateCali->setParameter('calificacion3', $calificacion3);
+          $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
+          $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
+          $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
           $updateCali->setParameter('time', $time);
           $updateCali->setParameter('idUser', $UID);
           $updateCali->execute();
@@ -646,9 +646,9 @@ class DefaultController extends Controller
             A.calificacionS3 = :calificacion3 ,
             A.tiempo = :time
             WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion1', $calificacion1);
-          $updateCali->setParameter('calificacion2', $calificacion2);
-          $updateCali->setParameter('calificacion3', $calificacion3);
+          $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
+          $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
+          $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
           $updateCali->setParameter('time', $time);
           $updateCali->setParameter('idUser', $UID);
           $updateCali->execute();
