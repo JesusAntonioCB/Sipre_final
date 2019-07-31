@@ -119,8 +119,8 @@ class PreguntaAdmin extends AbstractAdmin
   {
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
-    dump($object);
-    dump($object->getImagen()->getValues());
+    // dump($object);
+    // dump($object->getImagen()->getValues());
     // die;
     if (!is_null($object->getImagen())) {
       if (!empty($object->getImagen())) {

@@ -353,9 +353,9 @@ class DefaultController extends Controller
                      ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
                      ->find((int)$_POST['maestro3']);
       $valueEval = $_POST['evaluacion'];
-      dump($_POST['maestro1']);
-      dump($_POST['maestro2']);
-      dump($_POST['maestro3']);
+      // dump($_POST['maestro1']);
+      // dump($_POST['maestro2']);
+      // dump($_POST['maestro3']);
       try {
         $alumno = new Alumnos();
         $alumno->setNombre($valueName);

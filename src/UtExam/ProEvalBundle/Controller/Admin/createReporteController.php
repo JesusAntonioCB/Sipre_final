@@ -141,7 +141,6 @@ class createReporteController extends Controller
         if (empty($generationRes)) {
           return new Response("El grupo seleccionado no existe prueba cambinado el turno");
         }else {
-          dump($generationRes);
           return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
               'grupo' => true,
               'reporte' => $generationRes

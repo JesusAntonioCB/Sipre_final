@@ -125,8 +125,6 @@ class AlumnosAdmin extends AbstractAdmin
 
   public function prePersist($object){
     //Variables
-    dump($object);
-    die;
     $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
