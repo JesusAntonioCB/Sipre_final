@@ -67,7 +67,6 @@ class ExamenAutoAdmin extends AbstractAdmin
     $object->setTipo(0);
     $object->setNivel(0);
     $object->setUser($user);
-    $object->setTiempo($object->getTiempo()->format('H:i'));
     //agregar preguntas a preguntasAuto
     foreach ($object->getPreguntasAuto() as $preguntaAuto) {
       //obtener promedio
@@ -114,16 +113,62 @@ class ExamenAutoAdmin extends AbstractAdmin
   }
   public function preUpdate($object)
   {
-	  $object->setTiempo(0);
-    // foreach ($object->getPreguntasAuto() as $pregunta) {
-    //   $pregunta->addExamenAuto($object);
-    //   if($pregunta->getPreguntasAuto() == null){
-    //     $pregunta->addExamenAuto(null);
-    //   }
-    // }
-    //if ($object->getTiempo()->format('H:i')!="") {
-    //  $object->setTiempo($object->getTiempo()->format('H:i'));
-   //( }
+    //Variables
+    $container = $this->getConfigurationPool()->getContainer();
+    $em = $container->get('doctrine.orm.entity_manager');
+    $result= 0;
+    $noFullP= count($object->getPreguntasAuto());
+    //agregar preguntas a preguntasAuto
+    foreach ($object->getPreguntasAuto() as $preguntaAuto) {
+      $query = $em->createQuery('
+        SELECT partial pA.{id}, partial p.{id}
+        FROM UtExam\ProEvalBundle\Entity\PreguntasAuto pA
+        LEFT JOIN pA.pregunta p
+        WHERE pA.id = :id');
+      $query->setParameter('id', $preguntaAuto->getId());
+      $preguntasRes=$query->getArrayResult();
+      if (count($preguntasRes[0]['pregunta']) === 0) {
+        //obtener promedio
+        $y= (int)$preguntaAuto->getNivel();
+        $result+=$y;
+        //constantes que serviran como filtros
+        $numberOfPreguntas= (int)$preguntaAuto->getCantidad();
+        $idOfMateria= $preguntaAuto->getMaterias()->getId();
+        $idOfTypePregunta= $preguntaAuto->getTipoPregunta()->getId();
+        $Dificultad=$preguntaAuto->getNivel();
+
+        //otencion de cantidad de de preguntas que existen
+        $query = $em->createQuery('
+          SELECT partial p.{id}
+          FROM UtExam\ProEvalBundle\Entity\Pregunta p
+          WHERE p.nivel = :nivel
+          AND p.materias = :idMateria
+          AND p.tipoPregunta = :idTypePregunta');//p.nivel = :nivel AND
+        $query->setParameter('nivel', $Dificultad );
+        $query->setParameter('idMateria', $idOfMateria);
+        $query->setParameter('idTypePregunta', $idOfTypePregunta);
+        $NumberRes=$query->getArrayResult();
+        //conseguir la misma cantidad de numeros random como preguntas existen
+        $rand = range(0, count($NumberRes)-1);
+        shuffle($rand);
+        //Preguntar si existen la cantidad de preguntas que piden
+        if ($numberOfPreguntas > count($NumberRes)) {
+          dump("no hay tantas preguntas con los parametros seleccionados");
+          die();
+        }
+        for ($i=0; $i < $numberOfPreguntas; $i++) {
+          //agregar a el objeto las preguntas con los filtros correspondientes
+          $query2 = $em->createQuery('
+            SELECT p
+            FROM UtExam\ProEvalBundle\Entity\Pregunta p
+            WHERE p.id = :id');
+          $query2->setParameter('id', $NumberRes[$rand[$i]]['id']);
+          $preguntasRes=$query2->getResult();
+          $preguntaAuto->addPreguntum($preguntasRes[0]);
+        }
+      }
+    }
+    $object->setNivel($result/=$noFullP);
     return $object;
   }
 }

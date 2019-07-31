@@ -139,7 +139,9 @@ thead {
   }
 }
 
-
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: rgba(100, 212, 72, 0.2);
+}
 .widget {
   .widget-header{
     .fa{

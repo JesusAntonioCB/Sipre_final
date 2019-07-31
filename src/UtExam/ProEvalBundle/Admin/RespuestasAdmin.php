@@ -28,18 +28,7 @@ class RespuestasAdmin extends AbstractAdmin
      ->add('imagen','sonata_type_collection', array(
            'by_reference' => false,
            'label' => 'Respuesta en Imagen',
-           'required'      => false,
-           'type_options' => array(
-               'delete_options' => array(
-                   // You may otherwise choose to put the field but hide it
-                   'type'         => 'hidden',
-                   // In that case, you need to fill in the options as well
-                   'type_options' => array(
-                       'mapped'   => false,
-                       'required' => false,
-                   )
-               )
-           )
+           'required'      => false
          ), array(
              'edit' => 'inline',
              'inline' => 'table',
@@ -48,18 +37,7 @@ class RespuestasAdmin extends AbstractAdmin
       ->add('audio','sonata_type_collection', array(
             'by_reference' => false,
             'label' => 'Respuesta en Audio',
-            'required'      => false,
-            'type_options' => array(
-                'delete_options' => array(
-                    // You may otherwise choose to put the field but hide it
-                    'type'         => 'hidden',
-                    // In that case, you need to fill in the options as well
-                    'type_options' => array(
-                        'mapped'   => false,
-                        'required' => false,
-                    )
-                )
-            )
+            'required'      => false
           ), array(
               'edit' => 'inline',
               'inline' => 'table',
@@ -68,18 +46,7 @@ class RespuestasAdmin extends AbstractAdmin
        ->add('video','sonata_type_collection',array(
              'by_reference' => false,
              'label' => 'Respuesta en Video',
-             'required'      => false,
-             'type_options' => array(
-                 'delete_options' => array(
-                     // You may otherwise choose to put the field but hide it
-                     'type'         => 'hidden',
-                     // In that case, you need to fill in the options as well
-                     'type_options' => array(
-                         'mapped'   => false,
-                         'required' => false,
-                     )
-                 )
-             )
+             'required'      => false
            ), array(
                'edit' => 'inline',
                'inline' => 'table',
@@ -98,7 +65,7 @@ class RespuestasAdmin extends AbstractAdmin
   {
     $listMapper
 	->add('id')
-    ->add('texto')
+  ->add('texto')
 	->add('pregunta');
   }
   public function prePersist($object){

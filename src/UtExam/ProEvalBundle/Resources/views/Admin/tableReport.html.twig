@@ -32,18 +32,17 @@
       	<h3>Reporte Generacional</h3>
       </div>
     	<div class="widget-content">
-    		<table class="table table-striped table-bordered">
+    		<table class="table table-striped table-bordered table-condensed table-hover">
     			<thead>
             {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" and GV[0].calificacionE1 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
             {% endif %}
             {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" and GV[0].calificacionE2 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
-            {% endif %} 
+            {% endif %}
             {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" and GV[0].calificacionE3 != ":=0" %}
               {% set IntMaterias = IntMaterias + 1 %}
             {% endif %}
-            {% dump(IntMaterias) %}
     				<tr>
               <th>Turno</th>
     					<th>Grupo</th>
@@ -151,45 +150,50 @@
                 {% if CalifiE1 != 0 %}
                 {% set CalifiE1 = CalifiE1 / AlumnosPGE1 %}
                   <td>{{CalifiE1|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE1}}</td>
                 {% endif %}
                 {% if CalifiE2 != 0 %}
                 {% set CalifiE2 = CalifiE2 / AlumnosPGE2 %}
                   <td>{{CalifiE2|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE2}}</td>
                 {% endif %}
                 {% if CalifiE3 != 0 %}
                 {% set CalifiE3 = CalifiE3 / AlumnosPGE3 %}
                   <td>{{CalifiE3|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE3}}</td>
                 {% endif %}
-                {% set PromedioE = (CalifiE1 + CalifiE2 + CalifiE3) / (IntMaterias - 1) %}
+                {% if (CalifiE1 + CalifiE2 + CalifiE3)  != 0 %}
+                  {% set PromedioE = (CalifiE1 + CalifiE2 + CalifiE3) / (IntMaterias - 1) %}
+                {% endif %}
                 <td>{{PromedioE|slice(0, 5)}}</td>
-
-                {% set CalifiE1 = 0 %}
-                {% set CalifiE2 = 0 %}
-                {% set CalifiE3 = 0 %}
-
                 {% if CalifiS1 != 0 %}
                 {% set CalifiS1 = CalifiS1 / AlumnosPGS1 %}
                   <td>{{CalifiS1|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS1}}</td>
                 {% endif %}
                 {% if CalifiS2 != 0 %}
                 {% set CalifiS2 = CalifiS2 / AlumnosPGS2 %}
                   <td>{{CalifiS2|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS2}}</td>
                 {% endif %}
                 {% if CalifiS3 != 0 %}
                 {% set CalifiS3 = CalifiS3 / AlumnosPGS3 %}
                   <td>{{CalifiS3|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS3}}</td>
                 {% endif %}
-                {% set PromedioS = (CalifiS1 + CalifiS2 + CalifiS3) / (IntMaterias - 1) %}
+                {% if (CalifiS1 + CalifiS2 + CalifiS3) != 0 %}
+                  {% set PromedioS = (CalifiS1 + CalifiS2 + CalifiS3) / (IntMaterias - 1) %}
+                {% endif %}
                 <td>{{PromedioS|slice(0, 5)}}</td>
-                {% if Maestro1 is not empty %}
-                  <td>{{Maestro1}}</td>
-                {% endif %}
-                {% if Maestro2 is not empty %}
-                  <td>{{Maestro2}}</td>
-                {% endif %}
-                {% if Maestro3 is not empty %}
-                  <td>{{Maestro3}}</td>
-                {% endif %}
+                <td>{{Maestro1}}</td>
+                <td>{{Maestro2}}</td>
+                <td>{{Maestro3}}</td>
                 {% set Porcentaje = PromedioS - PromedioE %}
                 {% if Porcentaje >= 0 %}
                   {% if Porcentaje == 0 %}
@@ -215,17 +219,26 @@
                   {% endif %}
                   </td>
                 {% endif %}
+                {% set AlumnosPGE1 = 0 %}
+          			{% set AlumnosPGE2 = 0 %}
+          			{% set AlumnosPGE3 = 0 %}
+          			{% set AlumnosPGS1 = 0 %}
+          			{% set AlumnosPGS2 = 0 %}
+          			{% set AlumnosPGS3 = 0 %}
+                {% set CalifiE1 = 0 %}
+                {% set CalifiE2 = 0 %}
+                {% set CalifiE3 = 0 %}
                 {% set CalifiS1 = 0 %}
                 {% set CalifiS2 = 0 %}
                 {% set CalifiS3 = 0 %}
               </tr>
             {% endfor %}
-			{% set AlumnosPGE1 = 0 %}
-			{% set AlumnosPGE2 = 0 %}
-			{% set AlumnosPGE3 = 0 %}
-			{% set AlumnosPGS1 = 0 %}
-			{% set AlumnosPGS2 = 0 %}
-			{% set AlumnosPGS3 = 0 %}
+      			{% set AlumnosPGE1 = 0 %}
+      			{% set AlumnosPGE2 = 0 %}
+      			{% set AlumnosPGE3 = 0 %}
+      			{% set AlumnosPGS1 = 0 %}
+      			{% set AlumnosPGS2 = 0 %}
+      			{% set AlumnosPGS3 = 0 %}
             {% set CalifiE1 = 0 %}
             {% set CalifiE2 = 0 %}
             {% set CalifiE3 = 0 %}
@@ -288,45 +301,50 @@
                 {% if CalifiE1 != 0 %}
                 {% set CalifiE1 = CalifiE1 / AlumnosPGE1 %}
                   <td>{{CalifiE1|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE1}}</td>
                 {% endif %}
                 {% if CalifiE2 != 0 %}
                 {% set CalifiE2 = CalifiE2 / AlumnosPGE2 %}
                   <td>{{CalifiE2|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE2}}</td>
                 {% endif %}
                 {% if CalifiE3 != 0 %}
                 {% set CalifiE3 = CalifiE3 / AlumnosPGE3 %}
                   <td>{{CalifiE3|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiE3}}</td>
                 {% endif %}
-                {% set PromedioE = (CalifiE1 + CalifiE2 + CalifiE3) / (IntMaterias - 1) %}
+                {% if (CalifiE1 + CalifiE2 + CalifiE3)  != 0 %}
+                  {% set PromedioE = (CalifiE1 + CalifiE2 + CalifiE3) / (IntMaterias - 1) %}
+                {% endif %}
                 <td>{{PromedioE|slice(0, 5)}}</td>
-
-                {% set CalifiE1 = 0 %}
-                {% set CalifiE2 = 0 %}
-                {% set CalifiE3 = 0 %}
-
                 {% if CalifiS1 != 0 %}
                 {% set CalifiS1 = CalifiS1 / AlumnosPGS1 %}
                   <td>{{CalifiS1|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS1}}</td>
                 {% endif %}
                 {% if CalifiS2 != 0 %}
                 {% set CalifiS2 = CalifiS2 / AlumnosPGS2 %}
                   <td>{{CalifiS2|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS2}}</td>
                 {% endif %}
                 {% if CalifiS3 != 0 %}
                 {% set CalifiS3 = CalifiS3 / AlumnosPGS3 %}
                   <td>{{CalifiS3|slice(0, 5)}}</td>
+                {% else %}
+                  <td>{{CalifiS3}}</td>
                 {% endif %}
-                {% set PromedioS = (CalifiS1 + CalifiS2 + CalifiS3) / (IntMaterias - 1) %}
+                {% if (CalifiS1 + CalifiS2 + CalifiS3) != 0 %}
+                  {% set PromedioS = (CalifiS1 + CalifiS2 + CalifiS3) / (IntMaterias - 1) %}
+                {% endif %}
                 <td>{{PromedioS|slice(0, 5)}}</td>
-                {% if Maestro1 is not empty %}
-                  <td>{{Maestro1}}</td>
-                {% endif %}
-                {% if Maestro2 is not empty %}
-                  <td>{{Maestro2}}</td>
-                {% endif %}
-                {% if Maestro3 is not empty %}
-                  <td>{{Maestro3}}</td>
-                {% endif %}
+                <td>{{Maestro1}}</td>
+                <td>{{Maestro2}}</td>
+                <td>{{Maestro3}}</td>
                 {% set Porcentaje = PromedioS - PromedioE %}
                 {% if Porcentaje >= 0 %}
                   {% if Porcentaje == 0 %}
@@ -352,6 +370,15 @@
                   {% endif %}
                   </td>
                 {% endif %}
+                {% set AlumnosPGE1 = 0 %}
+          			{% set AlumnosPGE2 = 0 %}
+          			{% set AlumnosPGE3 = 0 %}
+          			{% set AlumnosPGS1 = 0 %}
+          			{% set AlumnosPGS2 = 0 %}
+          			{% set AlumnosPGS3 = 0 %}
+                {% set CalifiE1 = 0 %}
+                {% set CalifiE2 = 0 %}
+                {% set CalifiE3 = 0 %}
                 {% set CalifiS1 = 0 %}
                 {% set CalifiS2 = 0 %}
                 {% set CalifiS3 = 0 %}

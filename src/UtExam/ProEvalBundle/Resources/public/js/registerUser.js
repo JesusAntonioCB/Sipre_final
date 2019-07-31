@@ -31,21 +31,29 @@ $(document).ready(function() {
         boxName= document.getElementById('userName').value,
         boxpass= document.getElementById('password').value,
         boxUserName= document.getElementById('userNameUni').value,
-        boxGrupo= document.getElementById('txtGrupo').value,
-        boxCarrera= document.getElementById('userCarrera').value,
+        boxGrupo= document.getElementById('txtGrupo'),
+        boxGrupo=boxGrupo.options[boxGrupo.selectedIndex].value,
+        boxCarrera= document.getElementById('userCarrera'),
+        boxCarrera=boxCarrera.options[boxCarrera.selectedIndex].value,
         boxEval= "Entrada",
         boxTurno= document.getElementById('exampleFormControlSelect1').value;
     if (boxTurno === "Vespertino") {
-      var boxMaestro1= document.getElementById('selectMaestro1V').value,
-          boxMaestro2= document.getElementById('selectMaestro2V').value,
-          boxMaestro3= document.getElementById('selectMaestro3V').value;
+      var boxMaestro1= document.getElementById('selectMaestro1V'),
+          boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
+          boxMaestro2= document.getElementById('selectMaestro2V'),
+          boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
+          boxMaestro3= document.getElementById('selectMaestro3V'),
+          boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
     }else {
-      var boxMaestro1= document.getElementById('selectMaestro1N').value,
-          boxMaestro2= document.getElementById('selectMaestro2N').value,
-          boxMaestro3= document.getElementById('selectMaestro3N').value;
+      var boxMaestro1= document.getElementById('selectMaestro1N'),
+          boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
+          boxMaestro2= document.getElementById('selectMaestro2N'),
+          boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
+          boxMaestro3= document.getElementById('selectMaestro3N'),
+          boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
     }
     if (boxName===""||boxCarrera===""||boxTurno===""||boxGrupo===""||boxEval===""||
-        boxMaestro3===""||boxMaestro2===""||boxMaestro1===""||boxUserName===""||boxpass=="") {
+        boxMaestro3==="-1"||boxMaestro2==="-1"||boxMaestro1==="-1"||boxUserName===""||boxpass=="") {
     var bandera= false;
     $(".loginContainer").append('\
     <div class="alert alert-danger alert-dismissible fade show" role="alert">\

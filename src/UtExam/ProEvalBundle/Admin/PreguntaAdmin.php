@@ -34,18 +34,7 @@ class PreguntaAdmin extends AbstractAdmin
     ->add('imagen','sonata_type_collection', array(
           'by_reference' => false,
           'label' => 'Agregar Imagen (opcional)',
-          'required'      => false,
-          'type_options' => array(
-              'delete_options' => array(
-                  // You may otherwise choose to put the field but hide it
-                  'type'         => 'hidden',
-                  // In that case, you need to fill in the options as well
-                  'type_options' => array(
-                      'mapped'   => false,
-                      'required' => false,
-                  )
-              )
-          )
+          'required'      => false
         ), array(
             'edit' => 'inline',
             'inline' => 'table',
@@ -130,6 +119,9 @@ class PreguntaAdmin extends AbstractAdmin
   {
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
+    dump($object);
+    dump($object->getImagen()->getValues());
+    // die;
     if (!is_null($object->getImagen())) {
       if (!empty($object->getImagen())) {
         $imagenes= $object->getImagen()->getValues();

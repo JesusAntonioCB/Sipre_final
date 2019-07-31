@@ -353,6 +353,9 @@ class DefaultController extends Controller
                      ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
                      ->find((int)$_POST['maestro3']);
       $valueEval = $_POST['evaluacion'];
+      dump($_POST['maestro1']);
+      dump($_POST['maestro2']);
+      dump($_POST['maestro3']);
       try {
         $alumno = new Alumnos();
         $alumno->setNombre($valueName);
@@ -381,7 +384,6 @@ class DefaultController extends Controller
         setcookie("examen", "Entrada", 0);
         return new Response('Registro exitoso');
       } catch (\Exception $e) {
-        dump(get_class_methods($e->getPrevious()));
         if ($e->getPrevious()->getSQLState()==="23000") {
           return new Response('Error: El usuario ingresado ya existe');
         }else {
