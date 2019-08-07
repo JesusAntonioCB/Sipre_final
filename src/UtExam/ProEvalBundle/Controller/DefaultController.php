@@ -99,8 +99,9 @@ class DefaultController extends Controller
                 'Author'=> $examenRes[0]['user']['username'],
                 'ExamDate'=>$examenRes[0]['fecha'],
                 'ExamTitle'=>$examenRes[0]['instrucciones'],
+                'ExamTiempo'=>$examenRes[0]['tiempo'],
                 'preguntasGrup' => DefaultController::getAllQuestion($examenRes),
-                'propedeutico'=>"PROPEDEUTICO"
+                'propedeutico'=>true
               )//final de array
             );//Final de return
           }
@@ -420,22 +421,45 @@ class DefaultController extends Controller
     }
     public function getResultsAction(){
       $em = $this->getDoctrine()->getManager();
-      $respuestas= $_POST['respuestas'];
-      $preguntas= (int)$_POST['dquestion'];
       $examen= $_COOKIE["examen"];
+      if ($_POST['respuestas']) {
+        $respuestas= $_POST['respuestas'];
+      }else {
+        $respuestas=[];
+      }
+      if ($_POST['dquestion']) {
+        $preguntas= (int)$_POST['dquestion'];
+      }else {
+        $preguntas= 0;
+      }
       if ($preguntas < sizeof($respuestas, 0)) {
         $preguntas= 50;
       }
       $time= $_POST['time'];
+      if ($_POST['QByGrup1']) {
+        $Mat1= explode("=;", $_POST['QByGrup1'])[0];
+        $preg1= (int)explode("=;", $_POST['QByGrup1'])[1];
+      }else {
+        $Mat1="";
+        $preg1=0;
+      }
+      if ($_POST['QByGrup2']) {
+        $Mat2= explode("=;", $_POST['QByGrup2'])[0];
+        $preg2= (int)explode("=;", $_POST['QByGrup2'])[1];
+      }else {
+        $Mat2="";
+        $preg2=0;
+      }
+      if ($_POST['QByGrup3']) {
+        $Mat3= explode("=;", $_POST['QByGrup3'])[0];
+        $preg3= (int)explode("=;", $_POST['QByGrup3'])[1];
+      }else {
+        $Mat3="";
+        $preg3=0;
+      }
       $RCorect1=0;
       $RCorect2=0;
       $RCorect3=0;
-      $Mat1="";
-      $Mat2="";
-      $Mat3="";
-      $preg1=0;
-      $preg2=0;
-      $preg3=0;
       $calificacion1=0;
       $calificacion2=0;
       $calificacion3=0;
@@ -455,31 +479,17 @@ class DefaultController extends Controller
           $respuestaRes=$querytext->getArrayResult()[0];
           $isCorect=$respuestaRes["correcto"];
           $materia= $respuestaRes["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1 == "") {
-            $Mat1=$materia;
-          }elseif ($Mat2 == "") {
-            if ($Mat1!=$materia) {
-              $Mat2=$materia;
-            }
-          }  elseif ($Mat3 == "") {
-            if ($Mat2!=$materia) {
-              $Mat3=$materia;
-            }
-          }
           if ($Mat1==$materia) {
-            $preg1 += 1;
             if ($isCorect) {
               $RCorect1 += 1;
             }
           }
           if ($Mat2==$materia) {
-            $preg2 += 1;
             if ($isCorect) {
               $RCorect2 += 1;
             }
           }
           if ($Mat3==$materia) {
-            $preg3 += 1;
             if ($isCorect) {
               $RCorect3 += 1;
             }
@@ -497,31 +507,17 @@ class DefaultController extends Controller
           $resVidResult=$queryVid->getArrayResult()[0];
           $isCorect=$resVidResult["correcto"];
           $materia= $resVidResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1 == "") {
-            $Mat1=$materia;
-          }elseif ($Mat2 == "") {
-            if ($Mat1!=$materia) {
-              $Mat2=$materia;
-            }
-          }  elseif ($Mat3 == "") {
-            if ($Mat2!=$materia) {
-              $Mat3=$materia;
-            }
-          }
           if ($Mat1==$materia) {
-            $preg1 += 1;
             if ($isCorect) {
               $RCorect1 += 1;
             }
           }
           if ($Mat2==$materia) {
-            $preg2 += 1;
             if ($isCorect) {
               $RCorect2 += 1;
             }
           }
           if ($Mat3==$materia) {
-            $preg3 += 1;
             if ($isCorect) {
               $RCorect3 += 1;
             }
@@ -539,31 +535,17 @@ class DefaultController extends Controller
           $resImgResult=$queryimg->getArrayResult()[0];
           $isCorect=$resImgResult["correcto"];
           $materia= $resImgResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1 == "") {
-            $Mat1=$materia;
-          }elseif ($Mat2 == "") {
-            if ($Mat1!=$materia) {
-              $Mat2=$materia;
-            }
-          }  elseif ($Mat3 == "") {
-            if ($Mat2!=$materia) {
-              $Mat3=$materia;
-            }
-          }
           if ($Mat1==$materia) {
-            $preg1 += 1;
             if ($isCorect) {
               $RCorect1 += 1;
             }
           }
           if ($Mat2==$materia) {
-            $preg2 += 1;
             if ($isCorect) {
               $RCorect2 += 1;
             }
           }
           if ($Mat3==$materia) {
-            $preg3 += 1;
             if ($isCorect) {
               $RCorect3 += 1;
             }
@@ -581,31 +563,17 @@ class DefaultController extends Controller
           $resAudResult=$queryAud->getArrayResult()[0];
           $isCorect=$resAudResult["correcto"];
           $materia= $resAudResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1 == "") {
-            $Mat1=$materia;
-          }elseif ($Mat2 == "") {
-            if ($Mat1!=$materia) {
-              $Mat2=$materia;
-            }
-          }  elseif ($Mat3 == "") {
-            if ($Mat2!=$materia) {
-              $Mat3=$materia;
-            }
-          }
           if ($Mat1==$materia) {
-            $preg1 += 1;
             if ($isCorect) {
               $RCorect1 += 1;
             }
           }
           if ($Mat2==$materia) {
-            $preg2 += 1;
             if ($isCorect) {
               $RCorect2 += 1;
             }
           }
           if ($Mat3==$materia) {
-            $preg3 += 1;
             if ($isCorect) {
               $RCorect3 += 1;
             }

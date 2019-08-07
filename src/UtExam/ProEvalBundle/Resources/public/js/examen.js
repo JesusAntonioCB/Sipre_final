@@ -1,28 +1,89 @@
 $(document).ready(function() {
   var totalTime= "";
   if ($('.examenInterfaz').length) {
-    var minutesLabel = document.getElementById("ExamTimerMinutos");
-    var secondsLabel = document.getElementById("ExamTimerSegundos");
+    var timerExamen = document.getElementById("examTimerContainer");
+    // var timerExamen = document.getElementById("examTimerContainer").innerHTML;
     var totalSeconds = 0;
     var modal = document.getElementById("imgModal");
-
-    setInterval(setTime, 1000);
-
-    function setTime() {
-      ++totalSeconds;
-      totalTime=pad(parseInt(totalSeconds / 60))+":"+pad(totalSeconds % 60);
-      secondsLabel.innerHTML = pad(totalSeconds % 60);
-      minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
-    }
-
-    function pad(val) {
-      var valString = val + "";
-      if (valString.length < 2) {
-        return "0" + valString;
-      } else {
-        return valString;
+    function count() {
+      if (getCookie("time")) {
+        var startTime=getCookie("time");
+      }else{
+        var startTime = timerExamen.innerHTML;
       }
+      var pieces = startTime.split(":");
+      var time = new Date();    time.setHours(pieces[0]);
+      time.setMinutes(pieces[1]);
+      time.setSeconds(pieces[2]);
+      var timedif = new Date(time.valueOf() - 1000);
+      var newtime = timedif.toTimeString().split(" ")[0];
+      timerExamen.innerHTML=newtime;
+      document.cookie = "time="+newtime;
+      if (newtime==="00:00:00" ||newtime==="00:00:01") {
+        var timeOrigin= $("#examTimerContainer").attr("data-time");
+        var timeFinish = document.getElementById("examTimerContainer").innerHTML;
+        var piecesOrigin = timeOrigin.split(":");
+        var piecesFinish = timeFinish.split(":");
+        var hTosecons= (parseInt(piecesOrigin[0])*60)*60;
+        var mTosecons= parseInt(piecesOrigin[1])*60;
+        var originSecons= parseInt(piecesOrigin[2])+mTosecons+hTosecons;
+        var hToseconsF= (parseInt(piecesFinish[0])*60)*60;
+        var mToseconsF= parseInt(piecesFinish[1])*60;
+        var finishSecons= parseInt(piecesFinish[2])+mToseconsF+hToseconsF;
+        var totalSecons= originSecons-finishSecons;
+        var totalTime= secondsToHms(totalSecons);
+        var arrayQByGrup= [];
+        var qByGrup1= false;
+        var qByGrup2= false;
+        var qByGrup3= false;
+        $(".questionByGrup").each(function(){
+          arrayQByGrup.push($(this).attr("data-question"));
+        });
+        if (arrayQByGrup[0]!=null||arrayQByGrup[0]!="") {
+          qByGrup1=arrayQByGrup[0];
+        }
+        if (arrayQByGrup[1]!=null||arrayQByGrup[1]!="") {
+          qByGrup2=arrayQByGrup[1];
+        }
+        if (arrayQByGrup[2]!=null||arrayQByGrup[2]!="") {
+          qByGrup3=arrayQByGrup[2];
+        }
+        var respuestas=[];
+        var question= $(".totalQuestion").attr("data-quetion");
+        $("input:checkbox[class=checkbox]:checked").each(function(){
+            respuestas.push($(this).val().split('=;'));
+        });
+        var datos={
+          respuestas:respuestas,
+          time:totalTime,
+          dquestion:question,
+          QByGrup1:qByGrup1,
+          QByGrup2:qByGrup2,
+          QByGrup3:qByGrup3,
+        }
+        var herf= window.location.pathname;
+        if (herf==="/") {
+          herf="";
+        }
+        $.ajax({//inicio de funciones de AJAX
+          type: 'POST',
+          data: datos,
+          url: 'get-Results',
+          beforeSend: function() {//funciones antes de cargar
+          },//final de beforeSend()
+          success: function send(data) {//Funciones si hay éxito en el envio
+            alert(data);
+            location.reload();
+          }
+        });//final de AJAX
+        document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        alert("El tiempo ha finalizado. se calificara solo tus preguntas contestadas");
+        return;
+      }
+      timeoutHandle=setTimeout(count, 1000);
     }
+    count();
+
     $('body').on('click', '.btnExam',function() {
       var checbox=$(this).attr('data-check');
       var noques= $(this).attr('data-question');
@@ -65,6 +126,34 @@ $(document).ready(function() {
       }
     });
     $('body').on('click','.btnFinish', function(){
+      var timeOrigin= $("#examTimerContainer").attr("data-time");
+      var timeFinish = document.getElementById("examTimerContainer").innerHTML;
+      var piecesOrigin = timeOrigin.split(":");
+      var piecesFinish = timeFinish.split(":");
+      var hTosecons= (parseInt(piecesOrigin[0])*60)*60;
+      var mTosecons= parseInt(piecesOrigin[1])*60;
+      var originSecons= parseInt(piecesOrigin[2])+mTosecons+hTosecons;
+      var hToseconsF= (parseInt(piecesFinish[0])*60)*60;
+      var mToseconsF= parseInt(piecesFinish[1])*60;
+      var finishSecons= parseInt(piecesFinish[2])+mToseconsF+hToseconsF;
+      var totalSecons= originSecons-finishSecons;
+      var totalTime= secondsToHms(totalSecons);
+      var arrayQByGrup= [];
+      var qByGrup1= false;
+      var qByGrup2= false;
+      var qByGrup3= false;
+      $(".questionByGrup").each(function(){
+        arrayQByGrup.push($(this).attr("data-question"));
+      });
+      if (arrayQByGrup[0]!=null||arrayQByGrup[0]!="") {
+        qByGrup1=arrayQByGrup[0];
+      }
+      if (arrayQByGrup[1]!=null||arrayQByGrup[1]!="") {
+        qByGrup2=arrayQByGrup[1];
+      }
+      if (arrayQByGrup[2]!=null||arrayQByGrup[2]!="") {
+        qByGrup3=arrayQByGrup[2];
+      }
       var respuestas=[];
       var question= $(".totalQuestion").attr("data-quetion");
       $("input:checkbox[class=checkbox]:checked").each(function(){
@@ -74,7 +163,10 @@ $(document).ready(function() {
         var datos={
           respuestas:respuestas,
           time:totalTime,
-          dquestion:question
+          dquestion:question,
+          QByGrup1:qByGrup1,
+          QByGrup2:qByGrup2,
+          QByGrup3:qByGrup3,
         }
         var herf= window.location.pathname;
         if (herf==="/") {
@@ -125,5 +217,31 @@ $(document).ready(function() {
     $('body').on('click','.closeModal', function(){
       modal.style.display = "none";
     });
+  }
+  function secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? ":" : ":") : "00:";
+    var mDisplay = m > 0 ? m + (m == 1 ? ":" : ":") : "00:";
+    var sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    return hDisplay + mDisplay + sDisplay;
+  }
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
   }
 });

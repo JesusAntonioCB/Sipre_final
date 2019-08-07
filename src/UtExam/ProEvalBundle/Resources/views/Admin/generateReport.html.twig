@@ -49,49 +49,6 @@
   {% endblock %}
 {% block table %}
 <div class="contentTable">
-<table border="1">
-			<caption>Tabla con combinación de filas</caption>
-      <tr>
-        <th>Turno</th>
-        <th>Grupo</th>
-        <th colspan="3">Calificacion de Entrada</th>
-        <th colspan="3">Calificacion de Salida</th>
-        <th>Maestro a cargo</th>
-        <th>Promedio</th>
-        <th>Porcentaje de mejora</th>
-      </tr>
-      <tr>
-        <th></th>
-        <th></th>
-        <th>C.L.</th>
-        <th>P.M</th>
-        <th>Ing</th>
-        <th>Promedio</th>
-        <th>C.L.</th>
-        <th>P.M</th>
-        <th>Ing</th>
-        <th>Promedio</th>
-        <th>%</th>
-      </tr>
-			<tr>
-				<td rowspan="4">Celda Combinada</td>
-				<td>Celda 1</td>
-        <th>12</th>
-        <th>3</th>
-        <th>no se</th>
-        <th>10</th>
-        <th>1%</th>
-			</tr>
-			<tr>
-				<td>Celda 7</td>
-			</tr>
-      <tr>
-				<td>Celda 7</td>
-			</tr>
-      <tr>
-				<td>Celda 7</td>
-			</tr>
-		</table>
 </div>
 {% endblock %}
   <script type="text/javascript">
@@ -115,37 +72,4 @@
       }
     });
   </script>
-  {# <tr>
-    <td>Total</td>
-    <td>{{AlumnosPGT}}</td>
-    <td>{{(CalificacionGET / AlumnosPGT)|slice(0, 5)}}</td>
-    <td>{{(CalificacionGST / AlumnosPGT)|slice(0, 5)}}</td>
-    <td>{{Maestro}}</td>
-    <td>{{(((CalificacionGST / AlumnosPGT) + (CalificacionGET / AlumnosPGT)) / 2)|slice(0, 5)}}</td>
-    {% set Porcentaje = (CalificacionGST / AlumnosPGT) - (CalificacionGET / AlumnosPGT) %}
-    {% if Porcentaje >= 0 %}
-      {% if Porcentaje == 0 %}
-        <td>
-          {{Porcentaje}}%
-        </td>
-      {% else %}
-        <td class="text-success">
-      {% if (CalificacionGET / AlumnosPGT) == 0 %}
-        {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
-      {% else %}
-        {{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
-      {% endif %}
-        </td>
-      {% endif %}
-    {% else %}
-      <td class="text-danger" >
-      {% set Porcentaje = (CalificacionGET / AlumnosPGT) - (CalificacionGST / AlumnosPGT) %}
-      {% if (CalificacionGET / AlumnosPGT) == 0 %}
-        -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
-      {% else %}
-        -{{ ((Porcentaje / (CalificacionGET / AlumnosPGT)) * 100)|slice(0, 5) }}%
-      {% endif %}
-      </td>
-    {% endif %}
-  </tr> #}
 {% endblock %}

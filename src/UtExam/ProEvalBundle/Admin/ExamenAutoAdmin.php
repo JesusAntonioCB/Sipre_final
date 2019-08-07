@@ -10,6 +10,8 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
 use Application\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Route\RouteCollection;
+use UtExam\ProEvalBundle\Entity\Alumnos;
+
 
 /**
  *
@@ -22,7 +24,7 @@ class ExamenAutoAdmin extends AbstractAdmin
     $formMapper
     ->add('titulo', TextType::class, [
       'label' => 'Titulo del examen'])
-    ->add('tiempo', null, [
+    ->add('tiempo', 'time', [
       'label' => 'Tiempo que durara el examen'])
     ->add('instrucciones', TextType::class, [
       'label' => 'Instrucciones del examen'])
@@ -127,7 +129,7 @@ class ExamenAutoAdmin extends AbstractAdmin
         WHERE pA.id = :id');
       $query->setParameter('id', $preguntaAuto->getId());
       $preguntasRes=$query->getArrayResult();
-      if (count($preguntasRes[0]['pregunta']) === 0) {
+      if (count($preguntasRes[0]['pregunta']) != (int)$preguntaAuto->getCantidad()) {
         //obtener promedio
         $y= (int)$preguntaAuto->getNivel();
         $result+=$y;
@@ -155,6 +157,13 @@ class ExamenAutoAdmin extends AbstractAdmin
         if ($numberOfPreguntas > count($NumberRes)) {
           dump("no hay tantas preguntas con los parametros seleccionados");
           die();
+        }
+        if (count($preguntasRes[0]['pregunta']) != 0) {
+          foreach ($preguntasRes[0]['pregunta'] as $pregunta) {
+            $resPregunta = $em->getRepository("UtExam\ProEvalBundle\Entity\Pregunta")
+                        ->find($pregunta['id']);
+            $preguntaAuto->removePreguntum($resPregunta);
+          }
         }
         for ($i=0; $i < $numberOfPreguntas; $i++) {
           //agregar a el objeto las preguntas con los filtros correspondientes

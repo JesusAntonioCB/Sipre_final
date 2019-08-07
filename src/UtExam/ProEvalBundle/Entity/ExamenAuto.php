@@ -65,9 +65,9 @@ class ExamenAuto
     private $nivel;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="tiempo", type="float")
+     * @ORM\Column(name="tiempo", type="datetime")
      */
     private $tiempo;
 
@@ -360,7 +360,7 @@ class ExamenAuto
     /**
      * Set tiempo.
      *
-     * @param float $tiempo
+     * @param \DateTime $tiempo
      *
      * @return ExamenAuto
      */
@@ -374,7 +374,7 @@ class ExamenAuto
     /**
      * Get tiempo.
      *
-     * @return float
+     * @return \DateTime
      */
     public function getTiempo()
     {
