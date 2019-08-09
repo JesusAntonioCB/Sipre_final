@@ -4,7 +4,7 @@ $(document).ready(function() {
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
       $.ajax({
-          url: "/admin/getListExam",
+          url: "/sipre/web/admin/getListExam",
           type: "GET",
           dataType: "json",
           data: {
@@ -70,7 +70,7 @@ $(document).ready(function() {
       }
       if (bandera) {
         $.ajax({
-            url: "/admin/getReport",
+            url: "/sipre/web/admin/getReport",
             type: "GET",
             data: datos,
             success: function(data) {
