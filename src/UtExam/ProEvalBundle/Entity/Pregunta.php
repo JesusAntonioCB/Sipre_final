@@ -26,7 +26,7 @@ class Pregunta
     /**
      * @var string
      *
-     * @ORM\Column(name="Escrito", type="string", length=255)
+     * @ORM\Column(name="Escrito", type="string", length=20000)
      */
     private $escrito;
 
