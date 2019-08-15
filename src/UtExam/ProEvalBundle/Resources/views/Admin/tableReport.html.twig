@@ -24,6 +24,9 @@
 {% set Maestro1 = "" %}
 {% set Maestro2 = "" %}
 {% set Maestro3 = "" %}
+{% set NombreMateria1 = "" %}
+{% set NombreMateria2 = "" %}
+{% set NombreMateria3 = "" %}
 <div class="span7">
   <div class="widget stacked widget-table action-table">
     {% if generacion is defined %}
@@ -50,54 +53,58 @@
               <th colspan="{{IntMaterias}}">Calificacion de Salida</th>
     					<th colspan="{{IntMaterias - 1}}">Maestro a cargo</th>
               <th>Porcentaje de mejora</th>
+              <th colspan="{{IntMaterias - 1}}">Porcentaje de mejora por materia</th>
     				</tr>
             <tr>
               <th>||</th>
     					<th>||</th>
               {% if GV[0].calificacionE1 is not empty and GV[0].calificacionE1 is defined and GV[0].calificacionE1 != "0" and GV[0].calificacionE1 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionE1|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+                {% set NombreMateria1 = GV[0].calificacionE1|split(':=')[0] %}
+                <th>{{NombreMateria1}}</th>
               {% endif %}
               {% if GV[0].calificacionE2 is not empty and GV[0].calificacionE2 is defined and GV[0].calificacionE2 != "0" and GV[0].calificacionE2 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionE2|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+                {% set NombreMateria2 = GV[0].calificacionE2|split(':=')[0] %}
+                <th>{{NombreMateria2}}</th>
               {% endif %}
               {% if GV[0].calificacionE3 is not empty and GV[0].calificacionE3 is defined and GV[0].calificacionE3 != "0" and GV[0].calificacionE3 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionE3|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+                {% set NombreMateria3 = GV[0].calificacionE3|split(':=')[0] %}
+                <th>{{NombreMateria3}}</th>
               {% endif %}
               <th>Promedio</th>
-              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" and GV[0].calificacionS1 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS1|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria1 is not empty %}
+                <th>{{NombreMateria1}}</th>
               {% endif %}
-              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" and GV[0].calificacionS2 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS2|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria2 is not empty %}
+                <th>{{NombreMateria2}}</th>
               {% endif %}
-              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" and GV[0].calificacionS3 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS3|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria3 is not empty %}
+                <th>{{NombreMateria3}}</th>
               {% endif %}
               <th>Promedio</th>
-              {% if GV[0].calificacionS1 is not empty and GV[0].calificacionS1 is defined and GV[0].calificacionS1 != "0" and GV[0].calificacionS1 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS1|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria1 is not empty %}
+                <th>{{NombreMateria1}}</th>
               {% endif %}
-              {% if GV[0].calificacionS2 is not empty and GV[0].calificacionS2 is defined and GV[0].calificacionS2 != "0" and GV[0].calificacionS2 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS2|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria2 is not empty %}
+                <th>{{NombreMateria2}}</th>
               {% endif %}
-              {% if GV[0].calificacionS3 is not empty and GV[0].calificacionS3 is defined and GV[0].calificacionS3 != "0" and GV[0].calificacionS3 != ":=0" %}
-                {% set NombreMateria = GV[0].calificacionS3|split(':=') %}
-                <th>{{NombreMateria[0]}}</th>
+              {% if NombreMateria3 is not empty %}
+                <th>{{NombreMateria3}}</th>
               {% endif %}
               <th>%</th>
+              {% if NombreMateria1 is not empty %}
+                <th>{{NombreMateria1}}</th>
+              {% endif %}
+              {% if NombreMateria2 is not empty %}
+                <th>{{NombreMateria2}}</th>
+              {% endif %}
+              {% if NombreMateria3 is not empty %}
+                <th>{{NombreMateria3}}</th>
+              {% endif %}
     				</tr>
     			</thead>
     			<tbody>
             <tr>
-              <td rowspan="{{gruposV|length + 1}}">Vespertino</td>
+              <td rowspan="{{gruposV|length + 1}}">Matutino</td>
             </tr>
             {% for grupo in gruposV %}
               {% for alumno in GV %}
@@ -105,7 +112,13 @@
                   {% if alumno.grupo == grupo.grupo %}
                     {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" and alumno.calificacionE1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE1|split(':=') %}
-                      {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[0] is defined and alumno.maestros[0] is not empty %}
                         {% set Maestro1 = alumno.maestros[0].nombre %}
                       {% endif %}
@@ -113,7 +126,13 @@
                     {% endif %}
                     {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" and alumno.calificacionE2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE2|split(':=') %}
-                      {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[1] is defined and alumno.maestros[1] is not empty%}
                         {% set Maestro2 = alumno.maestros[1].nombre %}
                       {% endif %}
@@ -121,7 +140,13 @@
                     {% endif %}
                     {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" and alumno.calificacionE3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE3|split(':=') %}
-                      {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[2] is defined and alumno.maestros[2] is not empty %}
                         {% set Maestro3 = alumno.maestros[2].nombre %}
                       {% endif %}
@@ -129,17 +154,35 @@
                     {% endif %}
                     {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" and alumno.calificacionS1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS1|split(':=') %}
-                      {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS1 = AlumnosPGS1 + 1 %}
                     {% endif %}
                     {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" and alumno.calificacionS2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS2|split(':=') %}
-                      {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS2 = AlumnosPGS2 + 1 %}
                     {% endif %}
                     {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" and alumno.calificacionS3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS3|split(':=') %}
-                      {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS3 = AlumnosPGS3 + 1 %}
                     {% endif %}
                   {% endif %}
@@ -198,7 +241,7 @@
                 {% if Porcentaje >= 0 %}
                   {% if Porcentaje == 0 %}
                     <td>
-                      {{Porcentaje}}
+                      {{Porcentaje}}%
                     </td>
                   {% else %}
                     <td class="text-success">
@@ -219,6 +262,87 @@
                   {% endif %}
                   </td>
                 {% endif %}
+                {# porsentajes para materia 1 #}
+                {% set Porcentaje = CalifiS1 - CalifiE1 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE1 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE1) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE1 - CalifiS1 %}
+                  {% if CalifiE1 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE1) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 1 #}
+                {# porsentajes para materia 2 #}
+                {% set Porcentaje = CalifiS2 - CalifiE2 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE2 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE2) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE2 - CalifiS2 %}
+                  {% if CalifiE2 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE2) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 2 #}
+                {# porsentajes para materia 3 #}
+                {% set Porcentaje = CalifiS3 - CalifiE3 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE3 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE3) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE3 - CalifiS3 %}
+                  {% if CalifiE3 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE3) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 3 #}
                 {% set AlumnosPGE1 = 0 %}
           			{% set AlumnosPGE2 = 0 %}
           			{% set AlumnosPGE3 = 0 %}
@@ -256,7 +380,13 @@
                   {% if alumno.grupo == grupo.grupo %}
                     {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" and alumno.calificacionE1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE1|split(':=') %}
-                      {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[0] is defined and alumno.maestros[0] is not empty %}
                         {% set Maestro1 = alumno.maestros[0].nombre %}
                       {% endif %}
@@ -264,7 +394,13 @@
                     {% endif %}
                     {% if alumno.calificacionE2 is not empty and alumno.calificacionE2 is defined and alumno.calificacionE2 != "0" and alumno.calificacionE2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE2|split(':=') %}
-                      {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[1] is defined and alumno.maestros[1] is not empty%}
                         {% set Maestro2 = alumno.maestros[1].nombre %}
                       {% endif %}
@@ -272,7 +408,13 @@
                     {% endif %}
                     {% if alumno.calificacionE3 is not empty and alumno.calificacionE3 is defined and alumno.calificacionE3 != "0" and alumno.calificacionE3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionE3|split(':=') %}
-                      {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiE1 = CalifiE1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiE2 = CalifiE2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiE3 = CalifiE3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% if alumno.maestros[2] is defined and alumno.maestros[2] is not empty %}
                         {% set Maestro3 = alumno.maestros[2].nombre %}
                       {% endif %}
@@ -280,17 +422,35 @@
                     {% endif %}
                     {% if alumno.calificacionS1 is not empty and alumno.calificacionS1 is defined and alumno.calificacionS1 != "0" and alumno.calificacionS1 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS1|split(':=') %}
-                      {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS1 = AlumnosPGS1 + 1 %}
                     {% endif %}
                     {% if alumno.calificacionS2 is not empty and alumno.calificacionS2 is defined and alumno.calificacionS2 != "0" and alumno.calificacionS2 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS2|split(':=') %}
-                      {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS2 = AlumnosPGS2 + 1 %}
                     {% endif %}
                     {% if alumno.calificacionS3 is not empty and alumno.calificacionS3 is defined and alumno.calificacionS3 != "0" and alumno.calificacionS3 != ":=0" %}
                       {% set CalifiTempo = alumno.calificacionS3|split(':=') %}
-                      {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% if NombreMateria1 == CalifiTempo[0] %}
+                        {% set CalifiS1 = CalifiS1 + CalifiTempo[1] %}
+                        {% elseif NombreMateria2 == CalifiTempo[0] %}
+                        {% set CalifiS2 = CalifiS2 + CalifiTempo[1] %}
+                        {% elseif NombreMateria3 == CalifiTempo[0] %}
+                        {% set CalifiS3 = CalifiS3 + CalifiTempo[1] %}
+                      {% endif %}
                       {% set AlumnosPGS3 = AlumnosPGS3 + 1 %}
                     {% endif %}
                   {% endif %}
@@ -370,6 +530,87 @@
                   {% endif %}
                   </td>
                 {% endif %}
+                {# porsentajes para materia 1 #}
+                {% set Porcentaje = CalifiS1 - CalifiE1 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE1 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE1) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE1 - CalifiS1 %}
+                  {% if CalifiE1 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE1) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 1 #}
+                {# porsentajes para materia 2 #}
+                {% set Porcentaje = CalifiS2 - CalifiE2 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE2 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE2) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE2 - CalifiS2 %}
+                  {% if CalifiE2 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE2) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 2 #}
+                {# porsentajes para materia 3 #}
+                {% set Porcentaje = CalifiS3 - CalifiE3 %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiE3 == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / CalifiE3) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = CalifiE3 - CalifiS3 %}
+                  {% if CalifiE3 == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / CalifiE3) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {# fin de porsentajes para materia 3 #}
                 {% set AlumnosPGE1 = 0 %}
           			{% set AlumnosPGE2 = 0 %}
           			{% set AlumnosPGE3 = 0 %}
