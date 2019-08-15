@@ -179,6 +179,7 @@ $(document).ready(function() {
           beforeSend: function() {//funciones antes de cargar
           },//final de beforeSend()
           success: function send(data) {//Funciones si hay éxito en el envio
+            document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             alert(data);
             location.reload();
           },//final de success()
