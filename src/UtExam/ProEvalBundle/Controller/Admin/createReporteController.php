@@ -90,17 +90,19 @@ class createReporteController extends Controller
       }
       if ($typeReporte=="generacion") {
         $queryRep = $em->createQuery('
-          SELECT a,m
+          SELECT a,m,maters
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
           LEFT JOIN a.maestros m
+          LEFT JOIN m.materias maters
           WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno');
         $queryRep->setParameter('idGen', $generacion);
         $queryRep->setParameter('turno', "Vespertino");
         $generationVRes=$queryRep->getArrayResult();
         $query2Rep = $em->createQuery('
-          SELECT a,m
+          SELECT a,m,maters
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
           LEFT JOIN a.maestros m
+          LEFT JOIN m.materias maters
           WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno');
         $query2Rep->setParameter('idGen', $generacion);
         $query2Rep->setParameter('turno', "Nocturno");
