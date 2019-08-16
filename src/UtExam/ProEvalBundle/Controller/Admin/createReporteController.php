@@ -133,18 +133,24 @@ class createReporteController extends Controller
 
       }else {
         $queryRep = $em->createQuery('
-          SELECT a
+          SELECT a,m, maters
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          LEFT JOIN m.materias maters
           WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno');
         $queryRep->setParameter('idGen', $generacion);
         $queryRep->setParameter('idGrup', $grupo);
         $queryRep->setParameter('idTurno', $turno);
         $generationRes=$queryRep->getArrayResult();
+        dump($generationRes);
         if (empty($generationRes)) {
           return new Response("El grupo seleccionado no existe prueba cambinado el turno");
         }else {
           return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
               'grupo' => true,
+              'nameGrupo' => $grupo,
+              'nameGeneracion' => $generacion,
+              'turno' => $turno,
               'reporte' => $generationRes
           ]);
         }
