@@ -142,7 +142,6 @@ class createReporteController extends Controller
         $queryRep->setParameter('idGrup', $grupo);
         $queryRep->setParameter('idTurno', $turno);
         $generationRes=$queryRep->getArrayResult();
-        dump($generationRes);
         if (empty($generationRes)) {
           return new Response("El grupo seleccionado no existe prueba cambinado el turno");
         }else {
