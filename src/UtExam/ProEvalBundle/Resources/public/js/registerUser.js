@@ -1,6 +1,6 @@
 $(document).ready(function() {
   if ($('.homeConter').length) {
-    document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
   }
   $('body').on('click','.btnEntrada', function() {
     $('.RegisterUser').removeClass("hide");
@@ -10,8 +10,8 @@ $(document).ready(function() {
     $('.loginUser').removeClass("hide");
     $('.homeConter').addClass("hide");
   });
-  $('body').on('click','#exampleFormControlSelect1', function() {
-    if (this.value === "Vespertino") {
+  $('body').on('change','#exampleFormControlSelect1', function() {
+    if (this.options[this.selectedIndex].value === "Vespertino") {
       $("#selectMaestro1V").removeClass("hide");
       $("#selectMaestro2V").removeClass("hide");
       $("#selectMaestro3V").removeClass("hide");
@@ -39,7 +39,8 @@ $(document).ready(function() {
         boxCarrera= document.getElementById('userCarrera'),
         boxCarrera=boxCarrera.options[boxCarrera.selectedIndex].value,
         boxEval= "Entrada",
-        boxTurno= document.getElementById('exampleFormControlSelect1').value;
+        boxTurno= document.getElementById('exampleFormControlSelect1'),
+        boxTurno=boxTurno.options[boxTurno.selectedIndex].value;
     if (boxTurno === "Vespertino") {
       var boxMaestro1= document.getElementById('selectMaestro1V'),
           boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,

@@ -37,7 +37,26 @@ body {
     }
   }
 }
-
+@mixin one-column{
+  @media only screen and (max-width: 450px) {
+    @content;
+  }
+}
+@mixin two-column{
+  @media only screen and (max-width: 800px) {
+    @content;
+  }
+}
+@mixin three-column{
+  @media only screen and (max-width: 1244px) {
+    @content;
+  }
+}
+@mixin four-column{
+  @media only screen and (max-width: 1424px) {
+    @content;
+  }
+}
 $primary: darken(#428bca, 20%);
 @import'login';
 @import'loading';

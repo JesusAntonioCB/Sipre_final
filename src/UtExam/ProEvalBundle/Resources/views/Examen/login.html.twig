@@ -1,21 +1,25 @@
 {% extends 'UtExamProEvalBundle:Default:base.html.twig' %}
 {% block main %}
   <div class="homeConter">
-  <div class="title">
-  <h5>Por favor elige la evaluación que deseas realizar</h5>
-  <br>
+  <div class="title titleSelectExam">
+    <h5>Por favor elige la evaluación que deseas realizar</h5>
+    <br>
   </div>
-  <div class="contentBtn">
-    <button class="button btnEntrada">
-      Evaluación de entrada
-      <div class="button__horizontal"></div>
-      <div class="button__vertical"></div>
-    </button>
-    <button class="button btnSalida">
-      Evaluación de salida
-      <div class="button__horizontal"></div>
-      <div class="button__vertical"></div>
-    </button>
+  <div class="container">
+    <div class="row">
+      <div class="contentBtn">
+        <button class="button btnEntrada">
+          Evaluación de entrada
+          <div class="button__horizontal"></div>
+          <div class="button__vertical"></div>
+        </button>
+        <button class="button btnSalida">
+          Evaluación de salida
+          <div class="button__horizontal"></div>
+          <div class="button__vertical"></div>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
   <div class="container loginContainer RegisterUser hide">

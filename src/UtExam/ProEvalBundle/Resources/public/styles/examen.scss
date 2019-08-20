@@ -52,6 +52,32 @@ canvas {
             top: 3px;
           }
         }
+        @include two-column{
+          .userName{
+            position: relative;
+            float: left;
+            width: auto;
+            text-align: left;
+            .navbar-text{
+              width: 132px;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+            }
+          }
+        }
+        @include one-column{
+          .logo{
+            display: none;
+          }
+          .examTimer{
+            font-size: 15px;
+            .glyphicon{
+              font-size: 1.2rem;
+              top: 3px;
+            }
+          }
+        }
       }
     }
   }
@@ -192,6 +218,18 @@ canvas {
         width: 30%;
         height: 50px;
         margin-bottom: 15px;
+      }
+    }
+    @include two-column{
+      .btnContent{
+        .btnFinish{
+          width: 70%;
+          margin: auto;
+          margin-bottom: 15px;
+          position: absolute;
+          left: 0;
+          right: 0;
+        }
       }
     }
   }

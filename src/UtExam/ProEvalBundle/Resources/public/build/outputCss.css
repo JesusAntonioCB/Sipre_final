@@ -179,6 +179,25 @@ canvas {
       .examenInterfaz header nav .contentCenter .examTimer .glyphicon {
         font-size: 1.4rem;
         top: 3px; }
+    @media only screen and (max-width: 800px) {
+      .examenInterfaz header nav .contentCenter .userName {
+        position: relative;
+        float: left;
+        width: auto;
+        text-align: left; }
+        .examenInterfaz header nav .contentCenter .userName .navbar-text {
+          width: 132px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden; } }
+    @media only screen and (max-width: 450px) {
+      .examenInterfaz header nav .contentCenter .logo {
+        display: none; }
+      .examenInterfaz header nav .contentCenter .examTimer {
+        font-size: 15px; }
+        .examenInterfaz header nav .contentCenter .examTimer .glyphicon {
+          font-size: 1.2rem;
+          top: 3px; } }
 
 .examenInterfaz .examenContent {
   margin-top: 90px;
@@ -275,6 +294,14 @@ canvas {
     width: 30%;
     height: 50px;
     margin-bottom: 15px; }
+  @media only screen and (max-width: 800px) {
+    .examenInterfaz .examenContent .btnContent .btnFinish {
+      width: 70%;
+      margin: auto;
+      margin-bottom: 15px;
+      position: absolute;
+      left: 0;
+      right: 0; } }
 
 /* Style the Image Used to Trigger the Modal */
 #myImg {
@@ -383,6 +410,43 @@ canvas {
   @media only screen and (max-width: 1250px) {
     .homeConter {
       width: 100%; } }
+  @media only screen and (max-width: 800px) {
+    .homeConter .title {
+      margin-bottom: 100px; }
+      .homeConter .title h3 {
+        font-weight: bold;
+        font-size: 17px; }
+      .homeConter .title h4 {
+        font-weight: bold;
+        color: black;
+        font-size: 25px; }
+    .homeConter .container .col img {
+      max-width: 100px; }
+    .homeConter .container .contentBtn {
+      font-size: 10px; } }
+  @media only screen and (max-width: 450px) {
+    .homeConter .titleSelectExam {
+      max-width: 100% !important; }
+    .homeConter .title {
+      max-width: 80%;
+      flex: 0 0 50%;
+      padding: 0;
+      margin-right: 5px; }
+      .homeConter .title h3 {
+        font-weight: bold;
+        font-size: 17px; }
+      .homeConter .title h4 {
+        font-weight: bold;
+        color: black;
+        font-size: 25px; }
+    .homeConter .container .row {
+      margin: 0px; }
+      .homeConter .container .row .col {
+        padding: 0; }
+        .homeConter .container .row .col img {
+          max-width: 73px; }
+    .homeConter .container .contentBtn {
+      font-size: 10px; } }
 
 .button {
   --offset: 10px;
