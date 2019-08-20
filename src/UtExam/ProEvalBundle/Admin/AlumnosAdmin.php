@@ -31,15 +31,15 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('fecha', null, ['label' => 'Fecha'])
     ->add('tiempo', null, ['label' => 'Duracion de Examen'])
     ->add('calificacionE1', null, ['label' => 'Calificacion'])
-	->add('calificacionE2', null, ['label' => 'Calificacion'])
-	->add('calificacionE3', null, ['label' => 'Calificacion'])
-	->add('calificacionS1', null, ['label' => 'Calificacion'])
-	->add('calificacionS2', null, ['label' => 'Calificacion'])
-	->add('calificacionS3', null, ['label' => 'Calificacion'])
+  	->add('calificacionE2', null, ['label' => 'Calificacion'])
+  	->add('calificacionE3', null, ['label' => 'Calificacion'])
+  	->add('calificacionS1', null, ['label' => 'Calificacion'])
+  	->add('calificacionS2', null, ['label' => 'Calificacion'])
+  	->add('calificacionS3', null, ['label' => 'Calificacion'])
     ->add('codigoUsuario', null, ['label' => 'Codigo unico de Alumno'])
     ->add('turno', ChoiceFieldMaskType::class, [
       'choices' => [
-          'Matutino' => 'Matutino',
+          'Vespertino' => 'Matutino',
           'Nocturno' => 'Nocturno',
       ],
       'placeholder' => 'Selecciona una turno']);
@@ -59,11 +59,11 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('turno')
     ->add('fecha')
     ->add('calificacionE1')
-	->add('calificacionE2')
-	->add('calificacionE3')
-	->add('calificacionS1')
-	->add('calificacionS2')
-	->add('calificacionS3');
+  	->add('calificacionE2')
+  	->add('calificacionE3')
+  	->add('calificacionS1')
+  	->add('calificacionS2')
+  	->add('calificacionS3');
   }
 
   protected function configureListFields(ListMapper $listMapper)
@@ -81,20 +81,20 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('fecha')
     ->add('tiempo')
     ->add('calificacionE1')
-	->add('calificacionE2')
-	->add('calificacionE3')
-	->add('calificacionS1')
-	->add('calificacionS2')
-	->add('calificacionS3')
+	  ->add('calificacionE2')
+  	->add('calificacionE3')
+  	->add('calificacionS1')
+  	->add('calificacionS2')
+  	->add('calificacionS3')
     ->add('codigoUsuario')
     // add custom action links
-      ->add('_action', 'actions', [
-          'actions' => [
-              'view' => [],
-              'edit' => [],
-              'delete' => [],
-          ]
-      ]);
+    ->add('_action', 'actions', [
+        'actions' => [
+            'view' => [],
+            'edit' => [],
+            'delete' => [],
+        ]
+    ]);
   }
   protected function configureShowFields(ShowMapper $showMapper)
     {

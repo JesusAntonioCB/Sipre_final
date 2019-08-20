@@ -18,7 +18,7 @@ class DefaultController extends Controller
     public function indexAction(){
         if(false){
            $isLoggedIn = "true";
-           $UID = $_SESSION["UID"];
+           $UID = $_COOKIE["UID"];
            $em = $this->getDoctrine()->getManager();
            $query = $em->createQuery('
              SELECT a
@@ -43,9 +43,9 @@ class DefaultController extends Controller
     }
 
     public function propedeuticoAction(){
-        if(isset($_SESSION["UID"])){
+        if(isset($_COOKIE["UID"])){
           $isLoggedIn = "true";
-          $UID = $_SESSION["UID"];
+          $UID = $_COOKIE["UID"];
           $em = $this->getDoctrine()->getManager();
           $query = $em->createQuery('
             SELECT a, ma
@@ -55,8 +55,6 @@ class DefaultController extends Controller
           $query->setParameter('codeUser', $UID);
           $userRes=$query->getArrayResult()[0]['nombre'];
           $userId=$query->getArrayResult()[0]['id'];
-          // $json = file_get_contents('http://127.0.0.1:8000/api/v2/examen');
-          // $service = json_decode($json);
           $query = $em->createQuery('
             SELECT partial p.{id}
             FROM UtExam\ProEvalBundle\Entity\ExamenAuto p');
@@ -113,7 +111,6 @@ class DefaultController extends Controller
             FROM UtExam\ProEvalBundle\Entity\Maestros m
             LEFT JOIN m.materias mat');
           $lisMaestrosRes=$query->getArrayResult();
-          // dump($lisMaestrosRes);
           return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
             'maestros' => $lisMaestrosRes
           ));
@@ -121,14 +118,9 @@ class DefaultController extends Controller
     }
 
     public function loginAction(){
-      if (session_status() == PHP_SESSION_ACTIVE) {
-        session_destroy();
-      }
-      session_start();
       $em = $this->getDoctrine()->getManager();
       $valuePass= $_POST['pass'];
       $valueUserName= $_POST['userName'];
-      // dump("antes");
       $query = $em->createQuery('
         SELECT a
         FROM UtExam\ProEvalBundle\Entity\Alumnos a
@@ -138,22 +130,28 @@ class DefaultController extends Controller
       $query->setParameter('pass', $valuePass);
       $userRes=$query->getArrayResult();
       if (empty($userRes)){
-        return new Response('Nombre de usuario o contraseña Erroneo');
+        $responseArray = array(
+          "mensaje" => "Nombre de usuario o contraseña Erroneo",
+          "bandera" => false
+         );
+        return new JsonResponse($responseArray);
       }
-      //crear sesion
-      // dump($userRes);
+      //crear sesion cookie
       $usercode = $userRes[0]["codigoUsuario"];
-      $_SESSION["UID"] = $usercode;
-      setcookie("examen", "Salida", 0);
-      return new Response('success');
+      $responseArray = array(
+        "UID" => $usercode,
+        "examen" => "Salida",
+        "mensaje" => "Sesion iniciada correctamente",
+        "bandera" => true
+       );
+      return new JsonResponse($responseArray);
     }
 
     public function examenFijoAction(Request $request){
-        // $codigoExam =$request->get('codigoExam');
         $codigoExam =$_GET['codeExam'];
-        if(isset($_SESSION["UID"])){
+        if(isset($_COOKIE["UID"])){
           $isLoggedIn = "true";
-          $UID = $_SESSION["UID"];
+          $UID = $_COOKIE["UID"];
           $em = $this->getDoctrine()->getManager();
           $query = $em->createQuery('
             SELECT a
@@ -187,11 +185,9 @@ class DefaultController extends Controller
           $updateExam->setParameter('examen', $examenRes[0]['id']);
           $updateExam->setParameter('idUser', $userId);
           $updateExam->execute();
-          // $random= DefaultController::getAllQuestionFijo($examenRes);
           if (empty($examenRes)) {
             return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
           }
-
           return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
             array(
               'userName'=> $userRes,
@@ -327,9 +323,6 @@ class DefaultController extends Controller
     }
 
     public function registerAction(){
-      if (session_status() == PHP_SESSION_ACTIVE) {
-        session_destroy();
-      }
       $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
                  chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
@@ -354,9 +347,6 @@ class DefaultController extends Controller
                      ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
                      ->find((int)$_POST['maestro3']);
       $valueEval = $_POST['evaluacion'];
-      // dump($_POST['maestro1']);
-      // dump($_POST['maestro2']);
-      // dump($_POST['maestro3']);
       try {
         $alumno = new Alumnos();
         $alumno->setNombre($valueName);
@@ -380,24 +370,25 @@ class DefaultController extends Controller
         $alumno->setEvaluacion($valueEval);
         $em->persist($alumno);
         $em->flush();
-        session_start();
-        $_SESSION["UID"] = $usercode;
-        setcookie("examen", "Entrada", 0);
-        return new Response('Registro exitoso');
+        $responseArray = array(
+          "UID" => $usercode,
+          "examen" => "Entrada",
+          "mensaje" => "Registro exitoso"
+         );
+        return new JsonResponse($responseArray);
       } catch (\Exception $e) {
-        if ($e->getPrevious()->getSQLState()==="23000") {
-          return new Response('Error: El usuario ingresado ya existe');
+        if (!is_null($e->getPrevious()->getSQLState())) {
+          $responseArray = array(
+            "mensaje" => "Error: El usuario ingresado ya existe"
+           );
+          return new JsonResponse($responseArray);
         }else {
-          return new Response('Error: '.$e->getPrevious()->getMessage());
+          $responseArray = array(
+            "mensaje" => 'Error: '.$e->getPrevious()->getMessage()
+           );
+          return new JsonResponse($responseArray);
         }
       }
-      // return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
-      //   array(
-      //     'userName'=> $valueName,
-      //     'userCarrera' => $valueCarrera,
-      //     'userTurno'=>$valueTurno,
-      //   )//final de array);
-      // );//Final de return
     }
     public function getMateriasAction(Request $request){
       $em = $this->getDoctrine()->getManager();
@@ -592,8 +583,8 @@ class DefaultController extends Controller
         $calificacion3=($RCorect3/$preg3)*100;
         $calificacion3= round($calificacion3,2);
       }
-      if ($_SESSION["UID"]) {
-        $UID = $_SESSION["UID"];
+      if ($_COOKIE["UID"]) {
+        $UID = $_COOKIE["UID"];
         if ($examen === "Entrada") {
           $updateCali = $em->createQuery('
             UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
@@ -627,8 +618,6 @@ class DefaultController extends Controller
       }else {
         return new Response("Error: La sesion a caducado");
       }
-      session_destroy();
-      setcookie("examen", "", -1);
       return new Response("Gracias por contestar");
     }
 

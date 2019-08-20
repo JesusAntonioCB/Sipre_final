@@ -1,4 +1,7 @@
 $(document).ready(function() {
+  if ($('.homeConter').length) {
+    document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  }
   $('body').on('click','.btnEntrada', function() {
     $('.RegisterUser').removeClass("hide");
     $('.homeConter').addClass("hide");
@@ -52,7 +55,7 @@ $(document).ready(function() {
           boxMaestro3= document.getElementById('selectMaestro3N'),
           boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
     }
-    if (boxName===""||boxCarrera===""||boxTurno===""||boxGrupo===""||boxEval===""||
+    if (boxName===""||boxCarrera==="-1"||boxTurno==="-1"||boxGrupo==="-1"||boxEval===""||
         boxMaestro3==="-1"||boxMaestro2==="-1"||boxMaestro1==="-1"||boxUserName===""||boxpass=="") {
     var bandera= false;
     $(".loginContainer").append('\
@@ -80,6 +83,7 @@ $(document).ready(function() {
     $.ajax({
       url: 'register',
       type: 'POST',
+      dataType: "json",
       data:  data,
       beforeSend: function() {
         $('body').append('\
@@ -98,8 +102,10 @@ $(document).ready(function() {
         ')
       },
       success: function (data) {
-        alert(data);
-        if (data==="Registro exitoso") {
+        alert(data.mensaje);
+        if (data.mensaje === "Registro exitoso") {
+          $.setCookie("UID",data.UID,1);
+          $.setCookie("examen",data.examen,1);
           location.reload();
         }
       },
@@ -134,6 +140,7 @@ $(document).ready(function() {
     $.ajax({
       url: 'login',
       type: 'POST',
+      dataType: "json",
       data:  data,
       beforeSend: function() {
         $('body').append('\
@@ -152,8 +159,12 @@ $(document).ready(function() {
         ')
       },
       success: function (data) {
-        alert(data);
-        location.reload();
+        alert(data.mensaje);
+        if (data.bandera) {
+          $.setCookie("UID",data.UID,1);
+          $.setCookie("examen",data.examen,1);
+          location.reload();
+        }
       },
       complete: function() {
         $('.loadingContent').remove();
@@ -162,3 +173,9 @@ $(document).ready(function() {
   }
   });
 });
+$.setCookie = function(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
