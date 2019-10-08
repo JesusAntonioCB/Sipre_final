@@ -53,6 +53,13 @@ class ExamenAuto
     /**
      * @var string
      *
+     * @ORM\Column(name="fechaActualizacion", type="string", length=255, nullable=true)
+     */
+    private $fechaActualizacion;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="tipo", type="string", length=255)
      */
     private $tipo;
@@ -70,6 +77,13 @@ class ExamenAuto
      * @ORM\Column(name="tiempo", type="datetime")
      */
     private $tiempo;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="propedeutico", type="boolean")
+     */
+    private $propedeutico;
 
     /**
      * @ORM\ManyToMany(targetEntity="PreguntasAuto", inversedBy="examenAuto",cascade={"persist"})
@@ -379,5 +393,53 @@ class ExamenAuto
     public function getTiempo()
     {
         return $this->tiempo;
+    }
+
+    /**
+     * Set fechaActualizacion.
+     *
+     * @param string $fechaActualizacion
+     *
+     * @return ExamenAuto
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaActualizacion.
+     *
+     * @return string
+     */
+    public function getFechaActualizacion()
+    {
+        return $this->fechaActualizacion;
+    }
+
+    /**
+     * Set propedeutico.
+     *
+     * @param bool $propedeutico
+     *
+     * @return ExamenAuto
+     */
+    public function setPropedeutico($propedeutico)
+    {
+        $this->propedeutico = $propedeutico;
+
+        return $this;
+    }
+
+    /**
+     * Get propedeutico.
+     *
+     * @return bool
+     */
+    public function getPropedeutico()
+    {
+        return $this->propedeutico;
     }
 }

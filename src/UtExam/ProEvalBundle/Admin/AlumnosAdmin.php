@@ -30,6 +30,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('examenAuto', null, ['label' => 'Examene Propedeutico'])
     ->add('fecha', null, ['label' => 'Fecha'])
     ->add('tiempo', null, ['label' => 'Duracion de Examen'])
+    ->add('calificaciones', "sonata_type_collection", [
+      'label' => 'Calificaciones'], [
+          'edit' => 'inline',
+          'inline' => 'table',
+          'sortable' => 'position'
+      ])
     ->add('calificacionE1', null, ['label' => 'Calificacion'])
   	->add('calificacionE2', null, ['label' => 'Calificacion'])
   	->add('calificacionE3', null, ['label' => 'Calificacion'])
@@ -96,8 +102,7 @@ class AlumnosAdmin extends AbstractAdmin
         ]
     ]);
   }
-  protected function configureShowFields(ShowMapper $showMapper)
-    {
+  protected function configureShowFields(ShowMapper $showMapper){
         $showMapper
             ->tab('General') // the tab call is optional
                 ->with('Alumno', [
@@ -123,6 +128,17 @@ class AlumnosAdmin extends AbstractAdmin
         ;
     }
 
+  public function preValidate($object){
+    // if (!is_null($object->getCalificaciones())) {
+    //   if (!empty($object->getCalificaciones()->getValues())) {
+    //     $calificaciones= $object->getCalificaciones()->getValues();
+    //     foreach ($calificaciones as $calificacion) {
+    //       $calificacion->setAlumnos($object);
+    //     }
+    //   }
+    // }
+  }
+
   public function prePersist($object){
     //Variables
     $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
@@ -136,6 +152,12 @@ class AlumnosAdmin extends AbstractAdmin
     $object->setTiempo(0);
     $object->setCalificacion(0);
     $object->setCodigoUsuario($usercode);
+    return $object;
+  }
+
+  public function preUpdate($object){
+    date_default_timezone_set('America/Monterrey');
+    $object->setFechaActualizacion(date('Y-m-d H:i:s'));
     return $object;
   }
 

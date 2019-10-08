@@ -3,49 +3,49 @@
   {% block search %}
   <section class="search-sec">
     <div class="container">
-        <form action="#" method="post" novalidate="novalidate">
+      <form action="#" method="post" novalidate="novalidate">
+        <div class="row">
+          <div class="col-lg-12">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                            <select class="form-control search-slt" id="selectTypeReporte">
-                              <option value="0">Reporte</option>
-                              <option value="1">Por generación</option>
-                              <option value="2">Por grupo</option>
-                            </select>
-                        </div>
-                         <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
-                            <select class="form-control search-slt" id="selectGen">
-                              <option value="0">Generación</option>
-                              {% for generation in generations %}
-                                <option value="{{generation[1]}}">{{generation[1]}}</option>
-                              {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
-                          <select class="form-control search-slt" id="selectgrup">
-                            <option value="0">Grupo</option>
-                            {% for grupo in grupos %}
-                              <option value="{{grupo.grupo}}">{{grupo.grupo}}</option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
-                          <select class="form-control search-slt" id="selectTurno">
-                            <option value="0">Turno</option>
-                            <option value="Vespertino">Vespertino</option>
-  													<option value="Nocturno">Nocturno</option>
-                          </select>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                          <button id="searchReport" type="button" class="btn btn-primary wrn-btn">Search</button>
-                        </div>
-                    </div>
-                </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                <select class="form-control search-slt" id="selectTypeReporte">
+                  <option value="0">Reporte</option>
+                  <option value="1">Por generación</option>
+                  <option value="2">Por grupo</option>
+                </select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                <select class="form-control search-slt" id="selectGen">
+                <option value="0">Generación</option>
+                {% for generation in generations %}
+                  <option value="{{generation[1]}}">{{generation[1]}}</option>
+                {% endfor %}
+                </select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                <select class="form-control search-slt" id="selectgrup">
+                <option value="0">Grupo</option>
+                {% for grupo in grupos %}
+                  <option value="{{grupo.grupo}}">{{grupo.grupo}}</option>
+                {% endfor %}
+                </select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                <select class="form-control search-slt" id="selectTurno">
+                  <option value="0">Turno</option>
+                  <option value="Vespertino">Vespertino</option>
+                  <option value="Nocturno">Nocturno</option>
+                </select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                <button id="searchReport" type="button" class="btn btn-primary wrn-btn">Search</button>
+              </div>
             </div>
-        </form>
+          </div>
+        </div>
+      </form>
     </div>
-</section>
+  </section>
   {% endblock %}
 {% block table %}
 <div class="contentTable">

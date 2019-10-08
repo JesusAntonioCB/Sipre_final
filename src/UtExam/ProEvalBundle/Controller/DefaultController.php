@@ -47,18 +47,19 @@ class DefaultController extends Controller
           $isLoggedIn = "true";
           $UID = $_COOKIE["UID"];
           $em = $this->getDoctrine()->getManager();
-          $query = $em->createQuery('
-            SELECT a, ma
+          $userQuery = $em->createQuery('
+            SELECT a
             FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            LEFT JOIN a.examen ma
             WHERE a.codigoUsuario = :codeUser');
-          $query->setParameter('codeUser', $UID);
-          $userRes=$query->getArrayResult()[0]['nombre'];
-          $userId=$query->getArrayResult()[0]['id'];
-          $query = $em->createQuery('
+          $userQuery->setParameter('codeUser', $UID);
+          $userRes=$userQuery->getArrayResult()[0]['nombre'];
+          $userId=$userQuery->getArrayResult()[0]['id'];
+          $examQuery = $em->createQuery('
             SELECT partial p.{id}
-            FROM UtExam\ProEvalBundle\Entity\ExamenAuto p');
-          $NumberRes=$query->getArrayResult();
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto p
+            WHERE p.propedeutico = :boolean');
+          $examQuery->setParameter('boolean', 1);
+          $NumberRes=$examQuery->getArrayResult();
           //conseguir la misma cantidad de numeros random como preguntas existen
           $rand = range(0, count($NumberRes)-1);
           shuffle($rand);

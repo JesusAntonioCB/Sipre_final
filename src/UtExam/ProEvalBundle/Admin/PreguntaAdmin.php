@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
  *
@@ -24,7 +25,7 @@ class PreguntaAdmin extends AbstractAdmin
           'attr' => array('class' => 'boxUrlimg')))
     ->add('tipoPregunta', 'sonata_type_model', array(
           "label" => "Tipo de pregunta"))
-    ->add('escrito', TextType::class, array(
+    ->add('escrito', TextareaType::class, array(
           "label" => "Pregunta"))
     ->add('respuestas', 'sonata_type_model_list', array(
           "label" => "Respuesta",
@@ -73,11 +74,22 @@ class PreguntaAdmin extends AbstractAdmin
   protected function configureListFields(ListMapper $listMapper)
   {
     $listMapper
-    ->addIdentifier('escrito')
+    ->addIdentifier('escrito',"html",array("label" => "Escrito"))
     ->add('materias')
     ->add('nivel')
     ->add('respuestas')
-    ->add('tipoPregunta');
+    ->add('tipoPregunta')
+    ->add('user');
+  }
+
+  public function createQuery($context = 'list'){
+    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser()->getId();
+    $query = parent::createQuery($context);
+    $query->andWhere(
+        $query->expr()->eq($query->getRootAliases()[0] . '.user', ':user')
+    );
+    $query->setParameter('user', (int)$user);
+    return $query;
   }
 
   // public function configure() {
@@ -99,6 +111,10 @@ class PreguntaAdmin extends AbstractAdmin
   //   return $object;
   // }
   public function prePersist($object){
+    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
+    date_default_timezone_set('America/Monterrey');
+    $object->setFechaCreacion(date('Y-m-d H:i:s'));
+    $object->setUser($user);
     if (!is_null($object->getImagen())) {
       if (!empty($object->getImagen()->getValues())) {
         $imagenes= $object->getImagen()->getValues();
@@ -119,6 +135,8 @@ class PreguntaAdmin extends AbstractAdmin
   {
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
+    date_default_timezone_set('America/Monterrey');
+    $object->setFechaActualizacion(date('Y-m-d H:i:s'));
     // dump($object);
     // dump($object->getImagen()->getValues());
     // die;

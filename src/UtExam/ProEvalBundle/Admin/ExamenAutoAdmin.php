@@ -4,6 +4,7 @@ namespace UtExam\ProEvalBundle\Admin;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Datagrid\ShowBuilder;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -11,7 +12,8 @@ use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
 use Application\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Route\RouteCollection;
 use UtExam\ProEvalBundle\Entity\Alumnos;
-
+use Symfony\Component\Security\Core\SecurityContextInterface;
+use Sonata\DatagridBundle\ProxyQuery\Doctrine\ProxyQuery;
 
 /**
  *
@@ -30,6 +32,7 @@ class ExamenAutoAdmin extends AbstractAdmin
       'label' => 'Instrucciones del examen'])
     ->add('codigoExam', TextType::class, [
       'label' => 'Codigo propio de examen'])
+    ->add('propedeutico', null, array("label" => "Marque la casilla si este examen servira como el propedeutico"))
     ->add('preguntasAuto', 'sonata_type_collection', array(
       'label' => 'preguntas'
       ), array(
@@ -43,20 +46,43 @@ class ExamenAutoAdmin extends AbstractAdmin
   {
     $datagridMapper
     ->add('titulo')
+    ->add('alumnos')
     ->add('user')
-    ->add('preguntasAuto');
+    ->add('preguntasAuto')
+    ->add('propedeutico');
   }
+
+  public function createQuery($context = 'list'){
+    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser()->getId();
+    $query = parent::createQuery($context);
+    $query->andWhere(
+        $query->expr()->eq($query->getRootAliases()[0] . '.user', ':user')
+    );
+    $query->setParameter('user', (int)$user);
+    return $query;
+  }
+
+  // protected $datagridValues = array (
+  //         'user' => array ('value' => 1), // type 2 : >
+  //         '_page' => 2, // Display the first page (default = 1)
+  //         '_sort_order' => 'DESC', // Descendant ordering (default = 'ASC')
+  //         '_sort_by' => 'id' // name of the ordered field (default = the model id field, if any)
+  //    // the '_sort_by' key can be of the form 'mySubModel.mySubSubModel.myField'.
+  // );
 
   protected function configureListFields(ListMapper $listMapper)
   {
     $listMapper
     ->addIdentifier('titulo')
     ->add('user')
-    ->add('preguntasAuto');
+    ->add('preguntasAuto')
+    ->add('propedeutico');
   }
+
   public function configure() {
     $this->setTemplate('edit', '@UtExamProEval/CRUD/edit_js_from_preguntas.html.twig');
   }
+
   public function prePersist($object){
     //Variables
     $container = $this->getConfigurationPool()->getContainer();
@@ -113,8 +139,7 @@ class ExamenAutoAdmin extends AbstractAdmin
     $object->setNivel($result/=$noFullP);
     return $object;
   }
-  public function preUpdate($object)
-  {
+  public function preUpdate($object){
     //Variables
     $container = $this->getConfigurationPool()->getContainer();
     $em = $container->get('doctrine.orm.entity_manager');
@@ -122,6 +147,8 @@ class ExamenAutoAdmin extends AbstractAdmin
     $noFullP= count($object->getPreguntasAuto());
     //agregar preguntas a preguntasAuto
     foreach ($object->getPreguntasAuto() as $preguntaAuto) {
+      date_default_timezone_set('America/Monterrey');
+      $object->setFechaActualizacion(date('Y-m-d H:i:s'));
       $query = $em->createQuery('
         SELECT partial pA.{id}, partial p.{id}
         FROM UtExam\ProEvalBundle\Entity\PreguntasAuto pA

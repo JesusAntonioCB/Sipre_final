@@ -73,6 +73,13 @@ class Alumnos
     /**
      * @var string
      *
+     * @ORM\Column(name="fechaActualizacion", type="string", length=255, nullable=true)
+     */
+    private $fechaActualizacion;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="tiempo", type="string", length=255)
      */
     private $tiempo;
@@ -139,6 +146,11 @@ class Alumnos
      * @ORM\JoinColumn(name="examen_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $examen;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Calificaciones", mappedBy="alumnos",cascade={"persist"})
+     */
+    private $calificaciones;
 
     /**
      *
@@ -671,5 +683,65 @@ class Alumnos
     public function getCalificacionS3()
     {
         return $this->calificacionS3;
+    }
+
+    /**
+     * Set fechaActualizacion.
+     *
+     * @param string $fechaActualizacion
+     *
+     * @return Alumnos
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaActualizacion.
+     *
+     * @return string
+     */
+    public function getFechaActualizacion()
+    {
+        return $this->fechaActualizacion;
+    }
+
+    /**
+     * Add calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return Alumnos
+     */
+    public function addCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        $this->calificaciones[] = $calificacione;
+
+        return $this;
+    }
+
+    /**
+     * Remove calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        return $this->calificaciones->removeElement($calificacione);
+    }
+
+    /**
+     * Get calificaciones.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCalificaciones()
+    {
+        return $this->calificaciones;
     }
 }

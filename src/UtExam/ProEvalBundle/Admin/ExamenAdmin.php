@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
 use Application\Sonata\UserBundle\Entity\User;
 
@@ -20,12 +21,13 @@ class ExamenAdmin extends AbstractAdmin
     $formMapper
     ->add('titulo', TextType::class, [
       'label' => 'Titulo'])
-    ->add('tiempo', null, [
+    ->add('tiempo', 'time', [
       'label' => 'Tiempo que durara el examen'])
     ->add('instrucciones', TextType::class, [
       'label' => 'Instrucciones del Examen'])
     ->add('codigoExam', TextType::class, [
       'label' => 'Codigo propio de examen'])
+    ->add('propedeutico', null, array("label" => "Marque la casilla si este examen servira como el propedeutico"))
     ->add('pregunta', 'sonata_type_collection', array(
       'label' => 'preguntas',
       ),
@@ -41,14 +43,26 @@ class ExamenAdmin extends AbstractAdmin
     $datagridMapper
     ->add('titulo')
     ->add('alumnos')
-    ->add('user');
+    ->add('user')
+    ->add('propedeutico');
   }
 
   protected function configureListFields(ListMapper $listMapper)
   {
     $listMapper
     ->addIdentifier('titulo')
-    ->add('user');
+    ->add('user')
+    ->add('propedeutico');
+  }
+
+  public function createQuery($context = 'list'){
+    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser()->getId();
+    $query = parent::createQuery($context);
+    $query->andWhere(
+        $query->expr()->eq($query->getRootAliases()[0] . '.user', ':user')
+    );
+    $query->setParameter('user', (int)$user);
+    return $query;
   }
 
   public function prePersist($object){
@@ -73,6 +87,8 @@ class ExamenAdmin extends AbstractAdmin
   }
   public function preUpdate($object)
   {
+    date_default_timezone_set('America/Monterrey');
+    $object->setFechaActualizacion(date('Y-m-d H:i:s'));
     foreach ($object->getPregunta() as $pregunta) {
       $pregunta->setExamen($object);
       if($pregunta->getPregunta() == null){

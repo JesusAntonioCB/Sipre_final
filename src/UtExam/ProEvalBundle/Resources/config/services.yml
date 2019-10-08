@@ -112,6 +112,12 @@ services:
             tags:
                 - { name: sonata.admin, manager_type: orm, label: Alumnos en Examen Fijo, group: "Examenes " }
 
+    admin.calificaciones:
+            class: UtExam\ProEvalBundle\Admin\CalificacionesAdmin
+            arguments: [~,UtExam\ProEvalBundle\Entity\Calificaciones, ~]
+            tags:
+                - { name: sonata.admin, manager_type: orm, label: Calificaciones de los alumnos, group: "Alumnos " }
+
     admin.examenAuto:
             class: UtExam\ProEvalBundle\Admin\ExamenAutoAdmin
             arguments: [~,UtExam\ProEvalBundle\Entity\ExamenAuto, ~]

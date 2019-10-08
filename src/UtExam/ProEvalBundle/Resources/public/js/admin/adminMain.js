@@ -70,7 +70,7 @@ $(document).ready(function() {
       }
       if (bandera) {
         $.ajax({
-            url: "/sipre/web/admin/getReport",
+            url: "/admin/getReport",
             type: "GET",
             data: datos,
             success: function(data) {

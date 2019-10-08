@@ -31,6 +31,20 @@ class Pregunta
     private $escrito;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaCreacion", type="string", length=255)
+     */
+    private $fechaCreacion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fechaActualizacion", type="string", length=255, nullable=true)
+     */
+    private $fechaActualizacion;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Materias", inversedBy="pregunta")
      * @ORM\JoinColumn(name="materias_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
@@ -89,6 +103,12 @@ class Pregunta
      * @ORM\ManyToMany(targetEntity="PreguntasAuto", mappedBy="pregunta")
      */
     private $preguntasAuto;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\Application\Sonata\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     */
+    private $user;
 
 
     /**
@@ -390,5 +410,77 @@ class Pregunta
     public function getRespuestas()
     {
         return $this->respuestas;
+    }
+
+    /**
+     * Set fechaCreacion.
+     *
+     * @param string $fechaCreacion
+     *
+     * @return Pregunta
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaCreacion.
+     *
+     * @return string
+     */
+    public function getFechaCreacion()
+    {
+        return $this->fechaCreacion;
+    }
+
+    /**
+     * Set fechaActualizacion.
+     *
+     * @param string $fechaActualizacion
+     *
+     * @return Pregunta
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaActualizacion.
+     *
+     * @return string
+     */
+    public function getFechaActualizacion()
+    {
+        return $this->fechaActualizacion;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param \Application\Sonata\UserBundle\Entity\User|null $user
+     *
+     * @return Pregunta
+     */
+    public function setUser(\Application\Sonata\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \Application\Sonata\UserBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

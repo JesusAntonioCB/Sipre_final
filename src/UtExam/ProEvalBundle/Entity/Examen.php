@@ -54,6 +54,13 @@ class Examen
     /**
      * @var string
      *
+     * @ORM\Column(name="fechaActualizacion", type="string", length=255, nullable=true)
+     */
+    private $fechaActualizacion;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="tipo", type="string", length=255)
      */
     private $tipo;
@@ -81,6 +88,13 @@ class Examen
      * @ORM\OneToMany(targetEntity="Alumnos", mappedBy="examen", cascade={"persist"})
      */
     private $alumnos;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="propedeutico", type="boolean")
+     */
+    private $propedeutico;
 
     /**
      * @ORM\ManyToOne(targetEntity="\Application\Sonata\UserBundle\Entity\User")
@@ -370,5 +384,53 @@ class Examen
     public function getTiempo()
     {
         return $this->tiempo;
+    }
+
+    /**
+     * Set fechaActualizacion.
+     *
+     * @param string $fechaActualizacion
+     *
+     * @return Examen
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaActualizacion.
+     *
+     * @return string
+     */
+    public function getFechaActualizacion()
+    {
+        return $this->fechaActualizacion;
+    }
+
+    /**
+     * Set propedeutico.
+     *
+     * @param bool $propedeutico
+     *
+     * @return Examen
+     */
+    public function setPropedeutico($propedeutico)
+    {
+        $this->propedeutico = $propedeutico;
+
+        return $this;
+    }
+
+    /**
+     * Get propedeutico.
+     *
+     * @return bool
+     */
+    public function getPropedeutico()
+    {
+        return $this->propedeutico;
     }
 }
