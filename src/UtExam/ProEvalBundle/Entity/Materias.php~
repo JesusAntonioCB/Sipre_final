@@ -34,12 +34,12 @@ class Materias
     private $pregunta;
 
     /**
-     * @ORM\OneToMany(targetEntity="Examen", mappedBy="materiaModa")
+     * @ORM\OneToMany(targetEntity="Examen", mappedBy="materiapromedio")
      */
     private $examen;
 
     /**
-     * @ORM\OneToMany(targetEntity="ExamenAuto", mappedBy="materiaModa")
+     * @ORM\OneToMany(targetEntity="ExamenAuto", mappedBy="materiapromedio")
      */
     private $examenAuto;
 
@@ -246,77 +246,5 @@ class Materias
     public function getCalificaciones()
     {
         return $this->calificaciones;
-    }
-
-    /**
-     * Add examan.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\Examen $examan
-     *
-     * @return Materias
-     */
-    public function addExaman(\UtExam\ProEvalBundle\Entity\Examen $examan)
-    {
-        $this->examen[] = $examan;
-
-        return $this;
-    }
-
-    /**
-     * Remove examan.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\Examen $examan
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeExaman(\UtExam\ProEvalBundle\Entity\Examen $examan)
-    {
-        return $this->examen->removeElement($examan);
-    }
-
-    /**
-     * Get examen.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getExamen()
-    {
-        return $this->examen;
-    }
-
-    /**
-     * Add examenAuto.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\ExamenAuto $examenAuto
-     *
-     * @return Materias
-     */
-    public function addExamenAuto(\UtExam\ProEvalBundle\Entity\ExamenAuto $examenAuto)
-    {
-        $this->examenAuto[] = $examenAuto;
-
-        return $this;
-    }
-
-    /**
-     * Remove examenAuto.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\ExamenAuto $examenAuto
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeExamenAuto(\UtExam\ProEvalBundle\Entity\ExamenAuto $examenAuto)
-    {
-        return $this->examenAuto->removeElement($examenAuto);
-    }
-
-    /**
-     * Get examenAuto.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getExamenAuto()
-    {
-        return $this->examenAuto;
     }
 }

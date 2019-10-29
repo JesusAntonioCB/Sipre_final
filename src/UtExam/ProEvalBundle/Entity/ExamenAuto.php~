@@ -68,7 +68,7 @@ class ExamenAuto
      * @ORM\ManyToOne(targetEntity="Materias", inversedBy="examenAuto")
      * @ORM\JoinColumn(name="materia_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
-    private $materiaModa;
+    private $materiaPromedio;
 
 
     /**
@@ -451,26 +451,26 @@ class ExamenAuto
     }
 
     /**
-     * Set materiaModa.
+     * Set materiaPromedio.
      *
-     * @param string $materiaModa
+     * @param string $materiaPromedio
      *
      * @return ExamenAuto
      */
-    public function setMateriaModa($materiaModa)
+    public function setMateriaPromedio($materiaPromedio)
     {
-        $this->materiaModa = $materiaModa;
+        $this->materiaPromedio = $materiaPromedio;
 
         return $this;
     }
 
     /**
-     * Get materiaModa.
+     * Get materiaPromedio.
      *
      * @return string
      */
-    public function getMateriaModa()
+    public function getMateriaPromedio()
     {
-        return $this->materiaModa;
+        return $this->materiaPromedio;
     }
 }

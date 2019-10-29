@@ -1,8 +1,11 @@
 $(document).ready(function() {
   var totalTime = "";
   if ($('.examenInterfaz').length) {
+    if (!getCookie("examenId")) {
+      var examId = $('.examenInterfaz').attr('id');
+      document.cookie = "examenId=" + examId + ";null; path=/";
+    }
     var timerExamen = document.getElementById("examTimerContainer");
-    // var timerExamen = document.getElementById("examTimerContainer").innerHTML;
     var totalSeconds = 0;
     var modal = document.getElementById("imgModal");
 
@@ -103,11 +106,7 @@ $(document).ready(function() {
       }
       var $box = $('#' + checbox);
       if ($box.is(":checked")) {
-        // the name of the box is retrieved using the .attr() method
-        // as it is assumed and expected to be immutable
         var group = "input:checkbox[name='" + $box.attr("name") + "']";
-        // the checked state of the group/box on the other hand will change
-        // and the current value is retrieved using .prop() method
         $(group).prop("checked", false);
         $box.prop("checked", true);
       } else {

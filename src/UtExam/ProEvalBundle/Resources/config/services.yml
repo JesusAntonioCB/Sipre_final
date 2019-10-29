@@ -1,7 +1,8 @@
 services:
-#    ut_exam_pro_eval.example:
-#        class: UtExam\ProEvalBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    doctrine_default.service:
+        class: UtExam\ProEvalBundle\Controller\UserAlumno
+        arguments: [ "@doctrine.orm.entity_manager" ]
+
     admin.imagen:
             class: UtExam\ProEvalBundle\Admin\ImagenAdmin
             arguments: [~,UtExam\ProEvalBundle\Entity\Imagen, ~]

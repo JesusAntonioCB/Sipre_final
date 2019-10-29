@@ -27,6 +27,11 @@ class ExamenAdmin extends AbstractAdmin
       'label' => 'Instrucciones del Examen'])
     ->add('codigoExam', TextType::class, [
       'label' => 'Codigo propio de examen'])
+    ->add('materiaModa', 'sonata_type_model', [
+      'label' => 'Materia al que pertenece el Examen',
+      'required' => false,
+      'btn_add'  => false
+    ])
     ->add('propedeutico', null, array("label" => "Marque la casilla si este examen servira como el propedeutico"))
     ->add('pregunta', 'sonata_type_collection', array(
       'label' => 'preguntas',
@@ -52,6 +57,7 @@ class ExamenAdmin extends AbstractAdmin
     $listMapper
     ->addIdentifier('titulo')
     ->add('user')
+    ->add('materiaModa')
     ->add('propedeutico');
   }
 
@@ -63,6 +69,26 @@ class ExamenAdmin extends AbstractAdmin
     );
     $query->setParameter('user', (int)$user);
     return $query;
+  }
+  public function preValidate($object){
+    $container = $this->getConfigurationPool()->getContainer();
+    $em = $container->get('doctrine.orm.entity_manager');
+    $materiasCount = [];
+    if (empty($object->getMateriaModa())) {
+      foreach ($object->getPregunta() as $pregunta) {
+        array_push($materiasCount, $pregunta->getPregunta()->getMaterias()->getId());
+      }
+      $counts = array_count_values($materiasCount);
+      arsort($counts);
+      $top_with_count = array_slice($counts, 0, 5, true);
+      $top = array_keys($top_with_count);
+      if (!empty($top)) {
+        $resMateria = $em->getRepository("UtExam\ProEvalBundle\Entity\Materias")
+                    ->find((int)$top[0]);
+        $object->setMateriaModa($resMateria);
+      }
+    }
+    return $object;
   }
 
   public function prePersist($object){

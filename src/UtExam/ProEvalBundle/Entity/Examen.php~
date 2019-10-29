@@ -4,14 +4,15 @@ namespace UtExam\ProEvalBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
- * ExamenAuto
+ * Examen
  *
- * @ORM\Table(name="examen_auto")
- * @ORM\Entity(repositoryClass="UtExam\ProEvalBundle\Repository\ExamenAutoRepository")
+ * @ORM\Table(name="examen")
+ * @ORM\Entity(repositoryClass="UtExam\ProEvalBundle\Repository\ExamenRepository")
  */
-class ExamenAuto
+class Examen
 {
     /**
      * @var int
@@ -65,11 +66,10 @@ class ExamenAuto
     private $tipo;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Materias", inversedBy="examenAuto")
+     * @ORM\ManyToOne(targetEntity="Materias", inversedBy="examen")
      * @ORM\JoinColumn(name="materia_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
-    private $materiaModa;
-
+    private $materiaPromedio;
 
     /**
      * @var string
@@ -86,6 +86,16 @@ class ExamenAuto
     private $tiempo;
 
     /**
+     * @ORM\OneToMany(targetEntity="preguntasinExamen", mappedBy="examen", cascade={"persist"})
+     */
+    private $pregunta;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Alumnos", mappedBy="examen", cascade={"persist"})
+     */
+    private $alumnos;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="propedeutico", type="boolean")
@@ -93,28 +103,10 @@ class ExamenAuto
     private $propedeutico;
 
     /**
-     * @ORM\ManyToMany(targetEntity="PreguntasAuto", inversedBy="examenAuto",cascade={"persist"})
-     * @ORM\JoinTable(name="ExamenAuto_PreguntasAuto",
-     *     joinColumns={
-     *     @ORM\JoinColumn(name="examenAuto_id", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="PreguntasAuto_id", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $preguntasAuto;
-
-    /**
      * @ORM\ManyToOne(targetEntity="\Application\Sonata\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $user;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Alumnos", mappedBy="examenAuto", cascade={"persist"})
-     */
-    private $alumnos;
 
     /**
      * Get id.
@@ -131,7 +123,7 @@ class ExamenAuto
      *
      * @param string $titulo
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setTitulo($titulo)
     {
@@ -155,7 +147,7 @@ class ExamenAuto
      *
      * @param string $instrucciones
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setInstrucciones($instrucciones)
     {
@@ -175,35 +167,11 @@ class ExamenAuto
     }
 
     /**
-     * Set codigoExam.
-     *
-     * @param string $codigoExam
-     *
-     * @return ExamenAuto
-     */
-    public function setCodigoExam($codigoExam)
-    {
-        $this->codigoExam = $codigoExam;
-
-        return $this;
-    }
-
-    /**
-     * Get codigoExam.
-     *
-     * @return string
-     */
-    public function getCodigoExam()
-    {
-        return $this->codigoExam;
-    }
-
-    /**
      * Set fecha.
      *
      * @param string $fecha
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setFecha($fecha)
     {
@@ -227,7 +195,7 @@ class ExamenAuto
      *
      * @param string $tipo
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setTipo($tipo)
     {
@@ -251,7 +219,7 @@ class ExamenAuto
      *
      * @param string $nivel
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setNivel($nivel)
     {
@@ -274,44 +242,7 @@ class ExamenAuto
      */
     public function __construct()
     {
-        $this->preguntasAuto = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->alumnos = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add preguntasAuto.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\PreguntasAuto $preguntasAuto
-     *
-     * @return ExamenAuto
-     */
-    public function addPreguntasAuto(\UtExam\ProEvalBundle\Entity\PreguntasAuto $preguntasAuto)
-    {
-        $this->preguntasAuto[] = $preguntasAuto;
-
-        return $this;
-    }
-
-    /**
-     * Remove preguntasAuto.
-     *
-     * @param \UtExam\ProEvalBundle\Entity\PreguntasAuto $preguntasAuto
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removePreguntasAuto(\UtExam\ProEvalBundle\Entity\PreguntasAuto $preguntasAuto)
-    {
-        return $this->preguntasAuto->removeElement($preguntasAuto);
-    }
-
-    /**
-     * Get preguntasAuto.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPreguntasAuto()
-    {
-        return $this->preguntasAuto;
+        $this->pregunta= new ArrayCollection();
     }
 
     /**
@@ -319,7 +250,7 @@ class ExamenAuto
      *
      * @param \Application\Sonata\UserBundle\Entity\User|null $user
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setUser(\Application\Sonata\UserBundle\Entity\User $user = null)
     {
@@ -338,6 +269,65 @@ class ExamenAuto
         return $this->user;
     }
 
+    /**
+     * Add preguntum.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\preguntasinExamen $preguntum
+     *
+     * @return Examen
+     */
+    public function addPreguntum(\UtExam\ProEvalBundle\Entity\preguntasinExamen $preguntum)
+    {
+        $this->pregunta[] = $preguntum;
+
+        return $this;
+    }
+
+    /**
+     * Remove preguntum.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\preguntasinExamen $preguntum
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removePreguntum(\UtExam\ProEvalBundle\Entity\preguntasinExamen $preguntum)
+    {
+        return $this->pregunta->removeElement($preguntum);
+    }
+
+    /**
+     * Get pregunta.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPregunta()
+    {
+        return $this->pregunta;
+    }
+
+    /**
+     * Set codigoExam.
+     *
+     * @param string $codigoExam
+     *
+     * @return Examen
+     */
+    public function setCodigoExam($codigoExam)
+    {
+        $this->codigoExam = $codigoExam;
+
+        return $this;
+    }
+
+    /**
+     * Get codigoExam.
+     *
+     * @return string
+     */
+    public function getCodigoExam()
+    {
+        return $this->codigoExam;
+    }
     public function __toString(){
       return $this->titulo == null ? '' : $this->titulo;
     }
@@ -345,11 +335,11 @@ class ExamenAuto
     /**
      * Add alumno.
      *
-     * @param \UtExam\ProEvalBundle\Entity\Alumnos $alumno
+     * @param \UtExam\ProEvalBundle\Entity\AlumnosEnExamen $alumno
      *
-     * @return ExamenAuto
+     * @return Examen
      */
-    public function addAlumno(\UtExam\ProEvalBundle\Entity\Alumnos $alumno)
+    public function addAlumno(\UtExam\ProEvalBundle\Entity\AlumnosEnExamen $alumno)
     {
         $this->alumnos[] = $alumno;
 
@@ -359,11 +349,11 @@ class ExamenAuto
     /**
      * Remove alumno.
      *
-     * @param \UtExam\ProEvalBundle\Entity\Alumnos $alumno
+     * @param \UtExam\ProEvalBundle\Entity\AlumnosEnExamen $alumno
      *
      * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeAlumno(\UtExam\ProEvalBundle\Entity\Alumnos $alumno)
+    public function removeAlumno(\UtExam\ProEvalBundle\Entity\AlumnosEnExamen $alumno)
     {
         return $this->alumnos->removeElement($alumno);
     }
@@ -383,7 +373,7 @@ class ExamenAuto
      *
      * @param \DateTime $tiempo
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setTiempo($tiempo)
     {
@@ -407,7 +397,7 @@ class ExamenAuto
      *
      * @param string $fechaActualizacion
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setFechaActualizacion($fechaActualizacion)
     {
@@ -431,7 +421,7 @@ class ExamenAuto
      *
      * @param bool $propedeutico
      *
-     * @return ExamenAuto
+     * @return Examen
      */
     public function setPropedeutico($propedeutico)
     {
@@ -448,29 +438,5 @@ class ExamenAuto
     public function getPropedeutico()
     {
         return $this->propedeutico;
-    }
-
-    /**
-     * Set materiaModa.
-     *
-     * @param string $materiaModa
-     *
-     * @return ExamenAuto
-     */
-    public function setMateriaModa($materiaModa)
-    {
-        $this->materiaModa = $materiaModa;
-
-        return $this;
-    }
-
-    /**
-     * Get materiaModa.
-     *
-     * @return string
-     */
-    public function getMateriaModa()
-    {
-        return $this->materiaModa;
     }
 }

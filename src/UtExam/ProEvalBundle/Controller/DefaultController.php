@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 use UtExam\ProEvalBundle\Entity\Alumnos;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use  UtExam\ProEvalBundle\Entity\ExamenAuto;
+use UtExam\ProEvalBundle\Entity\ExamenAuto;
 
-/**
- * @Route("/home")
- */
 class DefaultController extends Controller
 {
     public function indexAction(){
@@ -54,55 +51,121 @@ class DefaultController extends Controller
           $userQuery->setParameter('codeUser', $UID);
           $userRes=$userQuery->getArrayResult()[0]['nombre'];
           $userId=$userQuery->getArrayResult()[0]['id'];
-          $examQuery = $em->createQuery('
-            SELECT partial p.{id}
-            FROM UtExam\ProEvalBundle\Entity\ExamenAuto p
-            WHERE p.propedeutico = :boolean');
-          $examQuery->setParameter('boolean', 1);
-          $NumberRes=$examQuery->getArrayResult();
-          //conseguir la misma cantidad de numeros random como preguntas existen
-          $rand = range(0, count($NumberRes)-1);
-          shuffle($rand);
-          for ($i=0; $i < 1; $i++) {
-            //agregar a el objeto las preguntas con los filtros correspondientes
-            $examenRandom=$NumberRes[$rand[$i]]['id'];
-            $query2 = $em->createQuery('
-              SELECT e,partial u.{id, username}, pA, ma, p, res, text, aud, vid, img, paud, pvid, pimg
-              FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
-              LEFT JOIN e.user u
-              LEFT JOIN e.preguntasAuto pA
-              LEFT JOIN pA.materias ma
-              LEFT JOIN pA.pregunta p
-              LEFT JOIN p.audio paud
-              LEFT JOIN p.video pvid
-              LEFT JOIN p.imagen pimg
-              LEFT JOIN p.respuestas res
-              LEFT JOIN res.texto text
-              LEFT JOIN res.audio aud
-              LEFT JOIN res.video vid
-              LEFT JOIN res.imagen img
-              WHERE e.id = :id');
-            $query2->setParameter('id', $examenRandom);
-            $examenRes=$query2->getArrayResult();
-
-            $updateCali = $em->createQuery('
-              UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-              SET A.examenAuto = :examen
-              WHERE A.id = :idUser');
-            $updateCali->setParameter('examen', $examenRandom);
-            $updateCali->setParameter('idUser', $userId);
-            $updateCali->execute();
-            return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
-              array(
-                'userName'=> $userRes,
-                'Author'=> $examenRes[0]['user']['username'],
-                'ExamDate'=>$examenRes[0]['fecha'],
-                'ExamTitle'=>$examenRes[0]['instrucciones'],
-                'ExamTiempo'=>$examenRes[0]['tiempo'],
-                'preguntasGrup' => DefaultController::getAllQuestion($examenRes),
-                'propedeutico'=>true
-              )//final de array
-            );//Final de return
+          if (isset($_COOKIE["examenId"])) {
+            $arrExam= explode("-", $_COOKIE["examenId"]);
+            $type= $arrExam[0];
+            $examenId=$arrExam[1];
+            if ($type === "propedeutico") {
+              //agregar a el objeto las preguntas con los filtros correspondientes
+              $examenRes= $this->getExamen($examenId,1);
+              if (empty($examenRes)) {
+                return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+              }
+              return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+                array(
+                  'userName'=> $userRes,
+                  'Author'=> $examenRes[0]['user']['username'],
+                  'ExamDate'=> $examenRes[0]['fecha'],
+                  'ExamTitle'=> $examenRes[0]['instrucciones'],
+                  'ExamTiempo'=> $examenRes[0]['tiempo'],
+                  'ExamId'=> $examenRes[0]['id'],
+                  'preguntasGrup' => $this->getAllQuestion($examenRes),
+                  'propedeutico'=> true
+                )//final de array
+              );//Final de return
+            }else {
+              $examenRes= $this->getExamen($examenId,2);
+              if (empty($examenRes)) {
+                return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+              }
+              return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+                array(
+                  'userName'=> $userRes,
+                  'examen'=> $examenRes,
+                  'Author'=> $examenRes[0]['user']['username'],
+                  'ExamDate'=>$examenRes[0]['fecha'],
+                  'ExamTitle'=>$examenRes[0]['instrucciones'],
+                  'ExamTiempo'=>$examenRes[0]['tiempo'],
+                  'ExamId'=> $examenRes[0]['id'],
+                  'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
+                  'propedeutico'=>false
+                )//final de array
+              );//Final de return
+            }
+          }else {
+            $examQuery = $em->createQuery('
+              SELECT partial eA.{id}
+              FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
+              WHERE eA.propedeutico = :boolean');
+            $examQuery->setParameter('boolean', 1);
+            $NumberRes=$examQuery->getArrayResult();
+            $exam2Query = $em->createQuery('
+              SELECT partial e.{id}
+              FROM UtExam\ProEvalBundle\Entity\Examen e
+              WHERE e.propedeutico = :boolean');
+            $exam2Query->setParameter('boolean', 1);
+            $Number2Res=$exam2Query->getArrayResult();
+            if (!empty($examQuery)) {
+              if (!empty($exam2Query)) {
+                $numberExamRand = rand ( 1 , 2 );
+              }else {
+                $numberExamRand=1;
+              }
+            }elseif (!empty($exam2Query)) {
+              $numberExamRand=2;
+            }else {
+              return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+            }
+            if ($numberExamRand === 1) {
+              //conseguir la misma cantidad de numeros random como examenes existen
+              $rand = range(0, count($NumberRes)-1);
+              shuffle($rand);
+              for ($i=0; $i < 1; $i++) {
+                //agregar a el objeto las preguntas con los filtros correspondientes
+                $examenRandom=$NumberRes[$rand[$i]]['id'];
+                $examenRes= $this->getExamen($examenRandom,1);
+                $this->setExamenEnAlumno($examenRandom,$userId,1);
+                if (empty($examenRes)) {
+                  return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+                }
+                return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+                  array(
+                    'userName'=> $userRes,
+                    'Author'=> $examenRes[0]['user']['username'],
+                    'ExamDate'=> $examenRes[0]['fecha'],
+                    'ExamTitle'=> $examenRes[0]['instrucciones'],
+                    'ExamTiempo'=> $examenRes[0]['tiempo'],
+                    'ExamId'=> $examenRes[0]['id'],
+                    'preguntasGrup' => $this->getAllQuestion($examenRes),
+                    'propedeutico'=> true
+                  )//final de array
+                );//Final de return
+              }
+            }else {
+              $rand = range(0, count($Number2Res)-1);
+              shuffle($rand);
+              for ($i=0; $i < 1; $i++) {
+                $examenRandom=$Number2Res[$rand[$i]]['id'];
+                $examenRes= $this->getExamen($examenRandom,2);
+                $this->setExamenEnAlumno($examenRes[0]['id'],$userId,2);
+                if (empty($examenRes)) {
+                  return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+                }
+                return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+                  array(
+                    'userName'=> $userRes,
+                    'examen'=> $examenRes,
+                    'Author'=> $examenRes[0]['user']['username'],
+                    'ExamDate'=>$examenRes[0]['fecha'],
+                    'ExamTitle'=>$examenRes[0]['instrucciones'],
+                    'ExamTiempo'=>$examenRes[0]['tiempo'],
+                    'ExamId'=> $examenRes[0]['id'],
+                    'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
+                    'propedeutico'=>false
+                  )//final de array
+                );//Final de return
+              }
+            }
           }
         }
         else {
@@ -113,39 +176,10 @@ class DefaultController extends Controller
             LEFT JOIN m.materias mat');
           $lisMaestrosRes=$query->getArrayResult();
           return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
-            'maestros' => $lisMaestrosRes
+            'maestros' => $lisMaestrosRes,
+            'propedeutico'=> true
           ));
         }
-    }
-
-    public function loginAction(){
-      $em = $this->getDoctrine()->getManager();
-      $valuePass= $_POST['pass'];
-      $valueUserName= $_POST['userName'];
-      $query = $em->createQuery('
-        SELECT a
-        FROM UtExam\ProEvalBundle\Entity\Alumnos a
-        WHERE a.username = :user
-        AND a.contrasena = :pass');
-      $query->setParameter('user', $valueUserName);
-      $query->setParameter('pass', $valuePass);
-      $userRes=$query->getArrayResult();
-      if (empty($userRes)){
-        $responseArray = array(
-          "mensaje" => "Nombre de usuario o contraseña Erroneo",
-          "bandera" => false
-         );
-        return new JsonResponse($responseArray);
-      }
-      //crear sesion cookie
-      $usercode = $userRes[0]["codigoUsuario"];
-      $responseArray = array(
-        "UID" => $usercode,
-        "examen" => "Salida",
-        "mensaje" => "Sesion iniciada correctamente",
-        "bandera" => true
-       );
-      return new JsonResponse($responseArray);
     }
 
     public function examenFijoAction(Request $request){
@@ -196,7 +230,7 @@ class DefaultController extends Controller
               'Author'=> $examenRes[0]['user']['username'],
               'ExamDate'=>$examenRes[0]['fecha'],
               'ExamTitle'=>$examenRes[0]['instrucciones'],
-              'preguntasGrup' => DefaultController::getAllQuestionFijo($examenRes),
+              'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
               'propedeutico'=>false
             )//final de array
           );//Final de return
@@ -209,11 +243,51 @@ class DefaultController extends Controller
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
-          if (empty($examenRes)) {
-            return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array('again' => true ));
+          if (!empty($examenRes)) {
+            $query = $em->createQuery('
+              SELECT m, mat
+              FROM UtExam\ProEvalBundle\Entity\Maestros m
+              LEFT JOIN m.materias mat');
+            $lisMaestrosRes=$query->getArrayResult();
+            return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
+              'maestros' => $lisMaestrosRes,
+              'propedeutico'=> false
+            ));
+          }else {
+            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
           }
-          return $this->render('UtExamProEvalBundle:Examen:login.html.twig');
+
         }
+    }
+
+    public function loginAction(){
+      $em = $this->getDoctrine()->getManager();
+      $valuePass= $_POST['pass'];
+      $valueUserName= $_POST['userName'];
+      $query = $em->createQuery('
+        SELECT a
+        FROM UtExam\ProEvalBundle\Entity\Alumnos a
+        WHERE a.username = :user
+        AND a.contrasena = :pass');
+      $query->setParameter('user', $valueUserName);
+      $query->setParameter('pass', $valuePass);
+      $userRes=$query->getArrayResult();
+      if (empty($userRes)){
+        $responseArray = array(
+          "mensaje" => "Nombre de usuario o contraseña Erroneo",
+          "bandera" => false
+         );
+        return new JsonResponse($responseArray);
+      }
+      //crear sesion cookie
+      $usercode = $userRes[0]["codigoUsuario"];
+      $responseArray = array(
+        "UID" => $usercode,
+        "examen" => "Salida",
+        "mensaje" => "Sesion iniciada correctamente",
+        "bandera" => true
+       );
+      return new JsonResponse($responseArray);
     }
 
     public function filteredQuestionsAction(Request $request){
@@ -323,94 +397,6 @@ class DefaultController extends Controller
       }
     }
 
-    public function registerAction(){
-      $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
-                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
-                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
-                 rand(1, 9).rand(1, 9).chr(rand(ord("a"), ord("z"))).rand(1, 9).rand(1, 9).
-                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
-                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z")));
-      date_default_timezone_set('America/Monterrey');
-      $em = $this->getDoctrine()->getManager();
-      $valueName = $_POST['alumno'];
-      $valueCarrera = $_POST['carrera'];
-      $valueTurno = $_POST['turno'];
-      $valueGrupo = $_POST['grupo'];
-      $valuePass= $_POST['pass'];
-      $valueUserName= $_POST['userName'];
-      $valueMaestro1= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro1']);
-      $valueMaestro2= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro2']);
-      $valueMaestro3= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro3']);
-      $valueEval = $_POST['evaluacion'];
-      try {
-        $alumno = new Alumnos();
-        $alumno->setNombre($valueName);
-        $alumno->setUsername($valueUserName);
-        $alumno->setTurno($valueTurno);
-        $alumno->setContrasena($valuePass);
-        $alumno->setFecha(date('Y-m-d H:i:s'));
-        $alumno->setTiempo(0);
-        $alumno->setCalificacionE1(0);
-        $alumno->setCalificacionE2(0);
-        $alumno->setCalificacionE3(0);
-        $alumno->setCalificacionS1(0);
-        $alumno->setCalificacionS2(0);
-        $alumno->setCalificacionS3(0);
-        $alumno->setCodigoUsuario($usercode);
-        $alumno->setCarrera($valueCarrera);
-        $alumno->setGrupo($valueGrupo);
-        $alumno->addMaestro($valueMaestro1);
-        $alumno->addMaestro($valueMaestro2);
-        $alumno->addMaestro($valueMaestro3);
-        $alumno->setEvaluacion($valueEval);
-        $em->persist($alumno);
-        $em->flush();
-        $responseArray = array(
-          "UID" => $usercode,
-          "examen" => "Entrada",
-          "mensaje" => "Registro exitoso"
-         );
-        return new JsonResponse($responseArray);
-      } catch (\Exception $e) {
-        if (!is_null($e->getPrevious()->getSQLState())) {
-          $responseArray = array(
-            "mensaje" => "Error: El usuario ingresado ya existe"
-           );
-          return new JsonResponse($responseArray);
-        }else {
-          $responseArray = array(
-            "mensaje" => 'Error: '.$e->getPrevious()->getMessage()
-           );
-          return new JsonResponse($responseArray);
-        }
-      }
-    }
-    public function getMateriasAction(Request $request){
-      $em = $this->getDoctrine()->getManager();
-      $dificultad = $request->query->get("dificultad");
-      $query = $em->createQuery('
-        SELECT m
-        FROM UtExam\ProEvalBundle\Entity\Materias m
-        WHERE m.grado = :id');
-      $query->setParameter('id', $dificultad);
-      $examenRes=$query->getArrayResult();
-      return new JsonResponse($examenRes);
-
-    }
-    public function getAllQuestion($examenRes){
-      $questions=$examenRes[0]['preguntasAuto'];
-      return $questions;
-    }
-    public function getAllQuestionFijo($examenRes){
-      $questions=$examenRes[0]['pregunta'];
-      return $questions;
-    }
     public function getResultsAction(){
       $em = $this->getDoctrine()->getManager();
       $examen= $_COOKIE["examen"];
@@ -622,7 +608,162 @@ class DefaultController extends Controller
       return new Response("Gracias por contestar");
     }
 
+    public function registerAction(){
+      $usercode= chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
+                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
+                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
+                 rand(1, 9).rand(1, 9).chr(rand(ord("a"), ord("z"))).rand(1, 9).rand(1, 9).
+                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z"))).
+                 chr(rand(ord("a"), ord("z"))).rand(1, 9).chr(rand(ord("a"), ord("z")));
+      date_default_timezone_set('America/Monterrey');
+      $em = $this->getDoctrine()->getManager();
+      $valueName = $_POST['alumno'];
+      $valueCarrera = $_POST['carrera'];
+      $valueTurno = $_POST['turno'];
+      $valueGrupo = $_POST['grupo'];
+      $valuePass= $_POST['pass'];
+      $valueUserName= $_POST['userName'];
+      $valueMaestro1= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro1']);
+      $valueMaestro2= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro2']);
+      $valueMaestro3= $this->getDoctrine()
+                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                     ->find((int)$_POST['maestro3']);
+      $valueEval = $_POST['evaluacion'];
+      try {
+        $alumno = new Alumnos();
+        $alumno->setNombre($valueName);
+        $alumno->setUsername($valueUserName);
+        $alumno->setTurno($valueTurno);
+        $alumno->setContrasena($valuePass);
+        $alumno->setFecha(date('Y-m-d H:i:s'));
+        $alumno->setTiempo(0);
+        $alumno->setCalificacionE1(0);
+        $alumno->setCalificacionE2(0);
+        $alumno->setCalificacionE3(0);
+        $alumno->setCalificacionS1(0);
+        $alumno->setCalificacionS2(0);
+        $alumno->setCalificacionS3(0);
+        $alumno->setCodigoUsuario($usercode);
+        $alumno->setCarrera($valueCarrera);
+        $alumno->setGrupo($valueGrupo);
+        $alumno->addMaestro($valueMaestro1);
+        $alumno->addMaestro($valueMaestro2);
+        $alumno->addMaestro($valueMaestro3);
+        $alumno->setEvaluacion($valueEval);
+        $em->persist($alumno);
+        $em->flush();
+        $responseArray = array(
+          "UID" => $usercode,
+          "examen" => "Entrada",
+          "mensaje" => "Registro exitoso"
+         );
+        return new JsonResponse($responseArray);
+      } catch (\Exception $e) {
+        if (!is_null($e->getPrevious()->getSQLState())) {
+          $responseArray = array(
+            "mensaje" => "Error: El usuario ingresado ya existe"
+           );
+          return new JsonResponse($responseArray);
+        }else {
+          $responseArray = array(
+            "mensaje" => 'Error: '.$e->getPrevious()->getMessage()
+           );
+          return new JsonResponse($responseArray);
+        }
+      }
+    }
+
+    public function getMateriasAction(Request $request){
+      $em = $this->getDoctrine()->getManager();
+      $dificultad = $request->query->get("dificultad");
+      $query = $em->createQuery('
+        SELECT m
+        FROM UtExam\ProEvalBundle\Entity\Materias m
+        WHERE m.grado = :id');
+      $query->setParameter('id', $dificultad);
+      $examenRes=$query->getArrayResult();
+      return new JsonResponse($examenRes);
+
+    }
+
     public function openModalCodeExamAction(){
       return $this->render('UtExamProEvalBundle:modals:modalCodeExam.html.twig');
+    }
+
+    public function getAllQuestion($examenRes){
+      $questions=$examenRes[0]['preguntasAuto'];
+      return $questions;
+    }
+    public function getAllQuestionFijo($examenRes){
+      $questions=$examenRes[0]['pregunta'];
+      return $questions;
+    }
+    public function getExamen($examenId,$type){
+      $em = $this->getDoctrine()->getManager();
+      if ((int)$type === 1) {
+        $queryExam = $em->createQuery('
+          SELECT e,partial u.{id, username}, pA, ma, p, res, text, aud, vid, img, paud, pvid, pimg
+          FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
+          LEFT JOIN e.user u
+          LEFT JOIN e.preguntasAuto pA
+          LEFT JOIN pA.materias ma
+          LEFT JOIN pA.pregunta p
+          LEFT JOIN p.audio paud
+          LEFT JOIN p.video pvid
+          LEFT JOIN p.imagen pimg
+          LEFT JOIN p.respuestas res
+          LEFT JOIN res.texto text
+          LEFT JOIN res.audio aud
+          LEFT JOIN res.video vid
+          LEFT JOIN res.imagen img
+          WHERE e.id = :id');
+        $queryExam->setParameter('id', $examenId);
+        $examenRes=$queryExam->getArrayResult();
+        return $examenRes;
+      }else {
+        $queryExam = $em->createQuery('
+          SELECT e,partial u.{id, username}, p, pr, ma, res, text, aud, vid, img, paud, pvid, pimg
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          LEFT JOIN e.user u
+          LEFT JOIN e.pregunta p
+          LEFT JOIN p.pregunta pr
+          LEFT JOIN pr.materias ma
+          LEFT JOIN pr.audio paud
+          LEFT JOIN pr.video pvid
+          LEFT JOIN pr.imagen pimg
+          LEFT JOIN pr.respuestas res
+          LEFT JOIN res.texto text
+          LEFT JOIN res.audio aud
+          LEFT JOIN res.video vid
+          LEFT JOIN res.imagen img
+          WHERE e.id = :id');
+        $queryExam->setParameter('id', $examenId);
+        $examenRes=$queryExam->getArrayResult();
+        return $examenRes;
+      }
+    }
+    public function setExamenEnAlumno($examenId,$userId,$type){
+      $em = $this->getDoctrine()->getManager();
+      if ((int)$type === 1) {
+        $update = $em->createQuery('
+          UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+          SET A.examenAuto = :examen
+          WHERE A.id = :idUser');
+        $update->setParameter('examen', $examenId);
+        $update->setParameter('idUser', $userId);
+        $update->execute();
+      }else {
+        $update = $em->createQuery('
+          UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+          SET A.examen= :examen
+          WHERE A.id = :idUser');
+        $update->setParameter('examen', $examenId);
+        $update->setParameter('idUser', $userId);
+        $update->execute();
+      }
     }
 }

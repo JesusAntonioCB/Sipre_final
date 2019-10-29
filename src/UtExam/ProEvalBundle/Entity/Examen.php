@@ -66,6 +66,12 @@ class Examen
     private $tipo;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Materias", inversedBy="examen")
+     * @ORM\JoinColumn(name="materia_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     */
+    private $materiaModa;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nivel", type="string", length=255)
@@ -432,5 +438,29 @@ class Examen
     public function getPropedeutico()
     {
         return $this->propedeutico;
+    }
+
+    /**
+     * Set materiaModa.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Materias|null $materiaModa
+     *
+     * @return Examen
+     */
+    public function setMateriaModa(\UtExam\ProEvalBundle\Entity\Materias $materiaModa = null)
+    {
+        $this->materiaModa = $materiaModa;
+
+        return $this;
+    }
+
+    /**
+     * Get materiaModa.
+     *
+     * @return \UtExam\ProEvalBundle\Entity\Materias|null
+     */
+    public function getMateriaModa()
+    {
+        return $this->materiaModa;
     }
 }

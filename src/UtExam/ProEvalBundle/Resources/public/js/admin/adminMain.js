@@ -4,7 +4,7 @@ $(document).ready(function() {
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
       $.ajax({
-          url: "/sipre/web/admin/getListExam",
+          url: "/admin/getListExam",
           type: "GET",
           dataType: "json",
           data: {
@@ -16,8 +16,8 @@ $(document).ready(function() {
             for (var i = 0; i < examenList.length; i++) {
               $(".examenList").append('\
                 <tr>\
-                  <td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="1">\
-                    <a class="sonata-link-identifier" href="/admin/openPdf/'+i+'">\
+                  <td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="'+examenList[i].id+'">\
+                    <a class="sonata-link-identifier" href="/admin/openPdf/'+examenList[i].id+'/'+tipoExam+'" target="_blank">\
                       '+examenList[i].titulo+'\
                     </a>\
                   </td>\

@@ -34,27 +34,38 @@ $(document).ready(function() {
         boxName= document.getElementById('userName').value,
         boxpass= document.getElementById('password').value,
         boxUserName= document.getElementById('userNameUni').value,
-        boxGrupo= document.getElementById('txtGrupo'),
-        boxGrupo=boxGrupo.options[boxGrupo.selectedIndex].value,
         boxCarrera= document.getElementById('userCarrera'),
         boxCarrera=boxCarrera.options[boxCarrera.selectedIndex].value,
         boxEval= "Entrada",
         boxTurno= document.getElementById('exampleFormControlSelect1'),
         boxTurno=boxTurno.options[boxTurno.selectedIndex].value;
-    if (boxTurno === "Vespertino") {
-      var boxMaestro1= document.getElementById('selectMaestro1V'),
-          boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
-          boxMaestro2= document.getElementById('selectMaestro2V'),
-          boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
-          boxMaestro3= document.getElementById('selectMaestro3V'),
-          boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+    if ($(this).attr("data_propedeutico") == 'true') {
+      var boxGrupo= document.getElementById('txtGrupo').value;
+      if (boxTurno === "Vespertino") {
+        var boxMaestro3= document.getElementById('selectMaestroV'),
+        boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+      }else {
+        var boxMaestro3= document.getElementById('selectMaestroN'),
+        boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+      }
     }else {
-      var boxMaestro1= document.getElementById('selectMaestro1N'),
-          boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
-          boxMaestro2= document.getElementById('selectMaestro2N'),
-          boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
-          boxMaestro3= document.getElementById('selectMaestro3N'),
-          boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+      var boxGrupo= document.getElementById('txtGrupo'),
+          boxGrupo=boxGrupo.options[boxGrupo.selectedIndex].value;
+      if (boxTurno === "Vespertino") {
+        var boxMaestro1= document.getElementById('selectMaestro1V'),
+            boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
+            boxMaestro2= document.getElementById('selectMaestro2V'),
+            boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
+            boxMaestro3= document.getElementById('selectMaestro3V'),
+            boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+      }else {
+        var boxMaestro1= document.getElementById('selectMaestro1N'),
+            boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
+            boxMaestro2= document.getElementById('selectMaestro2N'),
+            boxMaestro2=boxMaestro2.options[boxMaestro2.selectedIndex].value,
+            boxMaestro3= document.getElementById('selectMaestro3N'),
+            boxMaestro3=boxMaestro3.options[boxMaestro3.selectedIndex].value;
+      }
     }
     if (boxName===""||boxCarrera==="-1"||boxTurno==="-1"||boxGrupo==="-1"||boxEval===""||
         boxMaestro3==="-1"||boxMaestro2==="-1"||boxMaestro1==="-1"||boxUserName===""||boxpass=="") {

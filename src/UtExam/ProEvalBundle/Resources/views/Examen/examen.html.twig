@@ -1,7 +1,7 @@
 {% block examenInterfaz %}
 {% set Abecedario = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'] %}
 {% set g = 1 %}
-<div class="examenInterfaz">
+<div id="regular-{{ExamId}}" class="examenInterfaz">
   <header>
     <nav class="navbar fixed-top">
       <div class="barrsup"></div>
@@ -18,7 +18,7 @@
         <div class="examTimer navbar-text">
         <span class="glyphicon glyphicon-time"></span>
           <span>Tiempo:&nbsp </span>
-          <span id="examTimerContainer">00:10:10</span>
+          <span id="examTimerContainer" data-time="{{ExamTiempo|date('H:i:s')}}">{{ExamTiempo|date('H:i:s')}}</span>
         </div>
       </div>
       <div class="barrinf"></div>

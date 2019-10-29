@@ -72,6 +72,6 @@ get_ModalCodeExam:
     defaults: { _controller: UtExamProEvalBundle:Default:openModalCodeExam }
 
 get_pdfExam:
-    path:     /admin/openPdf/{id}
+    path:     /admin/openPdf/{id}/{tipoExam}
     defaults: { _controller: UtExamProEvalBundle:Admin/createExamen:getPdfOfExam }
     methods:  GET

@@ -76,6 +76,7 @@ class ExamenAutoAdmin extends AbstractAdmin
     ->addIdentifier('titulo')
     ->add('user')
     ->add('preguntasAuto')
+    ->add('materiaModa')
     ->add('propedeutico');
   }
 
@@ -83,6 +84,28 @@ class ExamenAutoAdmin extends AbstractAdmin
     $this->setTemplate('edit', '@UtExamProEval/CRUD/edit_js_from_preguntas.html.twig');
   }
 
+  public function preValidate($object){
+    $container = $this->getConfigurationPool()->getContainer();
+    $em = $container->get('doctrine.orm.entity_manager');
+    $materiasCount = [];
+    if (empty($object->getMateriaModa())) {
+      foreach ($object->getPreguntasAuto() as $pregunta) {
+        for ($i=0; $i < (int)$pregunta->getCantidad(); $i++) {
+          array_push($materiasCount, $pregunta->getMaterias()->getId());
+        }
+      }
+      $counts = array_count_values($materiasCount);
+      arsort($counts);
+      $top_with_count = array_slice($counts, 0, 5, true);
+      $top = array_keys($top_with_count);
+      if (!empty($top)) {
+        $resMateria = $em->getRepository("UtExam\ProEvalBundle\Entity\Materias")
+                    ->find((int)$top[0]);
+        $object->setMateriaModa($resMateria);
+      }
+    }
+    return $object;
+  }
   public function prePersist($object){
     //Variables
     $container = $this->getConfigurationPool()->getContainer();
@@ -122,7 +145,15 @@ class ExamenAutoAdmin extends AbstractAdmin
       shuffle($rand);
       //Preguntar si existen la cantidad de preguntas que piden
       if ($numberOfPreguntas > count($NumberRes)) {
-        dump("no hay tantas preguntas con los parametros seleccionados");
+        var_dump("
+        <h2>no hay tantas preguntas con los parametros seleccionados</h2>
+        <button onclick='goBack()'>Go Back</button>
+        <script>
+          function goBack() {
+            window.history.back();
+          }
+        </script>
+        ");
         die();
       }
       for ($i=0; $i < $numberOfPreguntas; $i++) {
@@ -156,14 +187,29 @@ class ExamenAutoAdmin extends AbstractAdmin
         WHERE pA.id = :id');
       $query->setParameter('id', $preguntaAuto->getId());
       $preguntasRes=$query->getArrayResult();
-      if (count($preguntasRes[0]['pregunta']) != (int)$preguntaAuto->getCantidad()) {
+      $resNumber=0;
+      if(!empty($preguntasRes[0])) $resNumber = count($preguntasRes[0]['pregunta']);
+      if ($resNumber != (int)$preguntaAuto->getCantidad()) {
         //obtener promedio
         $y= (int)$preguntaAuto->getNivel();
         $result+=$y;
         //constantes que serviran como filtros
         $numberOfPreguntas= (int)$preguntaAuto->getCantidad();
         $idOfMateria= $preguntaAuto->getMaterias()->getId();
-        $idOfTypePregunta= $preguntaAuto->getTipoPregunta()->getId();
+        if (!is_null($preguntaAuto->getTipoPregunta()->getId())) {
+          $idOfTypePregunta= $preguntaAuto->getTipoPregunta()->getId();
+        }else {
+          var_dump("
+          <h2>no se selecciono el tipo de preguunta</h2>
+          <button onclick='goBack()'>Go Back</button>
+          <script>
+            function goBack() {
+              window.history.back();
+            }
+          </script>
+          ");
+          die;
+        }
         $Dificultad=$preguntaAuto->getNivel();
 
         //otencion de cantidad de de preguntas que existen
@@ -182,11 +228,19 @@ class ExamenAutoAdmin extends AbstractAdmin
         shuffle($rand);
         //Preguntar si existen la cantidad de preguntas que piden
         if ($numberOfPreguntas > count($NumberRes)) {
-          dump("no hay tantas preguntas con los parametros seleccionados");
+          var_dump("
+          <h2>no hay tantas preguntas con los parametros seleccionados</h2>
+          <button onclick='goBack()'>Go Back</button>
+          <script>
+            function goBack() {
+              window.history.back();
+            }
+          </script>
+          ");
           die();
         }
-        if (count($preguntasRes[0]['pregunta']) != 0) {
-          foreach ($preguntasRes[0]['pregunta'] as $pregunta) {
+        if ($resNumber != 0) {
+          foreach ($resNumber as $pregunta) {
             $resPregunta = $em->getRepository("UtExam\ProEvalBundle\Entity\Pregunta")
                         ->find($pregunta['id']);
             $preguntaAuto->removePreguntum($resPregunta);
