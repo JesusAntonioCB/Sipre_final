@@ -10,20 +10,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 /**
  *
  */
-class CalificacionesAdmin extends AbstractAdmin
+class CalificacionesDeMateriasAdmin extends AbstractAdmin
 {
   protected function configureFormFields(FormMapper $formMapper)
   {
     $formMapper
     ->add('calificacion', null, array("label" => "Calificacion"))
-    ->add('evaluacion', null, array("label" => "Calificacion"))
-    ->add('caliMateria', "sonata_type_collection", array(
-      "label" => "Materia"), [
-          'edit' => 'inline',
-          'inline' => 'table'
-      ])
-    ->add('examen', null, array("label" => "Examen"))
-    ->add('examenAuto', null, array("label" => "Examen Automatico"));
+    ->add('materias', null, array("label" => "Materia"));
   }
 
   protected function configureDatagridFilters(DatagridMapper $datagridMapper)

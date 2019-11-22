@@ -25,23 +25,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('carrera', null, ['label' => 'Carrera'])
     ->add('maestros', null, ['label' => 'Maestro'])
     ->add('grupo', null, ['label' => 'Grupo'])
-    ->add('evaluacion', null, ['label' => 'Evaluacion'])
     ->add('examen', null, ['label' => 'Examen Fijo Contestado'])
     ->add('examenAuto', null, ['label' => 'Examene Propedeutico'])
     ->add('fecha', null, ['label' => 'Fecha'])
     ->add('tiempo', null, ['label' => 'Duracion de Examen'])
     ->add('calificaciones', "sonata_type_collection", [
-      'label' => 'Calificaciones'], [
-          'edit' => 'inline',
-          'inline' => 'table',
-          'sortable' => 'position'
-      ])
-    ->add('calificacionE1', null, ['label' => 'Calificacion'])
-  	->add('calificacionE2', null, ['label' => 'Calificacion'])
-  	->add('calificacionE3', null, ['label' => 'Calificacion'])
-  	->add('calificacionS1', null, ['label' => 'Calificacion'])
-  	->add('calificacionS2', null, ['label' => 'Calificacion'])
-  	->add('calificacionS3', null, ['label' => 'Calificacion'])
+      'label' => 'Calificaciones'])
     ->add('codigoUsuario', null, ['label' => 'Codigo unico de Alumno'])
     ->add('turno', ChoiceFieldMaskType::class, [
       'choices' => [
@@ -57,19 +46,12 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('examen',null,["label"=>"Examen Fijo"])
     ->add('grupo')
     ->add('maestros')
-    ->add('evaluacion')
     ->add('examenAuto')
     ->add('nombre')
     ->add('username')
     ->add('contrasena')
     ->add('turno')
-    ->add('fecha')
-    ->add('calificacionE1')
-  	->add('calificacionE2')
-  	->add('calificacionE3')
-  	->add('calificacionS1')
-  	->add('calificacionS2')
-  	->add('calificacionS3');
+    ->add('fecha');
   }
 
   protected function configureListFields(ListMapper $listMapper)
@@ -77,21 +59,14 @@ class AlumnosAdmin extends AbstractAdmin
     $listMapper
     ->addIdentifier('nombre')
     ->add('username')
-    ->add('contrasena')
+    ->add('contrasena',null,["label"=>"Contraseña"])
     ->add('turno')
     ->add('maestros')
     ->add('examen',null,["label"=>"Examen Fijo"])
     ->add('grupo')
-    ->add('evaluacion')
     ->add('examenAuto')
     ->add('fecha')
     ->add('tiempo')
-    ->add('calificacionE1')
-	  ->add('calificacionE2')
-  	->add('calificacionE3')
-  	->add('calificacionS1')
-  	->add('calificacionS2')
-  	->add('calificacionS3')
     ->add('codigoUsuario')
     // add custom action links
     ->add('_action', 'actions', [
@@ -116,7 +91,6 @@ class AlumnosAdmin extends AbstractAdmin
                   ->add('turno')
                   ->add('grupo')
                   ->add('maestros')
-                  ->add('evaluacion')
                   ->add('examen')
                   ->add('examenAuto')
                   ->add('fecha')

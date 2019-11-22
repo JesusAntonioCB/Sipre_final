@@ -11,6 +11,6 @@ class AdminCreateReporte extends AbstractAdmin
 
     protected function configureRoutes(RouteCollection $collection)
     {
-        // $collection->clearExcept(['list']);
+        $collection->clearExcept(['list']);
     }
 }

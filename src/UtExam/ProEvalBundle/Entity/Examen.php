@@ -109,6 +109,11 @@ class Examen
     private $user;
 
     /**
+     * @ORM\OneToMany(targetEntity="Calificaciones", mappedBy="examen",cascade={"persist"})
+     */
+    private $calificaciones;
+
+    /**
      * Get id.
      *
      * @return int
@@ -462,5 +467,41 @@ class Examen
     public function getMateriaModa()
     {
         return $this->materiaModa;
+    }
+
+    /**
+     * Add calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return Examen
+     */
+    public function addCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        $this->calificaciones[] = $calificacione;
+
+        return $this;
+    }
+
+    /**
+     * Remove calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        return $this->calificaciones->removeElement($calificacione);
+    }
+
+    /**
+     * Get calificaciones.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCalificaciones()
+    {
+        return $this->calificaciones;
     }
 }

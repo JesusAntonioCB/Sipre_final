@@ -9,52 +9,36 @@ use UtExam\ProEvalBundle\Entity\Alumnos;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use UtExam\ProEvalBundle\Entity\ExamenAuto;
+use UtExam\ProEvalBundle\Entity\Calificaciones;
+use UtExam\ProEvalBundle\Entity\CalificacionesDeMaterias;
 
 class DefaultController extends Controller
 {
     public function indexAction(){
-        if(false){
-           $isLoggedIn = "true";
-           $UID = $_COOKIE["UID"];
-           $em = $this->getDoctrine()->getManager();
-           $query = $em->createQuery('
-             SELECT a
-             FROM UtExam\ProEvalBundle\Entity\Alumnos a
-             WHERE a.codigoUsuario = :codeUser');
-           $query->setParameter('codeUser', $UID);
-           $ImageRes=$query->getArrayResult();
-           return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
-             array(
-               'userName'=> 'Antonio',
-             )//final de array
-           );//Final de return
-        }
-        else {
-          $direccion= "propedeutico";
-          return $this->render('UtExamProEvalBundle:Default:index.html.twig',
-            array(
-              'direccion' => $direccion
-            )
-          );
-        }
+      $direccion= "propedeutico";
+      return $this->render('UtExamProEvalBundle:Default:index.html.twig',
+        array(
+          'direccion' => $direccion
+        )
+      );
     }
 
     public function propedeuticoAction(){
+      //preguntar si ya se inicio sesion
         if(isset($_COOKIE["UID"])){
           $isLoggedIn = "true";
           $UID = $_COOKIE["UID"];
           $em = $this->getDoctrine()->getManager();
-          $userQuery = $em->createQuery('
-            SELECT a
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            WHERE a.codigoUsuario = :codeUser');
-          $userQuery->setParameter('codeUser', $UID);
-          $userRes=$userQuery->getArrayResult()[0]['nombre'];
-          $userId=$userQuery->getArrayResult()[0]['id'];
+          //pedimos el usuario basandonos en el codigo de usuario unico de cada alumno
+          $alumnoRes = $this->getAlumno($UID);
+          $userRes = $alumnoRes[0]['nombre'];
+          $userId = $alumnoRes[0]['id'];
+          //aqui es para que regrese el mismo examen si se recarga la pestaña o se cierra
           if (isset($_COOKIE["examenId"])) {
             $arrExam= explode("-", $_COOKIE["examenId"]);
             $type= $arrExam[0];
             $examenId=$arrExam[1];
+            //si es un examen tipo auto o fijo
             if ($type === "propedeutico") {
               //agregar a el objeto las preguntas con los filtros correspondientes
               $examenRes= $this->getExamen($examenId,1);
@@ -81,18 +65,20 @@ class DefaultController extends Controller
               return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
                 array(
                   'userName'=> $userRes,
-                  'examen'=> $examenRes,
                   'Author'=> $examenRes[0]['user']['username'],
                   'ExamDate'=>$examenRes[0]['fecha'],
                   'ExamTitle'=>$examenRes[0]['instrucciones'],
                   'ExamTiempo'=>$examenRes[0]['tiempo'],
                   'ExamId'=> $examenRes[0]['id'],
-                  'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
+                  'ExamMateria'=> $examenRes[0]['materiaModa'],
+                  'ExamNivel'=> $examenRes[0]['nivel'],
+                  'preguntas' => $this->getAllQuestionFijo($examenRes),
                   'propedeutico'=>false
                 )//final de array
               );//Final de return
             }
           }else {
+            //para averiguar los examenes que serviran como propedeuticos ya sean fijos o automaticos
             $examQuery = $em->createQuery('
               SELECT partial eA.{id}
               FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
@@ -105,8 +91,12 @@ class DefaultController extends Controller
               WHERE e.propedeutico = :boolean');
             $exam2Query->setParameter('boolean', 1);
             $Number2Res=$exam2Query->getArrayResult();
+            //una ves que tenemos los resultados tomaremos en cuenta que las consultas que
+            //regresen vacias son porque no se eligieron en ese tipo de examen
             if (!empty($examQuery)) {
               if (!empty($exam2Query)) {
+                //cuando ambas contengan examenes que serviran como examen propedeutico
+                //se tomara uno de los 2 randomizando la eleccion
                 $numberExamRand = rand ( 1 , 2 );
               }else {
                 $numberExamRand=1;
@@ -114,6 +104,7 @@ class DefaultController extends Controller
             }elseif (!empty($exam2Query)) {
               $numberExamRand=2;
             }else {
+              //si no se eligio ninguno entonces devolvera una pagina de error
               return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
             }
             if ($numberExamRand === 1) {
@@ -154,13 +145,14 @@ class DefaultController extends Controller
                 return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
                   array(
                     'userName'=> $userRes,
-                    'examen'=> $examenRes,
                     'Author'=> $examenRes[0]['user']['username'],
                     'ExamDate'=>$examenRes[0]['fecha'],
                     'ExamTitle'=>$examenRes[0]['instrucciones'],
                     'ExamTiempo'=>$examenRes[0]['tiempo'],
                     'ExamId'=> $examenRes[0]['id'],
-                    'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
+                    'ExamMateria'=> $examenRes[0]['materiaModa'],
+                    'ExamNivel'=> $examenRes[0]['nivel'],
+                    'preguntas' => $this->getAllQuestionFijo($examenRes),
                     'propedeutico'=>false
                   )//final de array
                 );//Final de return
@@ -169,6 +161,7 @@ class DefaultController extends Controller
           }
         }
         else {
+          //llevara a la pagina donde podremos registrarnos o iniciar sesion
           $em = $this->getDoctrine()->getManager();
           $query = $em->createQuery('
             SELECT m, mat
@@ -195,47 +188,65 @@ class DefaultController extends Controller
           $query->setParameter('codeUser', $UID);
           $userRes=$query->getArrayResult()[0]['nombre'];
           $userId=$query->getArrayResult()[0]['id'];
+
           $query = $em->createQuery('
-            SELECT e,partial u.{id, username}, p, pr, ma, res, text, aud, vid, img, paud, pvid, pimg
+            SELECT partial e.{id}
             FROM UtExam\ProEvalBundle\Entity\Examen e
-            LEFT JOIN e.user u
-            LEFT JOIN e.pregunta p
-            LEFT JOIN p.pregunta pr
-            LEFT JOIN pr.materias ma
-            LEFT JOIN pr.audio paud
-            LEFT JOIN pr.video pvid
-            LEFT JOIN pr.imagen pimg
-            LEFT JOIN pr.respuestas res
-            LEFT JOIN res.texto text
-            LEFT JOIN res.audio aud
-            LEFT JOIN res.video vid
-            LEFT JOIN res.imagen img
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
-          $updateExam = $em->createQuery('
-            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-            SET A.examen= :examen
-            WHERE A.id = :idUser');
-          $updateExam->setParameter('examen', $examenRes[0]['id']);
-          $updateExam->setParameter('idUser', $userId);
-          $updateExam->execute();
           if (empty($examenRes)) {
-            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+            $query = $em->createQuery('
+              SELECT partial e.{id}
+              FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
+              WHERE e.codigoExam = :codeExam');
+            $query->setParameter('codeExam', $codigoExam);
+            $examenRes=$query->getArrayResult();
+            if (empty($examenRes)) {
+              return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+            }else {
+              $examenId=$examenRes[0]['id'];
+              $examenRes= $this->getExamen($examenId,1);
+              $this->setExamenEnAlumno($examenRes[0]['id'],$userId,1);
+              if (empty($examenRes)) {
+                return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+              }
+              return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+                array(
+                  'userName'=> $userRes,
+                  'Author'=> $examenRes[0]['user']['username'],
+                  'ExamDate'=> $examenRes[0]['fecha'],
+                  'ExamTitle'=> $examenRes[0]['instrucciones'],
+                  'ExamTiempo'=> $examenRes[0]['tiempo'],
+                  'ExamId'=> $examenRes[0]['id'],
+                  'preguntasGrup' => $this->getAllQuestion($examenRes),
+                  'propedeutico'=> true
+                )//final de array
+              );//Final de return
+            }
+          }else {
+            $examenId=$examenRes[0]['id'];
+            $examenRes= $this->getExamen($examenId,2);
+            $this->setExamenEnAlumno($examenRes[0]['id'],$userId,2);
+            if (empty($examenRes)) {
+              return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+            }
+            return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+              array(
+                'userName'=> $userRes,
+                'Author'=> $examenRes[0]['user']['username'],
+                'ExamDate'=>$examenRes[0]['fecha'],
+                'ExamTitle'=>$examenRes[0]['instrucciones'],
+                'ExamTiempo'=>$examenRes[0]['tiempo'],
+                'ExamId'=> $examenRes[0]['id'],
+                'ExamMateria'=> $examenRes[0]['materiaModa'],
+                'ExamNivel'=> $examenRes[0]['nivel'],
+                'preguntas' => $this->getAllQuestionFijo($examenRes),
+                'propedeutico'=>false
+              )//final de array
+            );//Final de return
           }
-          return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
-            array(
-              'userName'=> $userRes,
-              'examen'=> $examenRes,
-              'Author'=> $examenRes[0]['user']['username'],
-              'ExamDate'=>$examenRes[0]['fecha'],
-              'ExamTitle'=>$examenRes[0]['instrucciones'],
-              'preguntasGrup' => $this->getAllQuestionFijo($examenRes),
-              'propedeutico'=>false
-            )//final de array
-          );//Final de return
-        }
-        else {
+        }else {
           $em = $this->getDoctrine()->getManager();
           $query = $em->createQuery('
             SELECT e
@@ -399,213 +410,359 @@ class DefaultController extends Controller
 
     public function getResultsAction(){
       $em = $this->getDoctrine()->getManager();
-      $examen= $_COOKIE["examen"];
-      if ($_POST['respuestas']) {
-        $respuestas= $_POST['respuestas'];
-      }else {
-        $respuestas=[];
-      }
-      if ($_POST['dquestion']) {
-        $preguntas= (int)$_POST['dquestion'];
-      }else {
+      if (isset($_COOKIE["examenId"])) {
+        $arrExam= explode("-", $_COOKIE["examenId"]);
+        $typeExam= $arrExam[0];
+        $examenId=$arrExam[1];
+        $examen= "";
         $preguntas= 0;
-      }
-      if ($preguntas < sizeof($respuestas, 0)) {
-        $preguntas= 50;
-      }
-      $time= $_POST['time'];
-      if ($_POST['QByGrup1']) {
-        $Mat1= explode("=;", $_POST['QByGrup1'])[0];
-        $preg1= (int)explode("=;", $_POST['QByGrup1'])[1];
-      }else {
-        $Mat1="";
-        $preg1=0;
-      }
-      if ($_POST['QByGrup2']) {
-        $Mat2= explode("=;", $_POST['QByGrup2'])[0];
-        $preg2= (int)explode("=;", $_POST['QByGrup2'])[1];
-      }else {
-        $Mat2="";
-        $preg2=0;
-      }
-      if ($_POST['QByGrup3']) {
-        $Mat3= explode("=;", $_POST['QByGrup3'])[0];
-        $preg3= (int)explode("=;", $_POST['QByGrup3'])[1];
-      }else {
-        $Mat3="";
-        $preg3=0;
-      }
-      $RCorect1=0;
-      $RCorect2=0;
-      $RCorect3=0;
-      $calificacion1=0;
-      $calificacion2=0;
-      $calificacion3=0;
-      $materiaTempo=[];
-      foreach ($respuestas as $value) {
-        $type=$value[0];
-        $RId=$value[1];
-        if ($type=== "texto") {
-          $querytext = $em->createQuery('
-            SELECT partial t.{id, correcto}, partial r.{id}, partial p.{id}, m
-            FROM UtExam\ProEvalBundle\Entity\Texto t
-            LEFT JOIN t.respuestas r
-            LEFT JOIN r.pregunta p
-            LEFT JOIN p.materias m
-            WHERE t.id = :idtexto');
-          $querytext->setParameter('idtexto', $RId);
-          $respuestaRes=$querytext->getArrayResult()[0];
-          $isCorect=$respuestaRes["correcto"];
-          $materia= $respuestaRes["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1==$materia) {
+        $respuestas= [];
+        $time= "";
+        $arrayQByGrup= [];
+        $materiaID="";
+        $preg=0;
+        $RCorect=[];
+        $calificacion=[];
+        $corect=0;
+        $pTotal=0;
+        $caliTempo=0;
+        if(isset($_POST)){
+          if(isset($_POST['dquestion'])) $preguntas = $_POST['dquestion'];
+          if(isset($_POST["respuestas"])) $respuestas = $_POST["respuestas"];
+          if(isset($_POST["time"])) $time = $_POST["time"];
+          if(isset($_POST["arrayQByGrup"])) $arrayQByGrup = $_POST["arrayQByGrup"];
+        }
+        if ($preguntas < sizeof($respuestas, 0)) {
+          $preguntas= 100;
+        }
+        foreach ($respuestas as $value) {
+          $type=$value[0];
+          $RId=$value[1];
+          if ($type=== "texto") {
+            $querytext = $em->createQuery('
+              SELECT partial t.{id, correcto}, partial r.{id}, partial p.{id}, m
+              FROM UtExam\ProEvalBundle\Entity\Texto t
+              LEFT JOIN t.respuestas r
+              LEFT JOIN r.pregunta p
+              LEFT JOIN p.materias m
+              WHERE t.id = :idtexto');
+            $querytext->setParameter('idtexto', $RId);
+            $respuestaRes=$querytext->getArrayResult()[0];
+            $isCorect=$respuestaRes["correcto"];
+            $materia= $respuestaRes["respuestas"][0]["pregunta"]["materias"]["nombre"];
+            $materiaID= $respuestaRes["respuestas"][0]["pregunta"]["materias"]["id"];
             if ($isCorect) {
-              $RCorect1 += 1;
+              if (empty($RCorect[$materiaID])) {
+                $corect=0;
+                $corect ++;
+                $pTotal=0;
+                $pTotal ++;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect ++;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
+            }else {
+              if (empty($RCorect[$materiaID])) {
+                $corect =0;
+                $pTotal =0;
+                $pTotal ++;
+                $arrayCorrect = array(
+                  'correctas' => $corect,
+                  'total' => $pTotal
+                );
+                $RCorect[$materiaID]= $arrayCorrect;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect += 0;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
             }
           }
-          if ($Mat2==$materia) {
+          if ($type=== "video") {
+            $queryVid = $em->createQuery('
+              SELECT partial v.{id, correcto}, partial r.{id}, partial p.{id}, m
+              FROM UtExam\ProEvalBundle\Entity\Video v
+              LEFT JOIN v.respuestas r
+              LEFT JOIN r.pregunta p
+              LEFT JOIN p.materias m
+              WHERE v.id = :idvideo');
+            $queryVid->setParameter('idvideo', $RId);
+            $resVidResult=$queryVid->getArrayResult()[0];
+            $isCorect=$resVidResult["correcto"];
+            $materia= $resVidResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
+            $materiaID= $resVidResult["respuestas"][0]["pregunta"]["materias"]["id"];
             if ($isCorect) {
-              $RCorect2 += 1;
+              if (empty($RCorect[$materiaID])) {
+                $corect=0;
+                $corect ++;
+                $pTotal=0;
+                $pTotal ++;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect ++;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
+            }else {
+              if (empty($RCorect[$materiaID])) {
+                $corect =0;
+                $pTotal =0;
+                $pTotal ++;
+                $arrayCorrect = array(
+                  'correctas' => $corect,
+                  'total' => $pTotal
+                );
+                $RCorect[$materiaID]= $arrayCorrect;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect += 0;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
             }
           }
-          if ($Mat3==$materia) {
+          if ($type=== "imagen") {
+            $queryimg = $em->createQuery('
+              SELECT partial I.{id, correcto}, partial r.{id}, partial p.{id}, m
+              FROM UtExam\ProEvalBundle\Entity\Imagen I
+              LEFT JOIN I.respuestas r
+              LEFT JOIN r.pregunta p
+              LEFT JOIN p.materias m
+              WHERE I.id = :idimagen');
+            $queryimg->setParameter('idimagen', $RId);
+            $resImgResult=$queryimg->getArrayResult()[0];
+            $isCorect=$resImgResult["correcto"];
+            $materia= $resImgResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
+            $materiaID= $resImgResult["respuestas"][0]["pregunta"]["materias"]["id"];
             if ($isCorect) {
-              $RCorect3 += 1;
+              if (empty($RCorect[$materiaID])) {
+                $corect=0;
+                $corect ++;
+                $pTotal=0;
+                $pTotal ++;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect ++;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
+            }else {
+              if (empty($RCorect[$materiaID])) {
+                $corect =0;
+                $pTotal =0;
+                $pTotal ++;
+                $arrayCorrect = array(
+                  'correctas' => $corect,
+                  'total' => $pTotal
+                );
+                $RCorect[$materiaID]= $arrayCorrect;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect += 0;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
+            }
+          }
+          if ($type=== "audio") {
+            $queryAud = $em->createQuery('
+              SELECT partial a.{id, correcto}, partial r.{id}, partial p.{id}, m
+              FROM UtExam\ProEvalBundle\Entity\Audio a
+              LEFT JOIN a.respuestas r
+              LEFT JOIN r.pregunta p
+              LEFT JOIN p.materias m
+              WHERE a.id = :idaudio');
+            $queryAud->setParameter('idaudio', $RId);
+            $resAudResult=$queryAud->getArrayResult()[0];
+            $isCorect=$resAudResult["correcto"];
+            $materia= $resAudResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
+            $materiaID= $resAudResult["respuestas"][0]["pregunta"]["materias"]["id"];
+            if ($isCorect) {
+              if (empty($RCorect[$materiaID])) {
+                $corect=0;
+                $corect ++;
+                $pTotal=0;
+                $pTotal ++;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect ++;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
+            }else {
+              if (empty($RCorect[$materiaID])) {
+                $corect =0;
+                $pTotal =0;
+                $pTotal ++;
+                $arrayCorrect = array(
+                  'correctas' => $corect,
+                  'total' => $pTotal
+                );
+                $RCorect[$materiaID]= $arrayCorrect;
+              }else {
+                $corect = (int)$RCorect[$materiaID]['correctas'];
+                $corect += 0;
+                $pTotal = (int)$RCorect[$materiaID]['total'];
+                $pTotal ++;
+              }
+              $arrayCorrect = array(
+                'correctas' => $corect,
+                'total' => $pTotal
+              );
+              $RCorect[$materiaID]= $arrayCorrect;
             }
           }
         }
-        if ($type=== "video") {
-          $queryVid = $em->createQuery('
-            SELECT partial v.{id, correcto}, partial r.{id}, partial p.{id}, m
-            FROM UtExam\ProEvalBundle\Entity\Video v
-            LEFT JOIN v.respuestas r
-            LEFT JOIN r.pregunta p
-            LEFT JOIN p.materias m
-            WHERE v.id = :idvideo');
-          $queryVid->setParameter('idvideo', $RId);
-          $resVidResult=$queryVid->getArrayResult()[0];
-          $isCorect=$resVidResult["correcto"];
-          $materia= $resVidResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1==$materia) {
-            if ($isCorect) {
-              $RCorect1 += 1;
-            }
+        // return new Response("Gracias por contestar");
+        foreach ($arrayQByGrup as $grup) {
+          $GrupMateriaId= explode("=;", $grup)[0];
+          if (!array_key_exists((int)$GrupMateriaId, $RCorect)) {
+             $arrayCorrect = array(
+               'correctas' => 0,
+               'total' => explode("=;", $grup)[1]
+             );
+             $RCorect[$GrupMateriaId]=$arrayCorrect;
+             continue;
           }
-          if ($Mat2==$materia) {
-            if ($isCorect) {
-              $RCorect2 += 1;
-            }
-          }
-          if ($Mat3==$materia) {
-            if ($isCorect) {
-              $RCorect3 += 1;
-            }
-          }
-        }
-        if ($type=== "imagen") {
-          $queryimg = $em->createQuery('
-            SELECT partial I.{id, correcto}, partial r.{id}, partial p.{id}, m
-            FROM UtExam\ProEvalBundle\Entity\Imagen I
-            LEFT JOIN I.respuestas r
-            LEFT JOIN r.pregunta p
-            LEFT JOIN p.materias m
-            WHERE I.id = :idimagen');
-          $queryimg->setParameter('idimagen', $RId);
-          $resImgResult=$queryimg->getArrayResult()[0];
-          $isCorect=$resImgResult["correcto"];
-          $materia= $resImgResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1==$materia) {
-            if ($isCorect) {
-              $RCorect1 += 1;
-            }
-          }
-          if ($Mat2==$materia) {
-            if ($isCorect) {
-              $RCorect2 += 1;
-            }
-          }
-          if ($Mat3==$materia) {
-            if ($isCorect) {
-              $RCorect3 += 1;
+          foreach ($RCorect as $key => $califi) {
+            if ((int)$key == (int)$GrupMateriaId) {
+              if ($califi["total"] != explode("=;", $grup)[1]) {
+                $arrayCorrect = array(
+                  'correctas' => $califi["correctas"],
+                  'total' => explode("=;", $grup)[1]
+                );
+                $RCorect[$key]=$arrayCorrect;
+              }else {
+                continue;
+              }
+            }else {
+              continue;
             }
           }
         }
-        if ($type=== "audio") {
-          $queryAud = $em->createQuery('
-            SELECT partial a.{id, correcto}, partial r.{id}, partial p.{id}, m
-            FROM UtExam\ProEvalBundle\Entity\Audio a
-            LEFT JOIN a.respuestas r
-            LEFT JOIN r.pregunta p
-            LEFT JOIN p.materias m
-            WHERE a.id = :idaudio');
-          $queryAud->setParameter('idaudio', $RId);
-          $resAudResult=$queryAud->getArrayResult()[0];
-          $isCorect=$resAudResult["correcto"];
-          $materia= $resAudResult["respuestas"][0]["pregunta"]["materias"]["nombre"];
-          if ($Mat1==$materia) {
-            if ($isCorect) {
-              $RCorect1 += 1;
-            }
+        foreach ($RCorect as $key => $RCorectOfGrup) {
+          $caliTempo=($RCorectOfGrup['correctas']/$RCorectOfGrup['total'])*100;
+          if (is_float($caliTempo)) {
+            $caliTempo= round($caliTempo);
           }
-          if ($Mat2==$materia) {
-            if ($isCorect) {
-              $RCorect2 += 1;
-            }
-          }
-          if ($Mat3==$materia) {
-            if ($isCorect) {
-              $RCorect3 += 1;
-            }
-          }
-        }
-      }
-      if ($preg1 != 0) {
-        $calificacion1=($RCorect1/$preg1)*100;
-        $calificacion1= round($calificacion1,2);
-      }
-      if ($preg2 != 0) {
-        $calificacion2=($RCorect2/$preg2)*100;
-        $calificacion2= round($calificacion2,2);
-      }
-      if ($preg3 != 0) {
-        $calificacion3=($RCorect3/$preg3)*100;
-        $calificacion3= round($calificacion3,2);
-      }
-      if ($_COOKIE["UID"]) {
-        $UID = $_COOKIE["UID"];
-        if ($examen === "Entrada") {
-          $updateCali = $em->createQuery('
-            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-            SET A.calificacionE1 = :calificacion1 ,
-            A.calificacionE2 = :calificacion2 ,
-            A.calificacionE3 = :calificacion3 ,
-            A.tiempo = :time
-            WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
-          $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
-          $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
-          $updateCali->setParameter('time', $time);
-          $updateCali->setParameter('idUser', $UID);
-          $updateCali->execute();
-        }else {
-          $updateCali = $em->createQuery('
-            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-            SET A.calificacionS1 = :calificacion1 ,
-            A.calificacionS2 = :calificacion2 ,
-            A.calificacionS3 = :calificacion3 ,
-            A.tiempo = :time
-            WHERE A.codigoUsuario = :idUser');
-          $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
-          $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
-          $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
-          $updateCali->setParameter('time', $time);
-          $updateCali->setParameter('idUser', $UID);
-          $updateCali->execute();
+          $calificacion[$key]= (int)$caliTempo;
         }
 
-      }else {
-        return new Response("Error: La sesion a caducado");
+        if(isset($_COOKIE["examen"])) $examen = $_COOKIE["examen"];
+        //si es un examen tipo auto o fijo
+
+        if ($_COOKIE["UID"]) {
+          $UID = $_COOKIE["UID"];
+          if ($examen === "Entrada") {
+            $updateCali = $em->createQuery('
+              UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+              SET A.calificacionE1 = :calificacion1 ,
+              A.calificacionE2 = :calificacion2 ,
+              A.calificacionE3 = :calificacion3 ,
+              A.tiempo = :time
+              WHERE A.codigoUsuario = :idUser');
+            $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
+            $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
+            $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
+            $updateCali->setParameter('time', $time);
+            $updateCali->setParameter('idUser', $UID);
+            $updateCali->execute();
+          }else {
+            $caliGeneral= 0;
+            $alumnoRes = $this->getAlumno($UID);
+            $alumnoId = $alumnoRes[0]['id'];
+            $objAlumno = $this->getDoctrine()
+                           ->getRepository("UtExam\ProEvalBundle\Entity\Alumnos")
+                           ->find((int)$alumnoId);
+            $alumnoCali = new Calificaciones();
+            $alumnoCali->setAlumnos($objAlumno);
+            $alumnoCali->setEvaluacion($examen);
+            if ($typeExam === "propedeutico") {
+              $objExamen = $this->getDoctrine()
+                             ->getRepository("UtExam\ProEvalBundle\Entity\ExamenAuto")
+                             ->find((int)$examenId);
+              $alumnoCali->setExamenAuto($objExamen);
+            }else {
+              $objExamen = $this->getDoctrine()
+                             ->getRepository("UtExam\ProEvalBundle\Entity\Examen")
+                             ->find((int)$examenId);
+              $alumnoCali->setExamen($objExamen);
+            }
+            $alumnoCali->setTiempo($time);
+            foreach ($calificacion as $key => $value) {
+              $caliGeneral += $value;
+              $objMateria = $this->getDoctrine()
+                             ->getRepository("UtExam\ProEvalBundle\Entity\Materias")
+                             ->find((int)$key);
+              $caliMaterias = new CalificacionesDeMaterias();
+              $caliMaterias->setCalificacion($value);
+              $caliMaterias->setMaterias($objMateria);
+              $caliMaterias->setCalificaciones($alumnoCali);
+              $alumnoCali->addCaliMaterium($caliMaterias);
+            }
+            $caliGeneral = $caliGeneral/count($calificacion);
+            $alumnoCali->setCalificacion($caliGeneral);
+            $em->persist($alumnoCali);
+            $em->flush();
+            $userQuery = $em->createQuery('
+              SELECT a, cali
+              FROM UtExam\ProEvalBundle\Entity\Alumnos a
+              LEFT JOIN a.calificaciones cali
+              WHERE a.codigoUsuario = :codeUser');
+            $userQuery->setParameter('codeUser', $UID);
+            $userRes=$userQuery->getArrayResult();
+            // return new Response("Gracias por contestar");
+            $updateCali = $em->createQuery('
+              UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+              SET A.examSalida = :status
+              WHERE A.id = :idUser');
+            $updateCali->setParameter('status', true);
+            $updateCali->setParameter('idUser', $alumnoId);
+            $updateCali->execute();
+          }
+        }else {
+          return new Response("Error: La sesion a caducado");
+        }
+        return new Response("Gracias por contestar");
       }
-      return new Response("Gracias por contestar");
     }
 
     public function registerAction(){
@@ -641,19 +798,14 @@ class DefaultController extends Controller
         $alumno->setContrasena($valuePass);
         $alumno->setFecha(date('Y-m-d H:i:s'));
         $alumno->setTiempo(0);
-        $alumno->setCalificacionE1(0);
-        $alumno->setCalificacionE2(0);
-        $alumno->setCalificacionE3(0);
-        $alumno->setCalificacionS1(0);
-        $alumno->setCalificacionS2(0);
-        $alumno->setCalificacionS3(0);
         $alumno->setCodigoUsuario($usercode);
         $alumno->setCarrera($valueCarrera);
         $alumno->setGrupo($valueGrupo);
+        $alumno->setExamSalida(false);
+        $alumno->setExamEntrada(false);
         $alumno->addMaestro($valueMaestro1);
         $alumno->addMaestro($valueMaestro2);
         $alumno->addMaestro($valueMaestro3);
-        $alumno->setEvaluacion($valueEval);
         $em->persist($alumno);
         $em->flush();
         $responseArray = array(
@@ -702,6 +854,16 @@ class DefaultController extends Controller
       $questions=$examenRes[0]['pregunta'];
       return $questions;
     }
+    public function getAlumno($UID){
+      $em = $this->getDoctrine()->getManager();
+      $userQuery = $em->createQuery('
+        SELECT a
+        FROM UtExam\ProEvalBundle\Entity\Alumnos a
+        WHERE a.codigoUsuario = :codeUser');
+      $userQuery->setParameter('codeUser', $UID);
+      $userRes=$userQuery->getArrayResult();
+      return $userRes;
+    }
     public function getExamen($examenId,$type){
       $em = $this->getDoctrine()->getManager();
       if ((int)$type === 1) {
@@ -726,10 +888,11 @@ class DefaultController extends Controller
         return $examenRes;
       }else {
         $queryExam = $em->createQuery('
-          SELECT e,partial u.{id, username}, p, pr, ma, res, text, aud, vid, img, paud, pvid, pimg
+          SELECT e,partial u.{id, username}, maMo , p, pr, ma, res, text, aud, vid, img, paud, pvid, pimg
           FROM UtExam\ProEvalBundle\Entity\Examen e
           LEFT JOIN e.user u
           LEFT JOIN e.pregunta p
+          LEFT JOIN e.materiaModa maMo
           LEFT JOIN p.pregunta pr
           LEFT JOIN pr.materias ma
           LEFT JOIN pr.audio paud

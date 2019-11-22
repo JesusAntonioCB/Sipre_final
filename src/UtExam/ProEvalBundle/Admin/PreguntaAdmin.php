@@ -83,13 +83,19 @@ class PreguntaAdmin extends AbstractAdmin
   }
 
   public function createQuery($context = 'list'){
-    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser()->getId();
-    $query = parent::createQuery($context);
-    $query->andWhere(
-        $query->expr()->eq($query->getRootAliases()[0] . '.user', ':user')
-    );
-    $query->setParameter('user', (int)$user);
-    return $query;
+    $user =$this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
+    if ($user->hasRole("ROLE_SUPER_ADMIN")) {
+      $query = parent::createQuery($context);
+      return $query;
+    }else {
+      $userid=$user->getId();
+      $query = parent::createQuery($context);
+      $query->andWhere(
+          $query->expr()->eq($query->getRootAliases()[0] . '.user', ':user')
+      );
+      $query->setParameter('user', (int)$userid);
+      return $query;
+    }
   }
 
   // public function configure() {

@@ -105,7 +105,7 @@ sonata_admin:
                   # - admin.audioPregunta
                   # - admin.materias
                   - admin.Pregunta
-                  - admin.PreguntasAuto
+                  # - admin.PreguntasAuto
                   # - admin.texto
                   # - admin.tipoPregunta
                   # - admin.respuestas
@@ -118,9 +118,9 @@ sonata_admin:
                   - admin.examen
                   - admin.examenAuto
             createExamWord:
-              label: 'Archivo Office'
+              label: 'Archivo PDF'
               label_catalogue: ~
-              icon: '<i class="fa fa-file-word-o "></i>'
+              icon: '<i class="fa fa-file-pdf-o "></i>'
               items:
                   - admin.createExamWord
             createReporte:

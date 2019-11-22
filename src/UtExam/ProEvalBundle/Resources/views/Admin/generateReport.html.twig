@@ -37,6 +37,21 @@
                   <option value="Nocturno">Nocturno</option>
                 </select>
               </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                <select class="form-control search-slt" id="selectExam">
+                <option value="0">Examen</option>
+                {% for exam in exams %}
+                  {% if exam.id is defined and exam.id is not null %}
+                    <option value="fijo-{{exam.id}}">{{exam.titulo}}</option>
+                  {% endif %}
+                {% endfor %}
+                {% for examAuto in examsAuto %}
+                  {% if examAuto.id is defined and examAuto.id is not null %}
+                    <option value="auto-{{examAuto.id}}">{{examAuto.titulo}}</option>
+                  {% endif %}
+                {% endfor %}
+                </select>
+              </div>
               <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                 <button id="searchReport" type="button" class="btn btn-primary wrn-btn">Search</button>
               </div>
@@ -62,11 +77,13 @@
       }
       if (parseInt(typeReporte)===1) {
         $("#selectGen").parent().removeClass("hide");
+        $("#selectExam").parent().removeClass("hide");
         $("#selectgrup").parent().addClass("hide");
         $("#selectTurno").parent().addClass("hide");
       }
       if (parseInt(typeReporte)===2) {
         $("#selectgrup").parent().removeClass("hide");
+        $("#selectExam").parent().removeClass("hide");
         $("#selectTurno").parent().removeClass("hide");
         $("#selectGen").parent().removeClass("hide");
       }

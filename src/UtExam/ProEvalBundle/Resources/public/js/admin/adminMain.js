@@ -4,7 +4,7 @@ $(document).ready(function() {
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
       $.ajax({
-          url: "/admin/getListExam",
+          url: "Sipre/web/admin/getListExam",
           type: "GET",
           dataType: "json",
           data: {
@@ -16,11 +16,36 @@ $(document).ready(function() {
             for (var i = 0; i < examenList.length; i++) {
               $(".examenList").append('\
                 <tr>\
-                  <td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="'+examenList[i].id+'">\
-                    <a class="sonata-link-identifier" href="/admin/openPdf/'+examenList[i].id+'/'+tipoExam+'" target="_blank">\
-                      '+examenList[i].titulo+'\
-                    </a>\
+                  <td class="sonata-ba-list-field row sonata-ba-list-field-text">\
+                  '+examenList[i].titulo+'\
                   </td>\
+                </tr>\
+                <tr>\
+                    <td class="sonata-ba-list-field row sonata-ba-list-field-text" objectid="'+examenList[i].id+'">\
+                      <form method="GET" action="/admin/openPdf" target="_blank">\
+                        <div class="col-md-2">\
+                          <textarea class="col-md-12 mw-100" name="examTitle">'+examenList[i].materiaModa.nombre+'</textarea>\
+                        </div>\
+                        <div class="col-md-1">\
+                          <input class="col-md-12 mw-100" type="text" name="examId" value="'+examenList[i].id+'"  readonly>\
+                        </div>\
+                        <div class="col-md-1">\
+                          <input class="col-md-12 mw-100" type="text" name="examType" value="'+tipoExam+'"  readonly>\
+                        </div>\
+                        <div class="col-md-2">\
+                          <textarea class="col-md-12 mw-100" name="examdata1"></textarea>\
+                        </div>\
+                        <div class="col-md-2">\
+                          <input class="col-md-12 mw-100" type="text" name="examdata2">\
+                        </div>\
+                        <div class="col-md-2">\
+                          <textarea class="col-md-12 mw-100" name="examdata3"></textarea>\
+                        </div>\
+                        <div class="col-md-2">\
+                          <button class="col-md-12 mw-100" type="submit" name="submit">Generar PDF</button>\
+                        </div>\
+                      </form>\
+                    </td>\
                 </tr>\
               ')
             }
@@ -32,10 +57,16 @@ $(document).ready(function() {
       });
     });
     $('#searchReport').on('click',function(){
-      var generacion = document.getElementById('selectGen').value,
-          typeReporte = document.getElementById('selectTypeReporte').value,
-          grupo = document.getElementById('selectgrup').value,
-          turno = document.getElementById('selectTurno').value,
+      var generacion = document.getElementById('selectGen'),
+          generacion = generacion.options[generacion.selectedIndex].value,
+          typeReporte = document.getElementById('selectTypeReporte'),
+          typeReporte = typeReporte.options[typeReporte.selectedIndex].value,
+          grupo = document.getElementById('selectgrup'),
+          grupo = grupo.options[grupo.selectedIndex].value,
+          turno = document.getElementById('selectTurno'),
+          turno = turno.options[turno.selectedIndex].value,
+          examen = document.getElementById('selectExam'),
+          examen = examen.options[examen.selectedIndex].value,
           bandera= true,
           datos= {};
       if (parseInt(typeReporte)!=0) {
@@ -43,6 +74,7 @@ $(document).ready(function() {
           if (generacion != 0) {
             datos={
               typeReporte: "generacion",
+              exam: examen,
               generacion: generacion
             }
           }else {
@@ -55,6 +87,7 @@ $(document).ready(function() {
           if (grupo!=0||turno!=0) {
             datos={
               typeReporte: "grupo",
+              exam: examen,
               grupo: grupo,
               turno: turno,
               generacion: generacion

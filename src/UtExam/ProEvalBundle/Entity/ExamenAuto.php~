@@ -68,7 +68,7 @@ class ExamenAuto
      * @ORM\ManyToOne(targetEntity="Materias", inversedBy="examenAuto")
      * @ORM\JoinColumn(name="materia_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
-    private $materiaPromedio;
+    private $materiaModa;
 
 
     /**
@@ -115,6 +115,11 @@ class ExamenAuto
      * @ORM\OneToMany(targetEntity="Alumnos", mappedBy="examenAuto", cascade={"persist"})
      */
     private $alumnos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Calificaciones", mappedBy="examenAuto",cascade={"persist"})
+     */
+    private $calificaciones;
 
     /**
      * Get id.
@@ -451,26 +456,62 @@ class ExamenAuto
     }
 
     /**
-     * Set materiaPromedio.
+     * Set materiaModa.
      *
-     * @param string $materiaPromedio
+     * @param string $materiaModa
      *
      * @return ExamenAuto
      */
-    public function setMateriaPromedio($materiaPromedio)
+    public function setMateriaModa($materiaModa)
     {
-        $this->materiaPromedio = $materiaPromedio;
+        $this->materiaModa = $materiaModa;
 
         return $this;
     }
 
     /**
-     * Get materiaPromedio.
+     * Get materiaModa.
      *
      * @return string
      */
-    public function getMateriaPromedio()
+    public function getMateriaModa()
     {
-        return $this->materiaPromedio;
+        return $this->materiaModa;
+    }
+
+    /**
+     * Add calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return ExamenAuto
+     */
+    public function addCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        $this->calificaciones[] = $calificacione;
+
+        return $this;
+    }
+
+    /**
+     * Remove calificacione.
+     *
+     * @param \UtExam\ProEvalBundle\Entity\Calificaciones $calificacione
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCalificacione(\UtExam\ProEvalBundle\Entity\Calificaciones $calificacione)
+    {
+        return $this->calificaciones->removeElement($calificacione);
+    }
+
+    /**
+     * Get calificaciones.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCalificaciones()
+    {
+        return $this->calificaciones;
     }
 }

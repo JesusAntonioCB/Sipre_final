@@ -54,7 +54,7 @@ class Materias
     private $maestros;
 
     /**
-     * @ORM\OneToMany(targetEntity="Calificaciones", mappedBy="materias",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="CalificacionesDeMaterias", mappedBy="materias",cascade={"persist"})
      */
     private $calificaciones;
 

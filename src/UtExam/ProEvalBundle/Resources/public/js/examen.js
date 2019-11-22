@@ -38,21 +38,9 @@ $(document).ready(function() {
         var totalSecons = originSecons - finishSecons;
         var totalTime = secondsToHms(totalSecons);
         var arrayQByGrup = [];
-        var qByGrup1 = false;
-        var qByGrup2 = false;
-        var qByGrup3 = false;
         $(".questionByGrup").each(function() {
           arrayQByGrup.push($(this).attr("data-question"));
         });
-        if (arrayQByGrup[0] != null || arrayQByGrup[0] != "") {
-          qByGrup1 = arrayQByGrup[0];
-        }
-        if (arrayQByGrup[1] != null || arrayQByGrup[1] != "") {
-          qByGrup2 = arrayQByGrup[1];
-        }
-        if (arrayQByGrup[2] != null || arrayQByGrup[2] != "") {
-          qByGrup3 = arrayQByGrup[2];
-        }
         var respuestas = [];
         var question = $(".totalQuestion").attr("data-quetion");
         $("input:checkbox[class=checkbox]:checked").each(function() {
@@ -62,9 +50,7 @@ $(document).ready(function() {
           respuestas: respuestas,
           time: totalTime,
           dquestion: question,
-          QByGrup1: qByGrup1,
-          QByGrup2: qByGrup2,
-          QByGrup3: qByGrup3,
+          arrayQByGrup: arrayQByGrup,
         }
         var herf = window.location.pathname;
         if (herf === "/") {
@@ -142,21 +128,9 @@ $(document).ready(function() {
       var totalSecons = originSecons - finishSecons;
       var totalTime = secondsToHms(totalSecons);
       var arrayQByGrup = [];
-      var qByGrup1 = false;
-      var qByGrup2 = false;
-      var qByGrup3 = false;
       $(".questionByGrup").each(function() {
         arrayQByGrup.push($(this).attr("data-question"));
       });
-      if (arrayQByGrup[0] != null || arrayQByGrup[0] != "") {
-        qByGrup1 = arrayQByGrup[0];
-      }
-      if (arrayQByGrup[1] != null || arrayQByGrup[1] != "") {
-        qByGrup2 = arrayQByGrup[1];
-      }
-      if (arrayQByGrup[2] != null || arrayQByGrup[2] != "") {
-        qByGrup3 = arrayQByGrup[2];
-      }
       var respuestas = [];
       var question = $(".totalQuestion").attr("data-quetion");
       $("input:checkbox[class=checkbox]:checked").each(function() {
@@ -167,9 +141,7 @@ $(document).ready(function() {
           respuestas: respuestas,
           time: totalTime,
           dquestion: question,
-          QByGrup1: qByGrup1,
-          QByGrup2: qByGrup2,
-          QByGrup3: qByGrup3,
+          arrayQByGrup: arrayQByGrup,
         }
         var herf = window.location.pathname;
         if (herf === "/") {

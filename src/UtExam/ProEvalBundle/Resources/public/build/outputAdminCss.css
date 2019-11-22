@@ -121,3 +121,6 @@ thead {
   color: #555;
   vertical-align: middle; }
 
+body .tableContainer .examenList textarea {
+  max-width: 100%; }
+

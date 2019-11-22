@@ -11,6 +11,7 @@
     	  console.log("Todavia no agregar esto");
         if ($('.Materias').length) {
           $('.Materias'+ ',' +'.tipoPregunta'+ ',' +'.boxDificultad').on('click', function(){
+          // $('document').on('click', '.Materias',function() {
               var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
               var banderaCompleta = true,
                   banderaMateria_TypePregunta = true,
@@ -19,7 +20,7 @@
                   banderaMateria = true,
                   banderaTypePregunta = true,
                   banderaDificultad = true;
-              var materiaSelector = $('.Materias').find('a').find('span').text().replace(rtrim,"");
+              var materiaSelector = $('div.Materias').last().find('a').find('span').text().replace(rtrim,"");
               if (materiaSelector === "Selecciona una Materia...") {
                 banderaMateria= false;
                 banderaMateria_TypePregunta= false;
