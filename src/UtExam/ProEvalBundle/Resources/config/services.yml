@@ -42,7 +42,7 @@ services:
             class: UtExam\ProEvalBundle\Admin\MaestrosAdmin
             arguments: [~,UtExam\ProEvalBundle\Entity\Maestros, ~]
             tags:
-                - { name: sonata.admin, manager_type: orm, label: Maestros, group: "Maestros", show_in_dashboard: true }
+                - { name: sonata.admin, manager_type: orm, label: Maestros(solo para examenes propedeuticos) , group: "Maestros", show_in_dashboard: true }
             public: true
 
     admin.Pregunta:
@@ -142,7 +142,7 @@ services:
     admin.createExamWord:
         class: UtExam\ProEvalBundle\Admin\AdminCreateExamArchive
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Crear Archivo word }
+            - { name: sonata.admin, manager_type: orm, label: Crear Archivo PDF }
         arguments:
             - null
             - null

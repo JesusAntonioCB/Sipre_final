@@ -131,6 +131,7 @@ $(document).ready(function() {
     var bandera= true,
         expOnlyLetters= /^[a-zA-Z\s]+$/,
         none="'none'",
+        boxEval= "Salida",
         boxpass= document.getElementById('passwordLogin').value,
         boxUserName= document.getElementById('userNameUniLogin').value;
     if (boxUserName===""||boxpass==="") {
@@ -147,6 +148,7 @@ $(document).ready(function() {
     if (bandera) {
     var data = {
       "userName" : boxUserName,
+      "evaluacion" : boxEval,
       "pass" : boxpass
     }
     $.ajax({

@@ -7,7 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-//use Doctrine paginator
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class createReporteController extends Controller
@@ -20,11 +19,6 @@ class createReporteController extends Controller
      */
     public function listAction(){
       $em = $this->getDoctrine()->getManager();
-      // $query = $em->createQuery('
-      //   SELECT partial Ea.{id, titulo}
-      //   FROM UtExam\ProEvalBundle\Entity\ExamenAuto Ea');
-      // $examenRes=$query->getArrayResult();
-      // dump($examenRes);
       $queryExams = $em->createQuery('
         SELECT DISTINCT exam.titulo,exam.id
         FROM UtExam\ProEvalBundle\Entity\Alumnos a
@@ -49,10 +43,6 @@ class createReporteController extends Controller
         SELECT DISTINCT a.grupo
         FROM UtExam\ProEvalBundle\Entity\Alumnos a');
       $grupRes=$queryGrup->getArrayResult();
-      // dump($ExamsRes);
-      // dump($ExamsAutoRes);
-      // dump($grupRes);
-      // die;
       return $this->render('UtExamProEvalBundle::Admin/generateReport.html.twig', array(
         'exams' => $ExamsRes,
         'examsAuto' => $ExamsAutoRes,
@@ -64,9 +54,6 @@ class createReporteController extends Controller
       $em = $this->getDoctrine()->getManager();
       $user=$request->query->get("user");
       $tipoExam=$request->query->get("tipoExam");
-      // $responseArray = array(
-      //   'user' =>$user ,
-      // 'sdfsdf'=>$TypoExam );
 
       if ($tipoExam == 1) {
         $query = $em->createQuery('
@@ -106,122 +93,240 @@ class createReporteController extends Controller
         if(isset($_GET["turno"])) $turno = $_GET["turno"];
         if(isset($_GET["generacion"])) $generacion = $_GET["generacion"];
         if(isset($_GET["exam"])) $exam = explode("-", $_GET["exam"]);
-        //if(isset($_POST["subscriptions"])) $subscriptions = $_POST["subscriptions"];
       }
       if ($typeReporte=="generacion") {
         if ($exam[0] == "auto") {
-          $queryRep = $em->createQuery('
-            SELECT a,m,maters,cali,caliM,caliMater,examAuto
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            LEFT JOIN a.maestros m
-            LEFT JOIN a.calificaciones cali
-            LEFT JOIN cali.examenAuto examAuto
-            LEFT JOIN cali.caliMateria caliM
-            LEFT JOIN caliM.materias caliMater
-            LEFT JOIN m.materias maters
-            WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
-          $queryRep->setParameter('idGen', $generacion);
-          $queryRep->setParameter('EID', (int)$exam[1]);
-          $queryRep->setParameter('turno', "Vespertino");
-          $generationVRes=$queryRep->getArrayResult();
-          $query2Rep = $em->createQuery('
-            SELECT a,m,maters,cali,caliM,caliMater
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            LEFT JOIN a.maestros m
-            LEFT JOIN a.calificaciones cali
-            LEFT JOIN cali.examenAuto examAuto
-            LEFT JOIN cali.caliMateria caliM
-            LEFT JOIN caliM.materias caliMater
-            LEFT JOIN m.materias maters
-            WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
-          $query2Rep->setParameter('idGen', $generacion);
-          $query2Rep->setParameter('EID', (int)$exam[1]);
-          $query2Rep->setParameter('turno', "Nocturno");
-          $generationNRes=$query2Rep->getArrayResult();
+          $alumnosPerGrupV= $this->getAlumnosPerGrup($generacion,(int)$exam[1],1,1);
+          $alumnosPerGrupN= $this->getAlumnosPerGrup($generacion,(int)$exam[1],2,1);
+          //-------traerme el examen--------
+          $queryMaterias = $em->createQuery('
+            SELECT DISTINCT mat.nombre,mat.id
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
+            LEFT JOIN eA.preguntasAuto pA
+            LEFT JOIN pA.materias mat
+            WHERE eA.id = :EID');
+          $queryMaterias->setParameter('EID', (int)$exam[1]);
+          $materiasRep=$queryMaterias->getArrayResult();
         }else{
-          $queryRep = $em->createQuery('
-            SELECT a,m,maters,cali,caliM,caliMater
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            LEFT JOIN a.maestros m
-            LEFT JOIN a.calificaciones cali
-            LEFT JOIN cali.examen exam
-            LEFT JOIN cali.caliMateria caliM
-            LEFT JOIN caliM.materias caliMater
-            LEFT JOIN m.materias maters
-            WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID ');
-          $queryRep->setParameter('idGen', $generacion);
-          $queryRep->setParameter('EID', (int)$exam[1]);
-          $queryRep->setParameter('turno', "Vespertino");
-          $generationVRes=$queryRep->getArrayResult();
-          $query2Rep = $em->createQuery('
-            SELECT a,m,maters,cali,caliM,caliMater
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            LEFT JOIN a.maestros m
-            LEFT JOIN a.calificaciones cali
-            LEFT JOIN cali.examen exam
-            LEFT JOIN cali.caliMateria caliM
-            LEFT JOIN caliM.materias caliMater
-            LEFT JOIN m.materias maters
-            WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID');
-          $query2Rep->setParameter('idGen', $generacion);
-          $query2Rep->setParameter('EID', (int)$exam[1]);
-          $query2Rep->setParameter('turno', "Nocturno");
-          $generationNRes=$query2Rep->getArrayResult();
+          $alumnosPerGrupV= $this->getAlumnosPerGrup($generacion,(int)$exam[1],1,2);
+          $alumnosPerGrupN= $this->getAlumnosPerGrup($generacion,(int)$exam[1],2,2);
+          //-------traerme el examen--------
+          $queryMaterias = $em->createQuery('
+            SELECT DISTINCT mat.nombre, mat.id
+            FROM UtExam\ProEvalBundle\Entity\Examen e
+            LEFT JOIN e.pregunta p
+            LEFT JOIN p.pregunta preg
+            LEFT JOIN preg.materias mat
+            WHERE e.id = :EID');
+          $queryMaterias->setParameter('EID', (int)$exam[1]);
+          $materiasRep=$queryMaterias->getArrayResult();
         }
-        dump($generationNRes);
-        dump($generationVRes);
-        dump($exam);
-        die;
-        if (empty($generationVRes)) {
-          return new Response("Esta generación no se encuentra en la Base de Datos, Por favor vuelve a intentarlo o contacta a el Administrador");
+        if (empty($alumnosPerGrupV) && empty($alumnosPerGrupN)) {
+          return new Response("Esta Combinación no se encuentra en la Base de Datos, Por favor vuelve a intentarlo o contacta a el Administrador");
         }else {
-          $queryGrup = $em->createQuery('
-            SELECT DISTINCT a.grupo
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            WHERE a.turno = :turno');
-          $queryGrup->setParameter('turno', "Vespertino");
-          $GrupoVRep=$queryGrup->getArrayResult();
-          $query2Grup = $em->createQuery('
-            SELECT DISTINCT a.grupo
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            WHERE a.turno = :turno');
-          $query2Grup->setParameter('turno', "Nocturno");
-          $GrupoNRep=$query2Grup->getArrayResult();
+
           return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
               'generacion' => true,
-              'materias' => $generationVRes,
-              'GV' => $generationVRes,
-              'GN' => $generationNRes,
-              'gruposV' => $GrupoVRep,
-              'gruposN' => $GrupoNRep
+              'materias' => $materiasRep,
+              'AGV' => $alumnosPerGrupV,
+              'AGN' => $alumnosPerGrupN
           ]);
         }
 
       }else {
-        $queryRep = $em->createQuery('
-          SELECT a,m, maters
-          FROM UtExam\ProEvalBundle\Entity\Alumnos a
-          LEFT JOIN a.maestros m
-          LEFT JOIN m.materias maters
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno');
-        $queryRep->setParameter('idGen', $generacion);
-        $queryRep->setParameter('idGrup', $grupo);
-        $queryRep->setParameter('idTurno', $turno);
-        $generationRes=$queryRep->getArrayResult();
-        if (empty($generationRes)) {
+        if ($exam[0] == "auto") {
+          $grupWithAlumnos= $this->getGrupWithAlumnos($generacion,$grupo,(int)$exam[1],$turno,1);
+        }else {
+          $grupWithAlumnos= $this->getGrupWithAlumnos($generacion,$grupo,(int)$exam[1],$turno,2);
+        }
+        if (empty($grupWithAlumnos) && empty($alumnosPerGrupN)) {
           return new Response("El grupo seleccionado no existe prueba cambinado el turno");
         }else {
-          return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
-              'grupo' => true,
-              'nameGrupo' => $grupo,
-              'nameGeneracion' => $generacion,
-              'turno' => $turno,
-              'reporte' => $generationRes
-          ]);
+        return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
+            'grupo' => true,
+            'GWA' => $grupWithAlumnos,
+        ]);
         }
       }
 
       return new Response("success");
+    }
+
+    public function getAlumnosPerGrup($generacion,$exam,$turno,$typeExam){
+      $em = $this->getDoctrine()->getManager();
+      $alumnosPerGrup = [];
+      if ($turno == 1) {
+        $turno = "Vespertino";
+      }else {
+        $turno = "Nocturno";
+      }
+      if ($typeExam == 1) {
+        //-------obtener alumnos--------
+        $queryRep = $em->createQuery('
+          SELECT a,m,maters,cali,caliM,caliMater,examAuto
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examenAuto examAuto
+          LEFT JOIN cali.caliMateria caliM
+          LEFT JOIN caliM.materias caliMater
+          LEFT JOIN m.materias maters
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
+        $queryRep->setParameter('idGen', $generacion);
+        $queryRep->setParameter('EID', $exam);
+        $queryRep->setParameter('turno', $turno);
+        $generationVRes=$queryRep->getArrayResult();
+        //-------obtener los solo grupos de alumnos--------
+        $queryGrup = $em->createQuery('
+          SELECT DISTINCT a.grupo
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examenAuto examAuto
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
+        $queryGrup->setParameter('idGen', $generacion);
+        $queryGrup->setParameter('EID', $exam);
+        $queryGrup->setParameter('turno', $turno);
+        $GrupoVRep=$queryGrup->getArrayResult();
+        //----unirlos------
+        foreach ($GrupoVRep as $grupo) {
+          $tempoArray = [
+            "grupo" => $grupo["grupo"],
+            "alumnos" => []
+          ];
+          foreach ($generationVRes as $alumno) {
+            if ($grupo["grupo"] == $alumno["grupo"]) {
+              array_push($tempoArray["alumnos"],$alumno);
+            }
+          }
+          array_push($alumnosPerGrup,$tempoArray);
+        }
+      }else {
+        //-------obtener alumnos--------
+        $queryRep = $em->createQuery('
+          SELECT a,m,maters,cali,caliM,caliMater,exam
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examen exam
+          LEFT JOIN cali.caliMateria caliM
+          LEFT JOIN caliM.materias caliMater
+          LEFT JOIN m.materias maters
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID ');
+        $queryRep->setParameter('idGen', $generacion);
+        $queryRep->setParameter('EID', $exam);
+        $queryRep->setParameter('turno', $turno);
+        $generationVRes=$queryRep->getArrayResult();
+        //-------obtener los solo grupos de alumnos--------
+        $queryGrup = $em->createQuery('
+          SELECT DISTINCT a.grupo
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examen exam
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID');
+        $queryGrup->setParameter('idGen', $generacion);
+        $queryGrup->setParameter('EID', $exam);
+        $queryGrup->setParameter('turno', $turno);
+        $GrupoVRep=$queryGrup->getArrayResult();
+        //----unirlos------
+        foreach ($GrupoVRep as $grupo) {
+          $tempoArray = [
+            "grupo" => $grupo["grupo"],
+            "alumnos" => []
+          ];
+          foreach ($generationVRes as $alumno) {
+            if ($grupo["grupo"] == $alumno["grupo"]) {
+              array_push($tempoArray["alumnos"],$alumno);
+            }
+          }
+          array_push($alumnosPerGrup,$tempoArray);
+        }
+      }
+      return $alumnosPerGrup;
+    }
+
+    public function getGrupWithAlumnos($generacion,$grupo,$exam,$turno,$typeExam){
+      $em = $this->getDoctrine()->getManager();
+      $TempoGrupWithAlumnos = [
+        'grupo' => $grupo,
+        'turno' => $turno,
+        'examen' => [],
+        'materias' => [],
+        'alumnos' => [],
+      ];
+      if ($typeExam == 1) {
+        $queryGrup = $em->createQuery('
+          SELECT a,m,maters,cali,caliM,caliMater,examAuto
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examenAuto examAuto
+          LEFT JOIN cali.caliMateria caliM
+          LEFT JOIN caliM.materias caliMater
+          LEFT JOIN m.materias maters
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND examAuto.id = :EID');
+          $queryGrup->setParameter('idGen', $generacion);
+          $queryGrup->setParameter('idGrup', $grupo);
+          $queryGrup->setParameter('EID', $exam);
+          $queryGrup->setParameter('idTurno', $turno);
+          $generationRes=$queryGrup->getArrayResult();
+          //-------traerme el materias--------
+          $queryMaterias = $em->createQuery('
+            SELECT DISTINCT mat.nombre,mat.id
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
+            LEFT JOIN eA.preguntasAuto pA
+            LEFT JOIN pA.materias mat
+            WHERE eA.id = :EID');
+          $queryMaterias->setParameter('EID', $exam);
+          $materiasRep=$queryMaterias->getArrayResult();
+          $TempoGrupWithAlumnos["materias"]=$materiasRep;
+          //-------traerme el examen--------
+          $queryExamen = $em->createQuery('
+            SELECT eA
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
+            WHERE eA.id = :EID');
+          $queryExamen->setParameter('EID', $exam);
+          $examenRep=$queryExamen->getArrayResult();
+          $TempoGrupWithAlumnos["examen"]=$examenRep;
+      }else {
+        $queryGrup = $em->createQuery('
+          SELECT a,m,maters,cali,caliM,caliMater,exam
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          LEFT JOIN a.maestros m
+          LEFT JOIN a.calificaciones cali
+          LEFT JOIN cali.examen exam
+          LEFT JOIN cali.caliMateria caliM
+          LEFT JOIN caliM.materias caliMater
+          LEFT JOIN m.materias maters
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND exam.id = :EID ');
+        $queryGrup->setParameter('idGen', $generacion);
+        $queryGrup->setParameter('idGrup', $grupo);
+        $queryGrup->setParameter('EID', $exam);
+        $queryGrup->setParameter('idTurno', $turno);
+        $generationRes=$queryGrup->getArrayResult();
+        //-------traerme el examen--------
+        $queryMaterias = $em->createQuery('
+          SELECT DISTINCT mat.nombre, mat.id
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          LEFT JOIN e.pregunta p
+          LEFT JOIN p.pregunta preg
+          LEFT JOIN preg.materias mat
+          WHERE e.id = :EID');
+        $queryMaterias->setParameter('EID', $exam);
+        $materiasRep=$queryMaterias->getArrayResult();
+        $TempoGrupWithAlumnos["materias"]=$materiasRep;
+        //-------traerme el examen--------
+        $queryExamen = $em->createQuery('
+          SELECT e
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          WHERE e.id = :EID');
+        $queryExamen->setParameter('EID', $exam);
+        $examenRep=$queryExamen->getArrayResult();
+        foreach ($examenRep as $examen) {
+          $TempoGrupWithAlumnos["examen"]=$examen;
+        }
+      }
+      $TempoGrupWithAlumnos["alumnos"] = $generationRes;
+      return $TempoGrupWithAlumnos;
     }
 
 }

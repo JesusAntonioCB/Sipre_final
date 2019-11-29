@@ -64,6 +64,7 @@ $(document).ready(function() {
           }, //final de beforeSend()
           success: function send(data) { //Funciones si hay éxito en el envio
             document.cookie = "examen=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            document.cookie = "examenId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             document.cookie = "UID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             alert(data);
             location.reload();
@@ -156,6 +157,7 @@ $(document).ready(function() {
           success: function send(data) { //Funciones si hay éxito en el envio
             document.cookie = "time=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             document.cookie = "examen=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            document.cookie = "examenId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             document.cookie = "UID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             alert(data);
             location.reload();

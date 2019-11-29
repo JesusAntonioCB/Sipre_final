@@ -4,7 +4,7 @@ $(document).ready(function() {
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
       $.ajax({
-          url: "Sipre/web/admin/getListExam",
+          url: "/Sipre/web/admin/getListExam",
           type: "GET",
           dataType: "json",
           data: {
@@ -14,6 +14,10 @@ $(document).ready(function() {
           success: function (examenList) {
             $(".examenList").html('');
             for (var i = 0; i < examenList.length; i++) {
+              var materiaModa= "";
+              if (typeof examenList[i].materiaModa !== 'undefined') {
+                var materiaModa = examenList[i].materiaModa.nombre;
+              }
               $(".examenList").append('\
                 <tr>\
                   <td class="sonata-ba-list-field row sonata-ba-list-field-text">\
@@ -24,7 +28,7 @@ $(document).ready(function() {
                     <td class="sonata-ba-list-field row sonata-ba-list-field-text" objectid="'+examenList[i].id+'">\
                       <form method="GET" action="/admin/openPdf" target="_blank">\
                         <div class="col-md-2">\
-                          <textarea class="col-md-12 mw-100" name="examTitle">'+examenList[i].materiaModa.nombre+'</textarea>\
+                          <textarea class="col-md-12 mw-100" name="examTitle">'+ materiaModa +'</textarea>\
                         </div>\
                         <div class="col-md-1">\
                           <input class="col-md-12 mw-100" type="text" name="examId" value="'+examenList[i].id+'"  readonly>\
@@ -71,20 +75,19 @@ $(document).ready(function() {
           datos= {};
       if (parseInt(typeReporte)!=0) {
         if (parseInt(typeReporte)===1) {
-          if (generacion != 0) {
+          if (parseInt(generacion)!=0 && parseInt(examen)!=0) {
             datos={
               typeReporte: "generacion",
               exam: examen,
               generacion: generacion
             }
           }else {
-            alert("Debes seleccionar el tipo de Reporte que deseas");
+            alert("Debes seleccionar el grupo y examen");
             bandera=false;
           }
-
         }
         if (parseInt(typeReporte)===2) {
-          if (grupo!=0||turno!=0) {
+          if (parseInt(grupo)!=0 && parseInt(turno)!=0 && parseInt(examen)!=0) {
             datos={
               typeReporte: "grupo",
               exam: examen,
@@ -93,7 +96,7 @@ $(document).ready(function() {
               generacion: generacion
             }
           }else {
-            alert("debes seleccionar el grupo y el turno");
+            alert("Debes seleccionar el grupo, turno y examen");
             bandera=false;
           }
         }
@@ -103,7 +106,7 @@ $(document).ready(function() {
       }
       if (bandera) {
         $.ajax({
-            url: "/admin/getReport",
+            url: "/Sipre/web/admin/getReport",
             type: "GET",
             data: datos,
             success: function(data) {

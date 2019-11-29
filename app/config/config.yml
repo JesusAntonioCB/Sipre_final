@@ -135,7 +135,6 @@ sonata_admin:
               icon: '<i class="fa fa-address-book "></i>'
               items:
                   - admin.alumnos
-                  - admin.alumnosEnExamen
             maestros:
               label: 'Maestros'
               label_catalogue: ~

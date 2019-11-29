@@ -93,21 +93,21 @@ class DefaultController extends Controller
             $Number2Res=$exam2Query->getArrayResult();
             //una ves que tenemos los resultados tomaremos en cuenta que las consultas que
             //regresen vacias son porque no se eligieron en ese tipo de examen
-            if (!empty($examQuery)) {
-              if (!empty($exam2Query)) {
+            if (!empty($NumberRes)) {
+              if (!empty($Number2Res)) {
                 //cuando ambas contengan examenes que serviran como examen propedeutico
                 //se tomara uno de los 2 randomizando la eleccion
                 $numberExamRand = rand ( 1 , 2 );
               }else {
                 $numberExamRand=1;
               }
-            }elseif (!empty($exam2Query)) {
+            }elseif (!empty($Number2Res)) {
               $numberExamRand=2;
             }else {
               //si no se eligio ninguno entonces devolvera una pagina de error
               return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
             }
-            if ($numberExamRand === 1) {
+            if ($numberExamRand == 1) {
               //conseguir la misma cantidad de numeros random como examenes existen
               $rand = range(0, count($NumberRes)-1);
               shuffle($rand);
@@ -176,58 +176,38 @@ class DefaultController extends Controller
     }
 
     public function examenFijoAction(Request $request){
-        $codigoExam =$_GET['codeExam'];
-        if(isset($_COOKIE["UID"])){
-          $isLoggedIn = "true";
-          $UID = $_COOKIE["UID"];
-          $em = $this->getDoctrine()->getManager();
-          $query = $em->createQuery('
-            SELECT a
-            FROM UtExam\ProEvalBundle\Entity\Alumnos a
-            WHERE a.codigoUsuario = :codeUser');
-          $query->setParameter('codeUser', $UID);
-          $userRes=$query->getArrayResult()[0]['nombre'];
-          $userId=$query->getArrayResult()[0]['id'];
+      $em = $this->getDoctrine()->getManager();
+      $codigoExam =$_GET['codeExam'];
+      if(isset($_COOKIE["UID"])){
+        $isLoggedIn = "true";
+        $UID = $_COOKIE["UID"];
+        $query = $em->createQuery('
+          SELECT a
+          FROM UtExam\ProEvalBundle\Entity\Alumnos a
+          WHERE a.codigoUsuario = :codeUser');
+        $query->setParameter('codeUser', $UID);
+        $userRes=$query->getArrayResult()[0]['nombre'];
+        $userId=$query->getArrayResult()[0]['id'];
 
+        $query = $em->createQuery('
+          SELECT partial e.{id}
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          WHERE e.codigoExam = :codeExam');
+        $query->setParameter('codeExam', $codigoExam);
+        $examenRes=$query->getArrayResult();
+        if (empty($examenRes)) {
           $query = $em->createQuery('
             SELECT partial e.{id}
-            FROM UtExam\ProEvalBundle\Entity\Examen e
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
           if (empty($examenRes)) {
-            $query = $em->createQuery('
-              SELECT partial e.{id}
-              FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
-              WHERE e.codigoExam = :codeExam');
-            $query->setParameter('codeExam', $codigoExam);
-            $examenRes=$query->getArrayResult();
-            if (empty($examenRes)) {
-              return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
-            }else {
-              $examenId=$examenRes[0]['id'];
-              $examenRes= $this->getExamen($examenId,1);
-              $this->setExamenEnAlumno($examenRes[0]['id'],$userId,1);
-              if (empty($examenRes)) {
-                return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
-              }
-              return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
-                array(
-                  'userName'=> $userRes,
-                  'Author'=> $examenRes[0]['user']['username'],
-                  'ExamDate'=> $examenRes[0]['fecha'],
-                  'ExamTitle'=> $examenRes[0]['instrucciones'],
-                  'ExamTiempo'=> $examenRes[0]['tiempo'],
-                  'ExamId'=> $examenRes[0]['id'],
-                  'preguntasGrup' => $this->getAllQuestion($examenRes),
-                  'propedeutico'=> true
-                )//final de array
-              );//Final de return
-            }
+            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
           }else {
             $examenId=$examenRes[0]['id'];
-            $examenRes= $this->getExamen($examenId,2);
-            $this->setExamenEnAlumno($examenRes[0]['id'],$userId,2);
+            $examenRes= $this->getExamen($examenId,1);
+            $this->setExamenEnAlumno($examenRes[0]['id'],$userId,1);
             if (empty($examenRes)) {
               return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
             }
@@ -235,26 +215,54 @@ class DefaultController extends Controller
               array(
                 'userName'=> $userRes,
                 'Author'=> $examenRes[0]['user']['username'],
-                'ExamDate'=>$examenRes[0]['fecha'],
-                'ExamTitle'=>$examenRes[0]['instrucciones'],
-                'ExamTiempo'=>$examenRes[0]['tiempo'],
+                'ExamDate'=> $examenRes[0]['fecha'],
+                'ExamTitle'=> $examenRes[0]['instrucciones'],
+                'ExamTiempo'=> $examenRes[0]['tiempo'],
                 'ExamId'=> $examenRes[0]['id'],
-                'ExamMateria'=> $examenRes[0]['materiaModa'],
-                'ExamNivel'=> $examenRes[0]['nivel'],
-                'preguntas' => $this->getAllQuestionFijo($examenRes),
-                'propedeutico'=>false
+                'preguntasGrup' => $this->getAllQuestion($examenRes),
+                'propedeutico'=> true
               )//final de array
             );//Final de return
           }
         }else {
-          $em = $this->getDoctrine()->getManager();
+          $examenId=$examenRes[0]['id'];
+          $examenRes= $this->getExamen($examenId,2);
+          $this->setExamenEnAlumno($examenRes[0]['id'],$userId,2);
+          if (empty($examenRes)) {
+            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+          }
+          return $this->render('UtExamProEvalBundle:Examen:indexExam.html.twig',
+            array(
+              'userName'=> $userRes,
+              'Author'=> $examenRes[0]['user']['username'],
+              'ExamDate'=>$examenRes[0]['fecha'],
+              'ExamTitle'=>$examenRes[0]['instrucciones'],
+              'ExamTiempo'=>$examenRes[0]['tiempo'],
+              'ExamId'=> $examenRes[0]['id'],
+              'ExamMateria'=> $examenRes[0]['materiaModa'],
+              'ExamNivel'=> $examenRes[0]['nivel'],
+              'preguntas' => $this->getAllQuestionFijo($examenRes),
+              'propedeutico'=>false
+            )//final de array
+          );//Final de return
+        }
+      }else {
+        $query = $em->createQuery('
+          SELECT partial e.{id}
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          WHERE e.codigoExam = :codeExam');
+        $query->setParameter('codeExam', $codigoExam);
+        $examenRes=$query->getArrayResult();
+        if (empty($examenRes)) {
           $query = $em->createQuery('
-            SELECT e
-            FROM UtExam\ProEvalBundle\Entity\Examen e
+            SELECT partial e.{id}
+            FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
             WHERE e.codigoExam = :codeExam');
           $query->setParameter('codeExam', $codigoExam);
           $examenRes=$query->getArrayResult();
-          if (!empty($examenRes)) {
+          if (empty($examenRes)) {
+            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
+          }else {
             $query = $em->createQuery('
               SELECT m, mat
               FROM UtExam\ProEvalBundle\Entity\Maestros m
@@ -264,17 +272,26 @@ class DefaultController extends Controller
               'maestros' => $lisMaestrosRes,
               'propedeutico'=> false
             ));
-          }else {
-            return $this->render('UtExamProEvalBundle:Default:pageError.html.twig');
           }
-
+        }else {
+            $query = $em->createQuery('
+              SELECT m, mat
+              FROM UtExam\ProEvalBundle\Entity\Maestros m
+              LEFT JOIN m.materias mat');
+            $lisMaestrosRes=$query->getArrayResult();
+            return $this->render('UtExamProEvalBundle:Examen:login.html.twig',array(
+              'maestros' => $lisMaestrosRes,
+              'propedeutico'=> false
+            ));
         }
+      }
     }
 
     public function loginAction(){
       $em = $this->getDoctrine()->getManager();
       $valuePass= $_POST['pass'];
       $valueUserName= $_POST['userName'];
+      $evaluacion= $_POST['evaluacion'];
       $query = $em->createQuery('
         SELECT a
         FROM UtExam\ProEvalBundle\Entity\Alumnos a

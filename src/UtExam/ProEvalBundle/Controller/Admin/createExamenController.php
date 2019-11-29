@@ -194,6 +194,43 @@ class createExamenController extends Controller
               }
             }
             $pdf->MultiCell(0,5,$pdf->WriteHTML(iconv('UTF-8', 'windows-1252', $preguntaKey+1 .'.-'.$pregunta['pregunta']['escrito'])),0);
+            if (!empty($pregunta['pregunta']['audio']) && !is_null($pregunta['pregunta']['audio'])) {
+              $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+              // dump("Espera instrucciones");
+            }elseif (!empty($pregunta['pregunta']['video']) && !is_null($pregunta['pregunta']['video'])) {
+              $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+              // dump("null");
+            }elseif (!empty($pregunta['pregunta']['imagen']) && !is_null($pregunta['pregunta']['imagen'])) {
+              $positionX= $pdf->GetX();
+              $positionY= $pdf->GetY();
+              foreach ($pregunta['pregunta']['imagen'] as $preguntaImagenKey => $preguntaImagen) {
+                if ((($preguntaImagenKey + 1) % 5) == 0) {
+                  $pdf->Ln(33);
+                  $positionY= $pdf->GetY();
+                  $positionX= $pdf->GetX();
+                }
+                if (!is_null($preguntaImagen["url"]) && $preguntaImagen["url"] != "NO APLICA") {
+                  if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"])) {
+                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"],$positionX, $positionY ,30,30);
+                  }else {
+                    $pdf->Ln(33);
+                    $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Lo mas probable es que el link no sea publico o este caido (o que simplemente no este bien puesto). El url que no pudimos obtener fue: '.$preguntaImagen["url"],0,1);
+                  }
+                }else {
+                  if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"])) {
+                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,30,30);
+                  }else {
+                    $pdf->Ln(33);
+                    $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$preguntaImagen["archive"],0,1);
+                  }
+                }
+                $positionX += 40;
+              }
+              $pdf->Ln(30);
+              // dump("todavia no jaja");
+              // dump($pregunta);
+              // die;
+            }
             $pdf->Ln(5);
             if (!empty($pregunta['pregunta']['respuestas']['texto']) && !is_null($pregunta['pregunta']['respuestas']['texto'])) {
               foreach ($pregunta['pregunta']['respuestas']['texto'] as $respuestaKey => $respuesta) {
@@ -201,13 +238,45 @@ class createExamenController extends Controller
                 // dump($estructura[$respuestaKey].') '.$respuesta['escrito']);
               }
             }elseif (!empty($pregunta['pregunta']['respuestas']['audio']) && !is_null($pregunta['pregunta']['respuestas']['audio'])) {
-              $pdf->MultiCell(0,5,'no puedes imprimir un audio >_>',0,1);
-              // dump("no puedes imprimir un audio >_>");
+              $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+              // dump("Espera instrucciones");
             }elseif (!empty($pregunta['pregunta']['respuestas']['video']) && !is_null($pregunta['pregunta']['respuestas']['video'])) {
-              $pdf->MultiCell(0,5,'no puedes imprimir un video >_>',0,1);
+              $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
               // dump("null");
             }elseif (!empty($pregunta['pregunta']['respuestas']['imagen']) && !is_null($pregunta['pregunta']['respuestas']['imagen'])) {
-              $pdf->MultiCell(0,5,'todavia no jaja',0,1);
+              $positionX= $pdf->GetX();
+              $positionY= $pdf->GetY();
+              foreach ($pregunta['pregunta']['respuestas']['imagen'] as $respuestaKey => $respuesta) {
+                if ((($respuestaKey + 1) % 5) == 0) {
+                  $pdf->Ln(33);
+                  if ($pdf->GetY()>217) {
+                    $pdf->AddPage();
+                  }elseif ($pdf->GetY()>210) {
+                    if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
+                      $pdf->AddPage();
+                    }
+                  }
+                  $positionY= $pdf->GetY();
+                  $positionX= $pdf->GetX();
+                }
+                if (!is_null($respuesta["url"]) && $respuesta["url"] != "NO APLICA") {
+                  if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["url"])) {
+                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["url"],$positionX, $positionY ,30,30);
+                  }else {
+                    $pdf->Ln(33);
+                    $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Lo mas probable es que el link no sea publico o este caido (o que simplemente no este bien puesto). El url que no pudimos obtener fue: '.$respuesta["url"],0,1);
+                  }
+                }else {
+                  if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["archive"])) {
+                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["archive"],$positionX, $positionY ,30,30);
+                  }else {
+                    $pdf->Ln(33);
+                    $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$respuesta["archive"],0,1);
+                  }
+                }
+                $positionX += 40;
+              }
+              $pdf->Ln(30);
               // dump("todavia no jaja");
             }
             $pdf->Ln(5);
@@ -218,31 +287,201 @@ class createExamenController extends Controller
         // return new JsonResponse($examenRes);
       }elseif ($tipoExam == 2) {
         $queryExam = $em->createQuery('
-          SELECT eA
-          FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
-          WHERE eA.id = :examId');
+          SELECT e,maMo ,partial u.{id, username, firstname, lastname, biography }, pA, ma, p, res, text, aud, vid, img, paud, pvid, pimg
+          FROM UtExam\ProEvalBundle\Entity\ExamenAuto e
+          LEFT JOIN e.user u
+          LEFT JOIN e.materiaModa maMo
+          LEFT JOIN e.preguntasAuto pA
+          LEFT JOIN pA.materias ma
+          LEFT JOIN pA.pregunta p
+          LEFT JOIN p.audio paud
+          LEFT JOIN p.video pvid
+          LEFT JOIN p.imagen pimg
+          LEFT JOIN p.respuestas res
+          LEFT JOIN res.texto text
+          LEFT JOIN res.audio aud
+          LEFT JOIN res.video vid
+          LEFT JOIN res.imagen img
+          WHERE e.id = :examId');
         $queryExam->setParameter('examId', $examId);
-        $examRes=$queryExam->getSingleResult();
+        $examRes=$queryExam->getArrayResult();
+        // dump($examRes);
+        // die;
         $bandera= true;
         if ($bandera) {
           $GLOBALS['examen']= $examRes;
-          dump($examRes);
-          die;
+          $estructura = array('A','B','C','D','E','F','G','H','I','J','K','L');
+          // dump($examRes);
+          // die;
           // Creación del objeto de la clase heredada
           $pdf = new PDF("P","mm","Letter");
           $pdf->AliasNbPages();
           $pdf->AddPage();
-          $pdf->SetFont('Times','',12);
+          $pdf->SetFont('Arial','B',11);
           // $pdf->Cell(55,10,'SISTEMA DE GESTION DE LA CALIDAD',0,0,"C");
-          $pdf->Cell(115,10,'NOMBRE DE LA ASIGNATURA:',1,0);
-          $pdf->Cell(80,10,'NOMBRE DE LA ASIGNATURA:',1,0);
-          $pdf->Ln(10);
-          for($i=1;$i<=40;$i++)
-              $pdf->Cell(0,10,'Imprimiendo línea número '.$i,0,1);
+          $pdf->Cell(110,10,'NOMBRE DE LA ASIGNATURA:','T,L',0);
+          $pdf->Cell(85,10,'NOMBRE DEL DOCENTE:','T,L,R',0);
+          //interbalo de la segunda columna
+          $pdf->Ln(6);
+          $pdf->SetFont('Arial','',11);
+          if ($examTitle === "") {
+            $pdf->Cell(110,7,iconv('UTF-8', 'windows-1252', strtoupper($examRes[0]['materiaModa']['nombre'])),"B,L",0);
+          }else {
+            $pdf->Cell(110,7,iconv('UTF-8', 'windows-1252', strtoupper($examTitle)),"B,L",0);
+          }
+          if (!empty($examRes[0]['user']['firstname']) && !is_null($examRes[0]['user']['firstname'])) {
+            if (!empty($examRes[0]['user']['lastname']) && !is_null($examRes[0]['user']['lastname'])) {
+              if (!empty($examRes[0]['user']['biography']) && !is_null($examRes[0]['user']['biography'])) {
+                $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examRes[0]['user']['biography'].'. '.$examRes[0]['user']['firstname'].$examRes[0]['user']['lastname']),"B,L,R",0);
+              }else {
+                $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examRes[0]['user']['firstname'].$examRes[0]['user']['lastname']),"B,L,R",0);
+              }
+            }elseif (!empty($examRes[0]['user']['biography']) && !is_null($examRes[0]['user']['biography'])) {
+              $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examRes[0]['user']['biography'].'. '.$examRes[0]['user']['firstname']),"B,L,R",0);
+            }else {
+              $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examRes[0]['user']['firstname']),"B,L,R",0);
+            }
+          }else {
+            $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examRes[0]['user']['username']),"B,L,R",0);
+          }
+          $pdf->Ln(7);
+          $pdf->SetFont('Arial','B',11);
+          // $pdf->Cell(55,10,'SISTEMA DE GESTION DE LA CALIDAD',0,0,"C");
+          $pdf->Cell(110,10,iconv('UTF-8', 'windows-1252', 'UNIDAD(ES) TEMÁTICA(S):'),'T,L',0);
+          $pdf->Cell(85,10,'GRUPO:','T,L,R',0);
+          //interbalo de la segunda columna
+          $pdf->Ln(6);
+          $pdf->SetFont('Arial','',11);
+          $pdf->Cell(110,7,iconv('UTF-8', 'windows-1252', $examdata1),"B,L",0);
+          $pdf->Cell(85,7,iconv('UTF-8', 'windows-1252', $examdata2),"B,L,R",0);
+          $pdf->Ln(7);
+          $pdf->SetFont('Arial','B',11);
+          // $pdf->Cell(55,10,'SISTEMA DE GESTION DE LA CALIDAD',0,0,"C");
+          $pdf->Cell(110,10,iconv('UTF-8', 'windows-1252', 'TEMA(S):'),'T,L',0);
+          $pdf->Cell(42.5,10,'FECHA:','T,L,R',0);
+          $pdf->Cell(42.5,10,iconv('UTF-8', 'windows-1252', 'CALIFICACIÓN:'),'T,L,R',0);
+          //interbalo de la segunda columna
+          $pdf->Ln(2);
+          $pdf->SetFont('Arial','',11);
+          $pdf->Cell(110,15,iconv('UTF-8', 'windows-1252', $examdata3),"B,L",0);
+          $pdf->Cell(42.5,15,iconv('UTF-8', 'windows-1252', explode(" ", $examRes[0]['fecha'])[0]),"B,L,R",0);
+          $pdf->Cell(42.5,15,'',"B,L,R",0);
+          $pdf->Ln(30);
+          $pdf->SetFont('Times','',12);
+          $pdf->Cell(35,5,'Nombre del Alumno:____________________________________________ No. Matricula:__________________',0,1);
+          // $pdf->Ln(5);
+          $pdf->SetFont('Arial','B',11);
+          $pdf->Cell(35,10,iconv('UTF-8', 'windows-1252', 'INSTRUCCIONES:'),0,0);
+          $pdf->SetFont('Times','',12);
+          $pdf->Cell(10,10,iconv('UTF-8', 'windows-1252', $examRes[0]['instrucciones']),0,1);
+          $pdf->Ln(5);
+          // $pdf->Cell(42.5,10,'FECHA:','T,L,R',0);
+          // dump($examRes[0]);
+          // die;
+          foreach ($examRes[0]['preguntasAuto'] as $GrupPregunta) {
+            foreach ($GrupPregunta['pregunta'] as $preguntaKey => $pregunta) {
+              // dump($pregunta);
+              // die;
+              // $pdf->Cell(10,10,(strlen($preguntaKey+1 .'.-'.$pregunta['pregunta']['escrito'])/91)."::".$pdf->GetY(),0,1);
+              if ($pdf->GetY()>217) {
+                $pdf->AddPage();
+              }elseif ($pdf->GetY()>210) {
+                if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
+                  $pdf->AddPage();
+                }
+              }
+              $pdf->MultiCell(0,5,$pdf->WriteHTML(iconv('UTF-8', 'windows-1252', $preguntaKey+1 .'.-'.$pregunta['escrito'])),0);
+              if (!empty($pregunta['audio']) && !is_null($pregunta['audio'])) {
+                $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+                // dump("Espera instrucciones");
+              }elseif (!empty($pregunta['video']) && !is_null($pregunta['video'])) {
+                $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+                // dump("null");
+              }elseif (!empty($pregunta['imagen']) && !is_null($pregunta['imagen'])) {
+                $positionX= $pdf->GetX();
+                $positionY= $pdf->GetY();
+                foreach ($pregunta['imagen'] as $preguntaImagenKey => $preguntaImagen) {
+                  if ((($preguntaImagenKey + 1) % 5) == 0) {
+                    $pdf->Ln(33);
+                    $positionY= $pdf->GetY();
+                    $positionX= $pdf->GetX();
+                  }
+                  if (!is_null($preguntaImagen["url"]) && $preguntaImagen["url"] != "NO APLICA") {
+                    if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"])) {
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"],$positionX, $positionY ,30,30);
+                    }else {
+                      $pdf->Ln(33);
+                      $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Lo mas probable es que el link no sea publico o este caido (o que simplemente no este bien puesto). El url que no pudimos obtener fue: '.$preguntaImagen["url"],0,1);
+                    }
+                  }else {
+                    if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"])) {
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,30,30);
+                    }else {
+                      $pdf->Ln(33);
+                      $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$preguntaImagen["archive"],0,1);
+                    }
+                  }
+                  $positionX += 40;
+                }
+                $pdf->Ln(30);
+                // dump("todavia no jaja");
+                // dump($pregunta);
+                // die;
+              }
+              $pdf->Ln(5);
+              if (!empty($pregunta['respuestas']['texto']) && !is_null($pregunta['respuestas']['texto'])) {
+                foreach ($pregunta['respuestas']['texto'] as $respuestaKey => $respuesta) {
+                  $pdf->MultiCell(0,5,iconv('UTF-8', 'windows-1252', $estructura[$respuestaKey].') '.$respuesta['escrito']),0,1);
+                  // dump($estructura[$respuestaKey].') '.$respuesta['escrito']);
+                }
+              }elseif (!empty($pregunta['respuestas']['audio']) && !is_null($pregunta['respuestas']['audio'])) {
+                $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+                // dump("Espera instrucciones");
+              }elseif (!empty($pregunta['respuestas']['video']) && !is_null($pregunta['respuestas']['video'])) {
+                $pdf->MultiCell(0,5,'Espera instrucciones',0,1);
+                // dump("null");
+              }elseif (!empty($pregunta['respuestas']['imagen']) && !is_null($pregunta['respuestas']['imagen'])) {
+                $positionX= $pdf->GetX();
+                $positionY= $pdf->GetY();
+                foreach ($pregunta['respuestas']['imagen'] as $respuestaKey => $respuesta) {
+                  if ((($respuestaKey + 1) % 5) == 0) {
+                    $pdf->Ln(33);
+                    if ($pdf->GetY()>217) {
+                      $pdf->AddPage();
+                    }elseif ($pdf->GetY()>210) {
+                      if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
+                        $pdf->AddPage();
+                      }
+                    }
+                    $positionY= $pdf->GetY();
+                    $positionX= $pdf->GetX();
+                  }
+                  if (!is_null($respuesta["url"]) && $respuesta["url"] != "NO APLICA") {
+                    if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["url"])) {
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["url"],$positionX, $positionY ,30,30);
+                    }else {
+                      $pdf->Ln(33);
+                      $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Lo mas probable es que el link no sea publico o este caido (o que simplemente no este bien puesto). El url que no pudimos obtener fue: '.$respuesta["url"],0,1);
+                    }
+                  }else {
+                    if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["archive"])) {
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$respuesta["archive"],$positionX, $positionY ,30,30);
+                    }else {
+                      $pdf->Ln(33);
+                      $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$respuesta["archive"],0,1);
+                    }
+                  }
+                  $positionX += 40;
+                }
+                $pdf->Ln(30);
+                // dump("todavia no jaja");
+              }
+              $pdf->Ln(5);
+            }
+          }
           return new Response($pdf->Output(), 200, array(
             'Content-Type' => 'application/pdf'));
         }
-        // return new JsonResponse($examenAutoRes);
       }else {
         return new JsonResponse("Error");
       }
