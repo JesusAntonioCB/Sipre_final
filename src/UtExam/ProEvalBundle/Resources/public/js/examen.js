@@ -52,6 +52,7 @@ $(document).ready(function() {
           dquestion: question,
           arrayQByGrup: arrayQByGrup,
         }
+        console.log(datos);
         var herf = window.location.pathname;
         if (herf === "/") {
           herf = "";

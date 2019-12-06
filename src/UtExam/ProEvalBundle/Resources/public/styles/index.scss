@@ -37,6 +37,11 @@ body {
     }
   }
 }
+@mixin zero-column{
+  @media only screen and (max-width: 340px) {
+    @content;
+  }
+}
 @mixin one-column{
   @media only screen and (max-width: 450px) {
     @content;

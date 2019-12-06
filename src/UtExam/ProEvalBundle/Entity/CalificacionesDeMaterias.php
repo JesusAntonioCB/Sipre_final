@@ -124,4 +124,15 @@ class CalificacionesDeMaterias
     {
         return $this->calificaciones;
     }
+
+    public function __toString(){
+      // if (!empty($this->examen)) {
+      //   return $this->calificacion == null && $this->examen == null ? '' : $this->examen->getTitulo().": ".$this->calificacion;
+      // }elseif (!empty($this->examenAuto)) {
+      //   return $this->calificacion == null && $this->examenAuto == null ? '' : $this->examenAuto->getTitulo().": ".$this->calificacion;
+      // }else {
+      //
+      // }
+      return $this->calificacion == null ? '' : $this->calificacion;
+    }
 }

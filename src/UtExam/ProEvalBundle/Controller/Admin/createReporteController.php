@@ -19,21 +19,32 @@ class createReporteController extends Controller
      */
     public function listAction(){
       $em = $this->getDoctrine()->getManager();
-      $queryExams = $em->createQuery('
-        SELECT DISTINCT exam.titulo,exam.id
-        FROM UtExam\ProEvalBundle\Entity\Alumnos a
-        LEFT JOIN a.calificaciones cali
-        LEFT JOIN cali.examen exam
-        WHERE cali.evaluacion = :eval');
-      $queryExams->setParameter('eval', "Entrada");
-      $ExamsRes=$queryExams->getArrayResult();
-      $queryExamsAuto = $em->createQuery('
-        SELECT DISTINCT examAuto.titulo,examAuto.id
-        FROM UtExam\ProEvalBundle\Entity\Alumnos a
-        LEFT JOIN a.calificaciones cali
-        LEFT JOIN cali.examenAuto examAuto
-        WHERE cali.evaluacion = :eval');
-      $queryExamsAuto->setParameter('eval', "Entrada");
+      $user = $this->getUser();
+      if ($user->hasRole("ROLE_SUPER_ADMIN")) {
+        $queryExams = $em->createQuery('
+          SELECT e
+          FROM UtExam\ProEvalBundle\Entity\Examen e');
+        $ExamsRes=$queryExams->getArrayResult();
+        $queryExamsAuto = $em->createQuery('
+          SELECT eA
+          FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA');
+        $ExamsAutoRes=$queryExamsAuto->getArrayResult();
+      }else {
+        $queryExams = $em->createQuery('
+          SELECT e
+          FROM UtExam\ProEvalBundle\Entity\Examen e
+          LEFT JOIN e.user u
+          WHERE u.username = :userName');
+        $queryExams->setParameter('userName', $user->getUserName());
+        $ExamsRes=$queryExams->getArrayResult();
+        $queryExamsAuto = $em->createQuery('
+          SELECT eA
+          FROM UtExam\ProEvalBundle\Entity\ExamenAuto eA
+          LEFT JOIN eA.user u
+          WHERE u.username = :userName');
+        $queryExamsAuto->setParameter('userName', $user->getUserName());
+        $ExamsAutoRes=$queryExamsAuto->getArrayResult();
+      }
       $ExamsAutoRes=$queryExamsAuto->getArrayResult();
       $queryGen = $em->createQuery('
         SELECT DISTINCT substring(a.fecha, 1,4)
@@ -86,12 +97,14 @@ class createReporteController extends Controller
       $grupo = "";
       $turno = "";
       $generacion= "";
+      $typeExam= "";
       $exam= "";
       if(isset($_GET)){
         if(isset($_GET["typeReporte"])) $typeReporte = $_GET["typeReporte"];
         if(isset($_GET["grupo"])) $grupo = $_GET["grupo"];
         if(isset($_GET["turno"])) $turno = $_GET["turno"];
         if(isset($_GET["generacion"])) $generacion = $_GET["generacion"];
+        if(isset($_GET["typeExam"])) $typeExam = $_GET["typeExam"];
         if(isset($_GET["exam"])) $exam = explode("-", $_GET["exam"]);
       }
       if ($typeReporte=="generacion") {
@@ -124,7 +137,6 @@ class createReporteController extends Controller
         if (empty($alumnosPerGrupV) && empty($alumnosPerGrupN)) {
           return new Response("Esta Combinación no se encuentra en la Base de Datos, Por favor vuelve a intentarlo o contacta a el Administrador");
         }else {
-
           return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
               'generacion' => true,
               'materias' => $materiasRep,
@@ -142,7 +154,14 @@ class createReporteController extends Controller
         if (empty($grupWithAlumnos) && empty($alumnosPerGrupN)) {
           return new Response("El grupo seleccionado no existe prueba cambinado el turno");
         }else {
+          if ($typeExam == "true") {
+            $typeExam= true;
+          }else {
+            $typeExam= false;
+          }
         return $this->render('UtExamProEvalBundle::Admin/tableReport.html.twig', [
+            'generacion' => false,
+            'propedeutico' => $typeExam,
             'grupo' => true,
             'GWA' => $grupWithAlumnos,
         ]);
@@ -171,7 +190,10 @@ class createReporteController extends Controller
           LEFT JOIN cali.caliMateria caliM
           LEFT JOIN caliM.materias caliMater
           LEFT JOIN m.materias maters
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID AND cali.evaluacion = :eval1
+          OR    substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID AND cali.evaluacion= :eval2');
+        $queryRep->setParameter('eval1', "Entrada");
+        $queryRep->setParameter('eval2', "Salida");
         $queryRep->setParameter('idGen', $generacion);
         $queryRep->setParameter('EID', $exam);
         $queryRep->setParameter('turno', $turno);
@@ -182,7 +204,10 @@ class createReporteController extends Controller
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
           LEFT JOIN a.calificaciones cali
           LEFT JOIN cali.examenAuto examAuto
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID AND cali.evaluacion = :eval1
+          OR    substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND examAuto.id = :EID AND cali.evaluacion= :eval2');
+        $queryGrup->setParameter('eval1', "Entrada");
+        $queryGrup->setParameter('eval2', "Salida");
         $queryGrup->setParameter('idGen', $generacion);
         $queryGrup->setParameter('EID', $exam);
         $queryGrup->setParameter('turno', $turno);
@@ -211,7 +236,10 @@ class createReporteController extends Controller
           LEFT JOIN cali.caliMateria caliM
           LEFT JOIN caliM.materias caliMater
           LEFT JOIN m.materias maters
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID ');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID AND cali.evaluacion = :eval1
+          OR    substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID AND cali.evaluacion= :eval2');
+        $queryRep->setParameter('eval1', "Entrada");
+        $queryRep->setParameter('eval2', "Salida");
         $queryRep->setParameter('idGen', $generacion);
         $queryRep->setParameter('EID', $exam);
         $queryRep->setParameter('turno', $turno);
@@ -222,7 +250,10 @@ class createReporteController extends Controller
           FROM UtExam\ProEvalBundle\Entity\Alumnos a
           LEFT JOIN a.calificaciones cali
           LEFT JOIN cali.examen exam
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID AND cali.evaluacion = :eval1
+          OR    substring(a.fecha, 1,4) = :idGen AND a.turno = :turno AND exam.id = :EID AND cali.evaluacion= :eval2');
+        $queryGrup->setParameter('eval1', "Entrada");
+        $queryGrup->setParameter('eval2', "Salida");
         $queryGrup->setParameter('idGen', $generacion);
         $queryGrup->setParameter('EID', $exam);
         $queryGrup->setParameter('turno', $turno);
@@ -263,7 +294,8 @@ class createReporteController extends Controller
           LEFT JOIN cali.caliMateria caliM
           LEFT JOIN caliM.materias caliMater
           LEFT JOIN m.materias maters
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND examAuto.id = :EID');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND examAuto.id = :EID
+          ORDER BY a.nombre ASC');
           $queryGrup->setParameter('idGen', $generacion);
           $queryGrup->setParameter('idGrup', $grupo);
           $queryGrup->setParameter('EID', $exam);
@@ -286,7 +318,9 @@ class createReporteController extends Controller
             WHERE eA.id = :EID');
           $queryExamen->setParameter('EID', $exam);
           $examenRep=$queryExamen->getArrayResult();
-          $TempoGrupWithAlumnos["examen"]=$examenRep;
+          foreach ($examenRep as $examen) {
+            $TempoGrupWithAlumnos["examen"]=$examen;
+          }
       }else {
         $queryGrup = $em->createQuery('
           SELECT a,m,maters,cali,caliM,caliMater,exam
@@ -297,7 +331,8 @@ class createReporteController extends Controller
           LEFT JOIN cali.caliMateria caliM
           LEFT JOIN caliM.materias caliMater
           LEFT JOIN m.materias maters
-          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND exam.id = :EID ');
+          WHERE substring(a.fecha, 1,4) = :idGen AND a.grupo = :idGrup AND a.turno = :idTurno AND exam.id = :EID
+          ORDER BY a.nombre ASC');
         $queryGrup->setParameter('idGen', $generacion);
         $queryGrup->setParameter('idGrup', $grupo);
         $queryGrup->setParameter('EID', $exam);

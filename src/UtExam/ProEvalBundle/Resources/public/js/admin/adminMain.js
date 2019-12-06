@@ -4,7 +4,7 @@ $(document).ready(function() {
       var user = $('select[name=selectUser]').val();
       var tipoExam = $('select[name=selectTipoExam]').val();
       $.ajax({
-          url: "/Sipre/web/admin/getListExam",
+          url: "/admin/getListExam",
           type: "GET",
           dataType: "json",
           data: {
@@ -71,6 +71,8 @@ $(document).ready(function() {
           turno = turno.options[turno.selectedIndex].value,
           examen = document.getElementById('selectExam'),
           examen = examen.options[examen.selectedIndex].value,
+          typeExam = document.getElementById('selectTypeExam'),
+          typeExam = typeExam.options[typeExam.selectedIndex].value,
           bandera= true,
           datos= {};
       if (parseInt(typeReporte)!=0) {
@@ -93,7 +95,8 @@ $(document).ready(function() {
               exam: examen,
               grupo: grupo,
               turno: turno,
-              generacion: generacion
+              generacion: generacion,
+              typeExam: typeExam
             }
           }else {
             alert("Debes seleccionar el grupo, turno y examen");
@@ -106,7 +109,7 @@ $(document).ready(function() {
       }
       if (bandera) {
         $.ajax({
-            url: "/Sipre/web/admin/getReport",
+            url: "/admin/getReport",
             type: "GET",
             data: datos,
             success: function(data) {
@@ -123,7 +126,6 @@ $(document).ready(function() {
               //     </tr>\
               //   ')
               // }
-
             },
             complete: function(){
               $("table").tableExport({

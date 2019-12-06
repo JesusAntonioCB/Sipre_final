@@ -42,14 +42,28 @@
                 <option value="0">Examen</option>
                 {% for exam in exams %}
                   {% if exam.id is defined and exam.id is not null %}
-                    <option value="fijo-{{exam.id}}">{{exam.titulo}}</option>
+                    {% if exam.propedeutico == 1 %}
+                      <option value="fijo-{{exam.id}}">{{exam.titulo}}<span class="label label-success">Este es el actual</span></option>
+                    {% else %}
+                      <option value="fijo-{{exam.id}}">{{exam.titulo}}</option>
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
                 {% for examAuto in examsAuto %}
                   {% if examAuto.id is defined and examAuto.id is not null %}
-                    <option value="auto-{{examAuto.id}}">{{examAuto.titulo}}</option>
+                    {% if examAuto.propedeutico == 1 %}
+                      <option value="auto-{{examAuto.id}}">{{examAuto.titulo}} ((Este es el actual Propedeutico))</option>
+                    {% else %}
+                      <option value="auto-{{examAuto.id}}">{{examAuto.titulo}}</option>
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
+                </select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 p-0 hide">
+                <select class="form-control search-slt" id="selectTypeExam">
+                  <option value="false">Regular</option>
+                  <option value="true">Propedeutico</option>
                 </select>
               </div>
               <div class="col-lg-3 col-md-3 col-sm-12 p-0">
@@ -74,18 +88,22 @@
         $("#selectGen").parent().addClass("hide");
         $("#selectgrup").parent().addClass("hide");
         $("#selectTurno").parent().addClass("hide");
+        $("#selectExam").parent().addClass("hide");
+        $("#selectTypeExam").parent().addClass("hide");
       }
       if (parseInt(typeReporte)===1) {
         $("#selectGen").parent().removeClass("hide");
         $("#selectExam").parent().removeClass("hide");
         $("#selectgrup").parent().addClass("hide");
         $("#selectTurno").parent().addClass("hide");
+        $("#selectTypeExam").parent().addClass("hide");
       }
       if (parseInt(typeReporte)===2) {
         $("#selectgrup").parent().removeClass("hide");
         $("#selectExam").parent().removeClass("hide");
         $("#selectTurno").parent().removeClass("hide");
         $("#selectGen").parent().removeClass("hide");
+        $("#selectTypeExam").parent().removeClass("hide");
       }
     });
   </script>

@@ -9,7 +9,7 @@
 {% set Maestro = "" %}
 <div class="span7">
   <div class="widget stacked widget-table action-table">
-    {% if generacion is defined %}
+    {% if generacion %}
       <div class="widget-header">
       	<i class="fa fa-list"></i>
       	<h3>Reporte Generacional</h3>
@@ -141,8 +141,8 @@
                 {% set CalifiGE = 0 %}
                 {% set CalifiGS = 0 %}
                 {% for materia in materias %}
-                {% set tempoCalificacionE = 0 %}
-                {% set tempoCalificacionS = 0 %}
+                  {% set tempoCalificacionE = 0 %}
+                  {% set tempoCalificacionS = 0 %}
                   {% for proMatE in ProPreMatE %}
                     {% if proMatE.materia == materia.id %}
                       {% set tempoCalificacionE = proMatE.calificacion %}
@@ -154,6 +154,7 @@
                     {% endif %}
                   {% endfor %}
                   {# porsentajes de mejora por materia #}
+
                   {% set Porcentaje = tempoCalificacionS - tempoCalificacionE %}
                   {% if Porcentaje >= 0 %}
                     {% if Porcentaje == 0 %}
@@ -162,7 +163,7 @@
                       </td>
                     {% else %}
                       <td class="text-success">
-                    {% if CalifiGE == 0 %}
+                    {% if tempoCalificacionE == 0 %}
                       {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
                     {% else %}
                       {{ ((Porcentaje / tempoCalificacionE) * 100)|slice(0, 5) }}%
@@ -280,8 +281,8 @@
                 {% set CalifiGE = 0 %}
                 {% set CalifiGS = 0 %}
                 {% for materia in materias %}
-                {% set tempoCalificacionE = 0 %}
-                {% set tempoCalificacionS = 0 %}
+                  {% set tempoCalificacionE = 0 %}
+                  {% set tempoCalificacionS = 0 %}
                   {% for proMatE in ProPreMatE %}
                     {% if proMatE.materia == materia.id %}
                       {% set tempoCalificacionE = proMatE.calificacion %}
@@ -331,13 +332,13 @@
     {% else %}
       <div class="widget-header">
       	<i class="fa fa-list"></i>
-      	<h3>Reporte al Grupo: {{GWA.grupo}}, del Tunro: {{GWA.turno}}, que presento el examen: {{GWA.examen.titulo}}.</h3>
+      	<h3>Reporte al Grupo: <b class="text-primary">{{GWA.grupo}}</b>, del Tunro: <b class="text-primary">{{GWA.turno}}</b>, que presento el examen: <b class="text-primary">{{GWA.examen.titulo}}</b>.</h3>
       </div>
-    	<div class="widget-content table-responsive">
+    {% if propedeutico %}
+      <div class="widget-content table-responsive">
       <table class="table table-striped table-bordered table-condensed table-hover">
         <thead>
           <tr>
-            <th>Turno</th>
             <th>Alumno</th>
             <th colspan="{{GWA.materias|length + 1}}">Calificacion de Entrada</th>
             <th colspan="{{GWA.materias|length + 1}}">Calificacion de Salida</th>
@@ -346,7 +347,6 @@
             <th colspan="{{GWA.materias|length}}">Porcentaje de mejora por materia</th>
           </tr>
           <tr>
-            <th>||</th>
             <th>||</th>
             {% for materia in GWA.materias %}
               <th>{{materia.nombre}}</th>
@@ -365,8 +365,182 @@
             {% endfor %}
           </tr>
         </thead>
+        <tbody>
+        {% if GWA.alumnos is empty %}
+        <tr>
+          Este Examen no lo han contestado alumnos con la espesificaciones que coloco.
+        </tr>
+        {% endif %}
+        {% for alumno in GWA.alumnos %}
+          {% if alumno.maestros is not empty %}
+            <tr>
+              <th>{{alumno.nombre}}</th>
+              {% for materia in GWA.materias %}
+                {% for Alumnocali in alumno.calificaciones %}
+                  {% if Alumnocali.evaluacion == "Entrada" %}
+                    {% for ACMater in Alumnocali.caliMateria %}
+                      {% if materia.id == ACMater.materias.id %}
+                        {% set CalifiE = CalifiE + ACMater.calificacion|number_format %}
+                        {% set ProPreMatE = ProPreMatE|merge([{
+                          "materia": materia.id,
+                          "calificacion" : ACMater.calificacion|number_format
+                        }]) %}
+                        <th>{{ACMater.calificacion|number_format}}</th>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+              {% set CalifiE = (CalifiE / GWA.materias|length)|round %}
+              <th>{{CalifiE}}</th>
+              {% for materia in GWA.materias %}
+                {% for Alumnocali in alumno.calificaciones %}
+                  {% if Alumnocali.evaluacion == "Salida" %}
+                    {% for ACMater in Alumnocali.caliMateria %}
+                      {% if materia.id == ACMater.materias.id %}
+                        {% set CalifiS = CalifiS + ACMater.calificacion|number_format %}
+                        {% set ProPreMatS = ProPreMatS|merge([{
+                          "materia": materia.id,
+                          "calificacion" : ACMater.calificacion|number_format
+                        }]) %}
+                        <th>{{ACMater.calificacion|number_format}}</th>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+              {% set CalifiS = (CalifiS / GWA.materias|length)|round %}
+              <th>{{CalifiS}}</th>
+              {% for materia in GWA.materias %}
+                {% for maestroFromAlumno in alumno.maestros %}
+                  {% if maestroFromAlumno.materias.id == materia.id %}
+                    {% set Maestro = maestroFromAlumno.nombre %}
+                  {% endif %}
+                {% endfor %}
+                <td>{{Maestro}}</td>
+                {% set Maestro = "" %}
+              {% endfor %}
+              {# porsentajes de mejora #}
+              {% set Porcentaje = CalifiS - CalifiE %}
+              {% if Porcentaje >= 0 %}
+                {% if Porcentaje == 0 %}
+                  <td>
+                    {{Porcentaje}}%
+                  </td>
+                {% else %}
+                  <td class="text-success">
+                {% if CalifiE == 0 %}
+                  {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                {% else %}
+                  {{ ((Porcentaje / CalifiE) * 100)|slice(0, 5) }}%
+                {% endif %}
+                  </td>
+                {% endif %}
+              {% else %}
+                <td class="text-danger" >
+                {% set Porcentaje = CalifiE - CalifiS %}
+                {% if CalifiE == 0 %}
+                  -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                {% else %}
+                  -{{ ((Porcentaje / CalifiE) * 100)|slice(0, 5) }}%
+                {% endif %}
+                </td>
+              {% endif %}
+              {% set Porcentaje = 0 %}
+              {# fin del porcentaje de mejora #}
+              {% for materia in GWA.materias %}
+                {% set tempoCalificacionE = 0 %}
+                {% set tempoCalificacionS = 0 %}
+                {% for proMatE in ProPreMatE %}
+                  {% if proMatE.materia == materia.id %}
+                    {% set tempoCalificacionE = proMatE.calificacion %}
+                  {% endif %}
+                {% endfor %}
+                {% for proMatS in ProPreMatS %}
+                  {% if proMatS.materia == materia.id %}
+                    {% set tempoCalificacionS = proMatS.calificacion %}
+                  {% endif %}
+                {% endfor %}
+                {# porsentajes de mejora por materia #}
+                {% set Porcentaje = tempoCalificacionS - tempoCalificacionE %}
+                {% if Porcentaje >= 0 %}
+                  {% if Porcentaje == 0 %}
+                    <td>
+                      {{Porcentaje}}%
+                    </td>
+                  {% else %}
+                    <td class="text-success">
+                  {% if CalifiGE == 0 %}
+                    {{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    {{ ((Porcentaje / tempoCalificacionE) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td class="text-danger" >
+                  {% set Porcentaje = tempoCalificacionE - tempoCalificacionS %}
+                  {% if tempoCalificacionE == 0 %}
+                    -{{ ((Porcentaje / 1) * 100)|slice(0, 5) }}%
+                  {% else %}
+                    -{{ ((Porcentaje / tempoCalificacionE) * 100)|slice(0, 5) }}%
+                  {% endif %}
+                  </td>
+                {% endif %}
+                {% set Porcentaje = 0 %}
+                {# fin del porcentaje de mejora por materia #}
+              {% endfor %}
+            </tr>
+            {% set CalifiE = 0 %}
+            {% set CalifiS = 0 %}
+            {% set ProPreMatE = [] %}
+            {% set ProPreMatS = [] %}
+          {% endif %}
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    {% else %}
+      <div class="widget-content table-responsive">
+      <table class="table table-striped table-bordered table-condensed table-hover">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Calificación</th>
+            <th colspan="{{GWA.materias|length + 1}}">Calificación Detallada</th>
+          </tr>
+          <tr>
+            <th>||</th>
+            <th>||</th>
+            {% for materia in GWA.materias %}
+              <th>{{materia.nombre}}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+        {% if GWA.alumnos is empty %}
+        <tr>
+          Este Examen no lo han contestado alumnos con la espesificaciones que coloco.
+        </tr>
+        {% endif %}
+        {% for alumno in GWA.alumnos %}
+          <tr>
+            <th>{{alumno.nombre}}</th>
+            {% for calificacion in alumno.calificaciones %}
+              {% if calificacion.evaluacion == "Unico" %}
+                <th>{{calificacion.calificacion|slice(0, 5)}}</th>
+                {% for caliPerMater in calificacion.caliMateria %}
+                  <th>{{caliPerMater.calificacion|slice(0, 5)}}</th>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        </tbody>
       </table>
     	</div>
+    {% endif %}
+
     {% endif %}
   </div>
 </div>

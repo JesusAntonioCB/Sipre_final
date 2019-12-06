@@ -248,6 +248,7 @@ canvas {
       border-radius: 22px !important;
       text-align: center; }
       .examenInterfaz .examenContent .grups .preguntas .pregunta .respuestas .respuesta .btnExamImg img {
+        width: 100%;
         max-width: 320px;
         max-height: 240px;
         margin-right: 10px; }
@@ -388,12 +389,12 @@ canvas {
   align-items: center;
   position: absolute;
   top: 0;
-  bottom: 50%;
+  bottom: 0;
   left: 0;
   right: 0;
   width: 60%;
   margin: auto;
-  height: 300px; }
+  height: auto; }
   .homeConter .title {
     margin-bottom: 100px; }
     .homeConter .title h3 {
@@ -402,11 +403,22 @@ canvas {
       font-weight: bold;
       color: black;
       font-size: 35px; }
+  .homeConter .containerHeader {
+    margin-top: 80px; }
   .homeConter .container .col img {
     max-width: 180px; }
   .homeConter .contentBtn {
     max-width: 800px;
     margin: auto; }
+  @media (max-height: 410px) {
+    .homeConter .containerHeader {
+      margin-top: 50px; } }
+  @media (max-height: 380px) {
+    .homeConter .containerHeader {
+      margin-top: 4%; } }
+  @media (max-height: 350px) {
+    .homeConter .containerHeader .title {
+      margin-bottom: 50px; } }
   @media only screen and (max-width: 1250px) {
     .homeConter {
       width: 100%; } }
@@ -447,6 +459,9 @@ canvas {
           max-width: 73px; }
     .homeConter .container .contentBtn {
       font-size: 10px; } }
+  @media only screen and (max-width: 340px) {
+    .homeConter .title {
+      max-width: 42%; } }
 
 .button {
   --offset: 10px;

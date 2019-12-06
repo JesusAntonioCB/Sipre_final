@@ -309,12 +309,40 @@ class DefaultController extends Controller
       }
       //crear sesion cookie
       $usercode = $userRes[0]["codigoUsuario"];
+      $mensaje= "Hola <b class='text-primary'>".$userRes[0]["nombre"]."</b> tu grupo sigue siendo: <b class='text-primary'>".$userRes[0]["grupo"]."</b>?";
       $responseArray = array(
         "UID" => $usercode,
-        "examen" => "Salida",
-        "mensaje" => "Sesion iniciada correctamente",
+        "examen" => $evaluacion,
+        "mensaje" => $mensaje,
         "bandera" => true
        );
+      return new JsonResponse($responseArray);
+    }
+
+    public function updateGrupAction(){
+      $em = $this->getDoctrine()->getManager();
+      $UID="";
+      $newGrup="";
+      try {
+        if(isset($_POST)){
+          if(isset($_POST['newGrup'])) $newGrup = $_POST['newGrup'];
+          if(isset($_POST["UID"])) $UID = $_POST["UID"];
+        }
+        $updateCali = $em->createQuery('
+          UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+          SET A.grupo = :newGrupo
+          WHERE A.codigoUsuario = :codeUser');
+        $updateCali->setParameter('newGrupo', $newGrup);
+        $updateCali->setParameter('codeUser', $UID);
+        $updateCali->execute();
+        $responseArray = array(
+          "bandera" => true
+         );
+      } catch (\Exception $e) {
+        $responseArray = array(
+          "bandera" => false
+         );
+      }
       return new JsonResponse($responseArray);
     }
 
@@ -708,73 +736,57 @@ class DefaultController extends Controller
 
         if ($_COOKIE["UID"]) {
           $UID = $_COOKIE["UID"];
-          if ($examen === "Entrada") {
-            $updateCali = $em->createQuery('
-              UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-              SET A.calificacionE1 = :calificacion1 ,
-              A.calificacionE2 = :calificacion2 ,
-              A.calificacionE3 = :calificacion3 ,
-              A.tiempo = :time
-              WHERE A.codigoUsuario = :idUser');
-            $updateCali->setParameter('calificacion1', $Mat1.":=".$calificacion1);
-            $updateCali->setParameter('calificacion2', $Mat2.":=".$calificacion2);
-            $updateCali->setParameter('calificacion3', $Mat3.":=".$calificacion3);
-            $updateCali->setParameter('time', $time);
-            $updateCali->setParameter('idUser', $UID);
-            $updateCali->execute();
+          $caliGeneral= 0;
+          $alumnoRes = $this->getAlumno($UID);
+          $alumnoId = $alumnoRes[0]['id'];
+          $objAlumno = $this->getDoctrine()
+                         ->getRepository("UtExam\ProEvalBundle\Entity\Alumnos")
+                         ->find((int)$alumnoId);
+          $alumnoCali = new Calificaciones();
+          $alumnoCali->setAlumnos($objAlumno);
+          $alumnoCali->setEvaluacion($examen);
+          if ($typeExam === "propedeutico") {
+            $objExamen = $this->getDoctrine()
+                           ->getRepository("UtExam\ProEvalBundle\Entity\ExamenAuto")
+                           ->find((int)$examenId);
+            $alumnoCali->setExamenAuto($objExamen);
           }else {
-            $caliGeneral= 0;
-            $alumnoRes = $this->getAlumno($UID);
-            $alumnoId = $alumnoRes[0]['id'];
-            $objAlumno = $this->getDoctrine()
-                           ->getRepository("UtExam\ProEvalBundle\Entity\Alumnos")
-                           ->find((int)$alumnoId);
-            $alumnoCali = new Calificaciones();
-            $alumnoCali->setAlumnos($objAlumno);
-            $alumnoCali->setEvaluacion($examen);
-            if ($typeExam === "propedeutico") {
-              $objExamen = $this->getDoctrine()
-                             ->getRepository("UtExam\ProEvalBundle\Entity\ExamenAuto")
-                             ->find((int)$examenId);
-              $alumnoCali->setExamenAuto($objExamen);
-            }else {
-              $objExamen = $this->getDoctrine()
-                             ->getRepository("UtExam\ProEvalBundle\Entity\Examen")
-                             ->find((int)$examenId);
-              $alumnoCali->setExamen($objExamen);
-            }
-            $alumnoCali->setTiempo($time);
-            foreach ($calificacion as $key => $value) {
-              $caliGeneral += $value;
-              $objMateria = $this->getDoctrine()
-                             ->getRepository("UtExam\ProEvalBundle\Entity\Materias")
-                             ->find((int)$key);
-              $caliMaterias = new CalificacionesDeMaterias();
-              $caliMaterias->setCalificacion($value);
-              $caliMaterias->setMaterias($objMateria);
-              $caliMaterias->setCalificaciones($alumnoCali);
-              $alumnoCali->addCaliMaterium($caliMaterias);
-            }
-            $caliGeneral = $caliGeneral/count($calificacion);
-            $alumnoCali->setCalificacion($caliGeneral);
-            $em->persist($alumnoCali);
-            $em->flush();
-            $userQuery = $em->createQuery('
-              SELECT a, cali
-              FROM UtExam\ProEvalBundle\Entity\Alumnos a
-              LEFT JOIN a.calificaciones cali
-              WHERE a.codigoUsuario = :codeUser');
-            $userQuery->setParameter('codeUser', $UID);
-            $userRes=$userQuery->getArrayResult();
-            // return new Response("Gracias por contestar");
-            $updateCali = $em->createQuery('
-              UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
-              SET A.examSalida = :status
-              WHERE A.id = :idUser');
-            $updateCali->setParameter('status', true);
-            $updateCali->setParameter('idUser', $alumnoId);
-            $updateCali->execute();
+            $objExamen = $this->getDoctrine()
+                           ->getRepository("UtExam\ProEvalBundle\Entity\Examen")
+                           ->find((int)$examenId);
+            $alumnoCali->setExamen($objExamen);
           }
+          $alumnoCali->setTiempo($time);
+          foreach ($calificacion as $key => $value) {
+            $caliGeneral += $value;
+            $objMateria = $this->getDoctrine()
+                           ->getRepository("UtExam\ProEvalBundle\Entity\Materias")
+                           ->find((int)$key);
+            $caliMaterias = new CalificacionesDeMaterias();
+            $caliMaterias->setCalificacion($value);
+            $caliMaterias->setMaterias($objMateria);
+            $caliMaterias->setCalificaciones($alumnoCali);
+            $alumnoCali->addCaliMaterium($caliMaterias);
+          }
+          $caliGeneral = $caliGeneral/count($calificacion);
+          $alumnoCali->setCalificacion($caliGeneral);
+          $em->persist($alumnoCali);
+          $em->flush();
+          $userQuery = $em->createQuery('
+            SELECT a, cali
+            FROM UtExam\ProEvalBundle\Entity\Alumnos a
+            LEFT JOIN a.calificaciones cali
+            WHERE a.codigoUsuario = :codeUser');
+          $userQuery->setParameter('codeUser', $UID);
+          $userRes=$userQuery->getArrayResult();
+          // return new Response("Gracias por contestar");
+          $updateCali = $em->createQuery('
+            UPDATE UtExam\ProEvalBundle\Entity\Alumnos A
+            SET A.examSalida = :status
+            WHERE A.id = :idUser');
+          $updateCali->setParameter('status', true);
+          $updateCali->setParameter('idUser', $alumnoId);
+          $updateCali->execute();
         }else {
           return new Response("Error: La sesion a caducado");
         }
@@ -797,16 +809,18 @@ class DefaultController extends Controller
       $valueGrupo = $_POST['grupo'];
       $valuePass= $_POST['pass'];
       $valueUserName= $_POST['userName'];
-      $valueMaestro1= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro1']);
-      $valueMaestro2= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro2']);
-      $valueMaestro3= $this->getDoctrine()
-                     ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
-                     ->find((int)$_POST['maestro3']);
       $valueEval = $_POST['evaluacion'];
+      if ($valueEval == "Entrada") {
+        $valueMaestro1= $this->getDoctrine()
+                       ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                       ->find((int)$_POST['maestro1']);
+        $valueMaestro2= $this->getDoctrine()
+                       ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                       ->find((int)$_POST['maestro2']);
+        $valueMaestro3= $this->getDoctrine()
+                       ->getRepository("UtExam\ProEvalBundle\Entity\Maestros")
+                       ->find((int)$_POST['maestro3']);
+      }
       try {
         $alumno = new Alumnos();
         $alumno->setNombre($valueName);
@@ -820,14 +834,16 @@ class DefaultController extends Controller
         $alumno->setGrupo($valueGrupo);
         $alumno->setExamSalida(false);
         $alumno->setExamEntrada(false);
-        $alumno->addMaestro($valueMaestro1);
-        $alumno->addMaestro($valueMaestro2);
-        $alumno->addMaestro($valueMaestro3);
+        if ($valueEval == "Entrada") {
+          $alumno->addMaestro($valueMaestro1);
+          $alumno->addMaestro($valueMaestro2);
+          $alumno->addMaestro($valueMaestro3);
+        }
         $em->persist($alumno);
         $em->flush();
         $responseArray = array(
           "UID" => $usercode,
-          "examen" => "Entrada",
+          "examen" => $valueEval,
           "mensaje" => "Registro exitoso"
          );
         return new JsonResponse($responseArray);
@@ -861,6 +877,9 @@ class DefaultController extends Controller
 
     public function openModalCodeExamAction(){
       return $this->render('UtExamProEvalBundle:modals:modalCodeExam.html.twig');
+    }
+    public function openModalUpdateGrupAction(){
+      return $this->render('UtExamProEvalBundle:modals:modalUpdateGrup.html.twig');
     }
 
     public function getAllQuestion($examenRes){

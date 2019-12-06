@@ -266,4 +266,14 @@ class Calificaciones
     {
         return $this->tiempo;
     }
+
+    public function __toString(){
+      if (!empty($this->examen)) {
+        return $this->calificacion == null && $this->examen == null ? '' : $this->examen->getTitulo().": ".$this->calificacion.", Evaluacion: ".$this->evaluacion.", Y se tardo: ".$this->tiempo;
+      }elseif (!empty($this->examenAuto)) {
+        return $this->calificacion == null && $this->examenAuto == null ? '' : $this->examenAuto->getTitulo().": ".$this->calificacion.", Evaluacion: ".$this->evaluacion.", Y se tardo: ".$this->tiempo;
+      }else {
+        return $this->calificacion == null ? '' : $this->calificacion;
+      }
+    }
 }

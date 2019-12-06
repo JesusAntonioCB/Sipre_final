@@ -71,6 +71,14 @@ get_ModalCodeExam:
     path:     /ModalCodeExam
     defaults: { _controller: UtExamProEvalBundle:Default:openModalCodeExam }
 
+get_ModalUpdateGrup:
+    path:     /ModalUpdateGrup
+    defaults: { _controller: UtExamProEvalBundle:Default:openModalUpdateGrup }
+
+get_UpdateGrup:
+    path:     /UpdateGrup
+    defaults: { _controller: UtExamProEvalBundle:Default:updateGrup }
+
 get_pdfExam:
     path:     /admin/openPdf
     defaults: { _controller: UtExamProEvalBundle:Admin/createExamen:getPdfOfExam }

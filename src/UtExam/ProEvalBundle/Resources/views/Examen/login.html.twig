@@ -1,6 +1,7 @@
 {% extends 'UtExamProEvalBundle:Default:base.html.twig' %}
 {% block main %}
-  <div class="homeConter">
+  <div id="loginInterface" class="homeConter">
+  <div class="containerHeader">
   <div class="title titleSelectExam">
     {% if propedeutico %}
       <h5>Por favor elige la evaluación que deseas realizar</h5>
@@ -8,6 +9,7 @@
         <h5>Por favor selecciona lo que deseas realizar</h5>
     {% endif %}
     <br>
+  </div>
   </div>
   <div class="container">
     <div class="row">
@@ -36,7 +38,7 @@
 </div>
   <div class="container loginContainer RegisterUser hide">
 		<div class="row">
-			<div class="col-md-9 loginInterface">
+			<div class="col-md-12 loginInterface">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<strong>Escribe los datos que te pide</strong>
@@ -63,7 +65,8 @@
                           <span class="input-group-addon">
                             <i class="glyphicon glyphicon-user"></i>
                           </span>
-                          <input class="form-control" id="userName" placeholder="Nombre(s) y apellidos" name="loginname" type="text" autofocus>
+                          <input class="form-control" id="lastName" placeholder="Apellidos" type="text" autofocus>
+                          <input class="form-control" id="userName" placeholder="Nombre(s)" name="loginname" type="text" autofocus>
                         </div>
                       </div>
                       <div class="form-group col-md-5">
@@ -233,9 +236,9 @@
                     <div class="form-group col-md-12">
                       <div class="form-group col-md-6">
                         {% if propedeutico %}
-                          <center><div class="btn btn-lg btn-primary btn-block registerAlumno" data_propedeutico=false >Regístrate</div></center>
+                          <center><div class="btn btn-lg btn-primary btn-block registerAlumno" data_propedeutico="true" >Regístrate</div></center>
                           {% else %}
-                            <center><div class="btn btn-lg btn-primary btn-block registerAlumno" data_propedeutico=false >Regístrate</div></center>
+                            <center><div class="btn btn-lg btn-primary btn-block registerAlumno" data_propedeutico="false" >Regístrate</div></center>
                         {% endif %}
 
                       </div>
@@ -251,7 +254,7 @@
   </div>
   <div class="container loginContainer loginUser hide">
     <div class="row">
-      <div class="col-md-9 loginInterface">
+      <div class="col-md-12 loginInterface">
         <div class="panel panel-default">
           <div class="panel-heading">
             <strong>Escribe los datos que te pide</strong>
@@ -286,7 +289,12 @@
                     </div>
                     <div class="form-group col-md-12">
                       <div class="form-group col-md-5">
-                       <center><div class="btn btn-lg btn-primary btn-block loginAlumno">Iniciar sesión</div></center>
+                        {% if propedeutico %}
+                          <center><div class="btn btn-lg btn-primary btn-block loginAlumno" data_propedeutico="true">Iniciar sesión</div></center>
+                          {% else %}
+                            <center><div class="btn btn-lg btn-primary btn-block loginAlumno" data_propedeutico="false">Iniciar sesión</div></center>
+                        {% endif %}
+
                       </div>
                     </div>
                   </div>

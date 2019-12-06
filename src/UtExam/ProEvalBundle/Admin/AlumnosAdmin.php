@@ -66,7 +66,6 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('grupo')
     ->add('examenAuto')
     ->add('fecha')
-    ->add('tiempo')
     ->add('codigoUsuario')
     // add custom action links
     ->add('_action', 'actions', [
@@ -94,8 +93,7 @@ class AlumnosAdmin extends AbstractAdmin
                   ->add('examen')
                   ->add('examenAuto')
                   ->add('fecha')
-                  ->add('tiempo')
-                  ->add('calificacion')
+                  ->add('calificaciones')
                   ->add('codigoUsuario')
                 ->end()
             ->end()

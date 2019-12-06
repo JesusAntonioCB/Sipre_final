@@ -62,9 +62,10 @@ class createExamenController extends Controller
         return new JsonResponse($examenRes);
       }elseif ($tipoExam == 2) {
         $query = $em->createQuery('
-          SELECT partial Ea.{id, titulo}
+          SELECT partial Ea.{id, titulo}, partial maMo.{id, nombre}
           FROM UtExam\ProEvalBundle\Entity\ExamenAuto Ea
           LEFT JOIN Ea.user u
+          LEFT JOIN Ea.materiaModa maMo
           WHERE u.id = :idUser');
         $query->setParameter('idUser', $user);
         $examenAutoRes=$query->getArrayResult();
@@ -186,7 +187,7 @@ class createExamenController extends Controller
           // $pdf->Cell(42.5,10,'FECHA:','T,L,R',0);
           foreach ($examRes[0]['pregunta'] as $preguntaKey => $pregunta) {
             // $pdf->Cell(10,10,(strlen($preguntaKey+1 .'.-'.$pregunta['pregunta']['escrito'])/91)."::".$pdf->GetY(),0,1);
-            if ($pdf->GetY()>217) {
+            if ($pdf->GetY()>213) {
               $pdf->AddPage();
             }elseif ($pdf->GetY()>210) {
               if ((strlen($preguntaKey+1 .'.-'.$pregunta['pregunta']['escrito'])/91)>=5) {
@@ -218,7 +219,7 @@ class createExamenController extends Controller
                   }
                 }else {
                   if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"])) {
-                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,30,30);
+                    $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,50,30);
                   }else {
                     $pdf->Ln(33);
                     $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$preguntaImagen["archive"],0,1);
@@ -249,7 +250,7 @@ class createExamenController extends Controller
               foreach ($pregunta['pregunta']['respuestas']['imagen'] as $respuestaKey => $respuesta) {
                 if ((($respuestaKey + 1) % 5) == 0) {
                   $pdf->Ln(33);
-                  if ($pdf->GetY()>217) {
+                  if ($pdf->GetY()>213) {
                     $pdf->AddPage();
                   }elseif ($pdf->GetY()>210) {
                     if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
@@ -383,7 +384,7 @@ class createExamenController extends Controller
               // dump($pregunta);
               // die;
               // $pdf->Cell(10,10,(strlen($preguntaKey+1 .'.-'.$pregunta['pregunta']['escrito'])/91)."::".$pdf->GetY(),0,1);
-              if ($pdf->GetY()>217) {
+              if ($pdf->GetY()>213) {
                 $pdf->AddPage();
               }elseif ($pdf->GetY()>210) {
                 if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
@@ -408,14 +409,14 @@ class createExamenController extends Controller
                   }
                   if (!is_null($preguntaImagen["url"]) && $preguntaImagen["url"] != "NO APLICA") {
                     if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"])) {
-                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"],$positionX, $positionY ,30,30);
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["url"],$positionX, $positionY ,50,30);
                     }else {
                       $pdf->Ln(33);
                       $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Lo mas probable es que el link no sea publico o este caido (o que simplemente no este bien puesto). El url que no pudimos obtener fue: '.$preguntaImagen["url"],0,1);
                     }
                   }else {
                     if (is_file(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"])) {
-                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,30,30);
+                      $pdf->Image(__DIR__.'/../../Resources/public/images/archivosSubidos/imagenes/'.$preguntaImagen["archive"],$positionX, $positionY ,50,30);
                     }else {
                       $pdf->Ln(33);
                       $pdf->MultiCell(0,5,'No se pudo encontrar la imagen :c, Prueba a agregarla de nuevo :D. Oh contacta a el Administrador y pide que agregue la imagen a esta ruta: Sipre/src/UtExam/ProEvalBundle/Resources/public/images/archivosSubidos/imagenes, La imagen que no se encuentra se llama: '.$preguntaImagen["archive"],0,1);
@@ -446,7 +447,7 @@ class createExamenController extends Controller
                 foreach ($pregunta['respuestas']['imagen'] as $respuestaKey => $respuesta) {
                   if ((($respuestaKey + 1) % 5) == 0) {
                     $pdf->Ln(33);
-                    if ($pdf->GetY()>217) {
+                    if ($pdf->GetY()>213) {
                       $pdf->AddPage();
                     }elseif ($pdf->GetY()>210) {
                       if ((strlen($preguntaKey+1 .'.-'.$pregunta['escrito'])/91)>=5) {
