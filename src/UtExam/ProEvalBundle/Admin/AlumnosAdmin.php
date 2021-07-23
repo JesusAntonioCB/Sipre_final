@@ -34,7 +34,7 @@ class AlumnosAdmin extends AbstractAdmin
     ->add('codigoUsuario', null, ['label' => 'Codigo unico de Alumno'])
     ->add('turno', ChoiceFieldMaskType::class, [
       'choices' => [
-          'Vespertino' => 'Matutino',
+          'Matutino' => 'Matutino',
           'Nocturno' => 'Nocturno',
       ],
       'placeholder' => 'Selecciona una turno']);

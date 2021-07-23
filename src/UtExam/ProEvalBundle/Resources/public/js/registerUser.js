@@ -11,7 +11,7 @@ $(document).ready(function() {
     $('.homeConter').addClass("hide");
   });
   $('body').on('change','#exampleFormControlSelect1', function() {
-    if (this.options[this.selectedIndex].value === "Vespertino") {
+    if (this.options[this.selectedIndex].value === "Matutino") {
       $("#selectMaestro1V").removeClass("hide");
       $("#selectMaestro2V").removeClass("hide");
       $("#selectMaestro3V").removeClass("hide");
@@ -43,7 +43,7 @@ $(document).ready(function() {
       var boxGrupo= document.getElementById('txtGrupo'),
           boxGrupo=boxGrupo.options[boxGrupo.selectedIndex].value,
           boxEval= "Entrada";
-      if (boxTurno === "Vespertino") {
+      if (boxTurno === "Matutino") {
         var boxMaestro1= document.getElementById('selectMaestro1V'),
             boxMaestro1=boxMaestro1.options[boxMaestro1.selectedIndex].value,
             boxMaestro2= document.getElementById('selectMaestro2V'),

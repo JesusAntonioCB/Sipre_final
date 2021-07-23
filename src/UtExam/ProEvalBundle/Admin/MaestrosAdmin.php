@@ -19,7 +19,7 @@ class MaestrosAdmin extends AbstractAdmin
     ->add('nombre', TextType::class, array("label" => "Nombre"))
     ->add('turno', ChoiceFieldMaskType::class, [
       'choices' => [
-          'Vespertino' => 'Matutino',
+          'Matutino' => 'Matutino',
           'Nocturno' => 'Nocturno',
       ],
       'placeholder' => 'Selecciona una turno'])

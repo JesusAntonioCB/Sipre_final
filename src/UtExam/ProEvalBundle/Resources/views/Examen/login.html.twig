@@ -142,7 +142,7 @@
   												</span>
   												<select class="form-control" id="exampleFormControlSelect1" name="turno">
                             <option value="-1">Turno</option>
-                            <option value="Vespertino">Matutino</option>
+                            <option value="Matutino">Matutino</option>
   													<option value="Nocturno">Nocturno</option>
   												</select>
   											</div>
@@ -159,7 +159,7 @@
                             <option value="-1">Maestro 1 (comprensión lectora)</option>
                             {% for maestro in maestros %}
                           {% if maestro is defined and maestro.materias is defined and maestro.materias is not empty %}
-                            {% if maestro.materias.id == 1 and maestro.turno == "Vespertino" %}
+                            {% if maestro.materias.id == 1 and maestro.turno == "Matutino" %}
                               <option value="{{maestro.id}}">{{maestro.nombre}}</option>
                             {% endif %}
                           {% endif %}
@@ -186,7 +186,7 @@
                             <option value="-1">Maestro 2 (pensamiento matemático)</option>
                             {% for maestro in maestros %}
                           {% if maestro is defined and maestro.materias is defined and maestro.materias is not empty %}
-                            {% if maestro.materias.id == 2 and maestro.turno == "Vespertino" %}
+                            {% if maestro.materias.id == 2 and maestro.turno == "Matutino" %}
                               <option value="{{maestro.id}}">{{maestro.nombre}}</option>
                             {% endif %}
                           {% endif %}
@@ -213,7 +213,7 @@
                             <option value="-1">Maestro 3 (Inglés)</option>
                             {% for maestro in maestros %}
                           {% if maestro is defined and maestro.materias is defined and maestro.materias is not empty %}
-                            {% if maestro.materias.id == 3 and maestro.turno == "Vespertino" %}
+                            {% if maestro.materias.id == 3 and maestro.turno == "Matutino" %}
                               <option value="{{maestro.id}}">{{maestro.nombre}}</option>
                             {% endif %}
                           {% endif %}

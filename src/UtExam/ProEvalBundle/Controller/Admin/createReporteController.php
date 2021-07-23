@@ -175,7 +175,7 @@ class createReporteController extends Controller
       $em = $this->getDoctrine()->getManager();
       $alumnosPerGrup = [];
       if ($turno == 1) {
-        $turno = "Vespertino";
+        $turno = "Matutino";
       }else {
         $turno = "Nocturno";
       }

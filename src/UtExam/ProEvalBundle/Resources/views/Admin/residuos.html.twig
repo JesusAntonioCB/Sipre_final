@@ -95,7 +95,7 @@
   </tr>
   {% for grupo in gruposV %}
     {% for alumno in GV %}
-      {% if alumno.turno == "Vespertino" %}
+      {% if alumno.turno == "Matutino" %}
         {% if alumno.grupo == grupo.grupo %}
           {% if alumno.calificacionE1 is not empty and alumno.calificacionE1 is defined and alumno.calificacionE1 != "0" and alumno.calificacionE1 != ":=0" %}
             {% set CalifiTempo = alumno.calificacionE1|split(':=') %}
